@@ -29,6 +29,7 @@ public class Habitat {
 		habitatDataList = new ArrayList<>();
 		
 		try {
+		
 			desertTileImage = ImageIO.read(new File("src/images/desert.png"));
 			desertLakeTileImage = ImageIO.read(new File("src/images/desert+lake.png"));
 			desertSwampTileImage = ImageIO.read(new File("src/images/desert+swamp.png"));
@@ -43,6 +44,7 @@ public class Habitat {
 			mountainForestTileImage = ImageIO.read(new File("src/images/mountain+forest.png"));
 			mountainSwampTileImage = ImageIO.read(new File("src/images/mountain+swamp.png"));
 			swampTileImage = ImageIO.read(new File("src/images/swamp.png"));
+			starterTile1 = ImageIO.read(new File("src/images/starterTile1.png"));
 			swampLakeTileImage = ImageIO.read(new File("src/images/swamp+lake.png"));
 			habitatData = new FileInputStream(new File("src/habitatData/habitatData.xls"));
 			wb = new HSSFWorkbook(habitatData);
@@ -120,15 +122,17 @@ public class Habitat {
 			
 		} else {
 			
-			//manually assign starters theres only like 4
-			
 			
 		}
-		
+	
+		if (habNum == 16) {
+			
+			tileImage = starterTile1;
+			biomeType = "specialCase1";
+		}
 	
 
-		
-		
+	
 		 
 	}
 	public BufferedImage getImg() {
@@ -144,6 +148,16 @@ public class Habitat {
 	public ArrayList<Integer> getHabitatData() {
 		
 		return habitatDataList;
+		
+	}
+	public int getAmount() {
+		
+		return habitatDataList.get(7);
+		
+	}
+	public String toString() {
+		
+		return biomeType;
 		
 	}
 	

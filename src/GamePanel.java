@@ -7,13 +7,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 import java.util.Stack;
 
 public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage background;
 	private ArrayList<Player> players;
 	private ArrayList<Habitat> unclaimedHabitats;
-	private Stack<Habitat> pile1, pile2, pile3, pile4;
+	private ArrayList<Habitat> pile1, pile2, pile3, pile4;
 	public GamePanel() {
 		
 		try {
@@ -24,12 +26,12 @@ public class GamePanel extends JPanel implements MouseListener{
 		}
 		players = new ArrayList<>();
 		unclaimedHabitats = new ArrayList<>();
-		pile1 = new Stack<>();
-		pile2 = new Stack<>();
-		pile3 = new Stack<>();
-		pile4 = new Stack<>();
+		pile1 = new ArrayList<>();
+		pile2 = new ArrayList<>();
+		pile3 = new ArrayList<>();
+		pile4 = new ArrayList<>();
 		
-		for (int i = 0 ; i < 14 ; i++) {
+		for (int i = 1 ; i < 13 ; i++) {
 			
 			for (int j = 0 ; j < new Habitat(i).getAmount() ; j++ ) {
 				
@@ -38,7 +40,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			}
 			
 		}
-		System.out.println(unclaimedHabitats);
+		//System.out.println(unclaimedHabitats);
 		for (int i = 1 ; i < 4 ; i++) {
 			
 			players.add(new Player(i));
@@ -52,27 +54,32 @@ public class GamePanel extends JPanel implements MouseListener{
 		for (Habitat h : unclaimedHabitats) {
 			
 			int rand = (int) (Math.floor(Math.random() * 4) + 1);
-			System.out.println("AWYFSIH" + rand);
+			//System.out.println("AWYFSIH" + rand);
 			switch (rand) {
 			
 				case 1:
-					pile1.push(h);
+					pile1.add(h);
+					System.out.println(h);
 					break;
 				case 2:
-					pile1.push(h);
+					pile2.add(h);
 					break;
 				case 3:
-					pile1.push(h);
+					pile3.add(h);
 					break;
 				case 4:
-					pile1.push(h);
+					pile4.add(h);
 					break;
 				
 				
 			}
-	
-			
+					
 		}
+		Collections.shuffle(pile1, new Random(1253));
+		Collections.shuffle(pile2, new Random(1232));
+		Collections.shuffle(pile3, new Random(551252135));
+		Collections.shuffle(pile4, new Random(512341255));
+		
 	
 	}
 	public void paint(Graphics g) {
@@ -82,8 +89,13 @@ public class GamePanel extends JPanel implements MouseListener{
 		System.out.println((players.get(0).getHabitats().get(0).getBiome()));
 		g.drawImage(players.get(0).getHabitats().get(0).getImg() , 250, 500, null);
 		System.out.println(pile1);
-		g.drawImage(pile1.peek().getImg(), 800, 80, null);
-
+		g.drawImage(pile1.get(pile1.size() - 1).getImg(), 800, 80, null);
+		
+		for(int i = 0; i < pile1.size(); i++) {
+			g.drawImage(pile1.get(pile1.size() - 1).getImg(), 800, 80, null);
+		}
+		
+		
 		
 	}
 	@Override

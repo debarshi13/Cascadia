@@ -53,7 +53,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		
 		for (Habitat h : unclaimedHabitats) {
 			
-			int rand = (int) (Math.floor(Math.random() * 4) + 1);
+			int rand = (int) (Math.floor(Math.random() * 4) + 1); //change floor to round after done testing
 			//System.out.println("AWYFSIH" + rand);
 			switch (rand) {
 			

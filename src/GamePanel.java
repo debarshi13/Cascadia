@@ -27,8 +27,23 @@ public class GamePanel extends JPanel implements MouseListener{
 	private Font font = new Font("Arial", Font.BOLD, 18);
 	int activePlayerNum = 0;
 	FontMetrics metrics;
+	BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
+	BufferedImage lakeMountainTileImage = null, mountainDesertTileImage =  null ,mountainForestTileImage = null;
 	public GamePanel() {
-		
+
+
+		try {
+			forestTileImage = ImageIO.read(new File("src/images/forest.png"));
+			lakeTileImage = ImageIO.read(new File("src/images/lake.png"));
+			swampTileImage = ImageIO.read(new File("src/images/swamp.png"));
+			lakeMountainTileImage = ImageIO.read(new File("src/images/lake+mountain.png"));
+			mountainDesertTileImage = ImageIO.read(new File("src/images/mountain+desert.png"));
+			mountainForestTileImage = ImageIO.read(new File("src/images/mountain+forest.png"));
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		hexagonTest = new Polygon();
 		for (int i = 0; i < 6; i++){
@@ -43,71 +58,24 @@ public class GamePanel extends JPanel implements MouseListener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		players = new ArrayList<>();
+
 		unclaimedHabitats = new ArrayList<>();
-		pile1 = new ArrayList<>();
-		pile2 = new ArrayList<>();
-		pile3 = new ArrayList<>();
-		pile4 = new ArrayList<>();
-		
-		for (int i = 1 ; i < 13 ; i++) {
-			
-			for (int j = 0 ; j < new Habitat(i).getAmount() ; j++ ) {
-				
-				unclaimedHabitats.add(new Habitat(i));
-				
-			}
-			
-		}
-		//System.out.println(unclaimedHabitats);
+		players = new ArrayList<>();
 		for (int i = 1 ; i < 4 ; i++) {
 			
 			players.add(new Player(i, 0));
 			
 		}
-		makePiles();
+
 		addMouseListener(this);
 	}
-	public void makePiles() {
-		
-		for (Habitat h : unclaimedHabitats) {
-			
-			int rand = (int) (Math.floor(Math.random() * 4) + 1); //change floor to round after done testing
-			//System.out.println("AWYFSIH" + rand);
-			switch (rand) {
-			
-				case 1:
-					pile1.add(h);
-					System.out.println(h);
-					break;
-				case 2:
-					pile2.add(h);
-					break;
-				case 3:
-					pile3.add(h);
-					break;
-				case 4:
-					pile4.add(h);
-					break;
-				
-				
-			}
-					
-		}
-		// Collections.shuffle(pile1, new Random(1253));
-		// Collections.shuffle(pile2, new Random(1232));
-		// Collections.shuffle(pile3, new Random(551252135));
-		// Collections.shuffle(pile4, new Random(512341255));
-		
-	
-	}
+
 	public void paint(Graphics g) {
 		
 		
 		g.drawImage(background, 0, 0, null);
 
 		
-		//System.out.println(pile1);
 		double ang30 = Math.toRadians(30);
 		int radius = 57;
         double xOff = Math.cos(ang30) * (radius +0.3);
@@ -120,32 +88,11 @@ public class GamePanel extends JPanel implements MouseListener{
         int y2 = (int) (origin.y + 3*yOff*1) -radius;
 		int x3 = (int) (origin.x + (1%2)*xOff + 2*7*xOff -xOff);
         int y3 = (int) (origin.y + 3*yOff*1) -radius;
-	
-		BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
-		BufferedImage lakeMountainTileImage = null, mountainDesertTileImage =  null ,mountainForestTileImage = null;
 
-		try {
-			forestTileImage = ImageIO.read(new File("src/images/forest.png"));
-			lakeTileImage = ImageIO.read(new File("src/images/lake.png"));
-			swampTileImage = ImageIO.read(new File("src/images/swamp.png"));
-			lakeMountainTileImage = ImageIO.read(new File("src/images/lake+mountain.png"));
-			mountainDesertTileImage = ImageIO.read(new File("src/images/mountain+desert.png"));
-			mountainForestTileImage = ImageIO.read(new File("src/images/mountain+forest.png"));
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		g.drawImage(forestTileImage, x, y, null);
 		g.drawImage(lakeTileImage, x2, y2, null);
 		g.drawImage(swampTileImage, x3, y3, null);
 
-		
-		//g.drawPolygon(hexagonTest);
-		// for(int i = 0; i < pile1.size(); i++) {
-		// 	g.drawImage(pile1.get(pile1.size() - 1).getImg(), 800, 80, null);
-		// }
-		
 		//paingBackgroundGrid(g, radius);
 
 		int x4 = (int) (origin.x + (0%2)*xOff + 2*9*xOff -xOff);

@@ -1,14 +1,8 @@
 
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-import java.io.*;
 
 public class Tile {
     private int tileNum;

@@ -1,262 +1,250 @@
 
+
 import java.util.ArrayList;
 
 
 public class Tiles {
-    private ArrayList<Tile> startingTiles;
+    private Tile[][] startingTiles;
     private ArrayList<Tile> tiles;
     private ArrayList<String> habitats;
     private ArrayList<String> wildlife;
+
     public Tiles(){
-        startingTiles =  new ArrayList<Tile>();
+
+        startingTiles = new Tile[5][3];
         tiles =  new ArrayList<Tile>();
-        Tile t = new Tile();
+
+        startingTiles[0][0] = new Tile();
         habitats = new ArrayList<String>();
         habitats.add("mountain");
         wildlife = new ArrayList<String>();
         wildlife.add("bear");
-        t.setTile(1, habitats, wildlife, 0 );
-        startingTiles.add(t);
+        startingTiles[0][0].setTile(1, habitats, wildlife, 0 );
 
-        t = new Tile();        
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[0][1] = new Tile();        
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("swamp");
         wildlife.add("hawk");
         wildlife.add("fox");
         wildlife.add("elk");
-        t.setTile(2, habitats, wildlife, 60 );
-        startingTiles.add(t);        
-
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[0][1].setTile(2, habitats, wildlife, 60 );
+      
+        startingTiles[0][2] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("lake");
         wildlife.add("salmon");
         wildlife.add("bear");
-        t.setTile(3, habitats, wildlife, 300 );
-        startingTiles.add(t);  
+        startingTiles[0][2].setTile(3, habitats, wildlife, 300 );
 
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[1][0] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         wildlife.add("hawk");
-        t.setTile(4, habitats, wildlife, 0 );
-        startingTiles.add(t);  
+        startingTiles[1][0].setTile(4, habitats, wildlife, 0 );
 
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[1][1] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("lake");
         wildlife.add("salmon");
         wildlife.add("hawk");
         wildlife.add("elk");
-        t.setTile(5, habitats, wildlife, 240 );
-        startingTiles.add(t); 
+        startingTiles[1][1].setTile(5, habitats, wildlife, 240 );
 
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[1][2] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("desert");
         wildlife.add("bear");
         wildlife.add("fox");
-        t.setTile(6, habitats, wildlife, 300 );
-        startingTiles.add(t);         
+        startingTiles[1][2].setTile(6, habitats, wildlife, 300 );     
 
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[2][0] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         wildlife.add("fox");
-        t.setTile(7, habitats, wildlife, 0 );
-        startingTiles.add(t);  
+        startingTiles[2][0].setTile(7, habitats, wildlife, 0 );
         
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[2][1] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         habitats.add("lake");
         wildlife.add("salmon");
         wildlife.add("fox");
         wildlife.add("hawk");
-        t.setTile(8, habitats, wildlife, 60 );
-        startingTiles.add(t);       
+        startingTiles[2][1].setTile(8, habitats, wildlife, 60 );
         
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[2][2] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");  
         habitats.add("forest");
         wildlife.add("bear");
         wildlife.add("elk");
-        t.setTile(9, habitats, wildlife, 300 );
-        startingTiles.add(t); 
+        startingTiles[2][2].setTile(9, habitats, wildlife, 300 );
         
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[3][0] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         wildlife.add("elk");
-        t.setTile(10, habitats, wildlife, 0 );
-        startingTiles.add(t);  
+        startingTiles[3][0].setTile(10, habitats, wildlife, 0 );
 
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[3][1] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         habitats.add("mountain");
         wildlife.add("hawk");
         wildlife.add("bear");
         wildlife.add("elk");
-        t.setTile(11, habitats, wildlife, 240 );
-        startingTiles.add(t);    
+        startingTiles[3][1].setTile(11, habitats, wildlife, 240 );
         
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[3][2] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("swamp");
         wildlife.add("fox");
         wildlife.add("salmon");
-        t.setTile(12, habitats, wildlife, 300 );
-        startingTiles.add(t);      
+        startingTiles[3][2].setTile(12, habitats, wildlife, 300 );
         
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[4][0] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         wildlife.add("salmon");
         wildlife.add("elk");
-        t.setTile(13, habitats, wildlife, 0 );
-        startingTiles.add(t);         
+        startingTiles[4][0].setTile(13, habitats, wildlife, 0 );
 
-
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[4][1] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("desert");
         wildlife.add("salmon");
         wildlife.add("bear");
         wildlife.add("elk");
-        t.setTile(14, habitats, wildlife, 240 );
-        startingTiles.add(t);     
+        startingTiles[4][1].setTile(14, habitats, wildlife, 240 );
     
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        startingTiles[4][2] = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("swamp");
         wildlife.add("fox");
         wildlife.add("hawk");
-        t.setTile(15, habitats, wildlife, 120 );
-        startingTiles.add(t);         
+        startingTiles[4][2].setTile(15, habitats, wildlife, 120 );     
 
 
-        t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        Tile t = new Tile();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         wildlife.add("hawk");
         t.setTile(16, habitats, wildlife, 0 );
         tiles.add(t);   
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         wildlife.add("hawk");
         t.setTile(17, habitats, wildlife, 0 );
         tiles.add(t);      
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         wildlife.add("bear");
         t.setTile(18, habitats, wildlife, 0 );
         tiles.add(t);   
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         wildlife.add("elk");
         t.setTile(19, habitats, wildlife, 0 );
         tiles.add(t);           
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         wildlife.add("elk");
         t.setTile(20, habitats, wildlife, 0 );
         tiles.add(t);   
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         wildlife.add("bear");
         t.setTile(21, habitats, wildlife, 0 );
         tiles.add(t);   
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         wildlife.add("bear");
         t.setTile(22, habitats, wildlife, 0 );
         tiles.add(t);    
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         wildlife.add("elk");
         t.setTile(23, habitats, wildlife, 0 );
         tiles.add(t);           
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         wildlife.add("fox");
         t.setTile(24, habitats, wildlife, 0 );
         tiles.add(t);     
     
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         wildlife.add("fox");
         t.setTile(25, habitats, wildlife, 0 );
         tiles.add(t); 
         
         t = new Tile();        
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         wildlife.add("elk");
         t.setTile(26, habitats, wildlife, 0 );
         tiles.add(t);   
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         wildlife.add("elk");
         t.setTile(27, habitats, wildlife, 0 );
         tiles.add(t); 
  
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         wildlife.add("fox");
         t.setTile(28, habitats, wildlife, 0 );
@@ -264,16 +252,16 @@ public class Tiles {
         
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         wildlife.add("salmon");
         t.setTile(29, habitats, wildlife, 0 );
         tiles.add(t);   
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         wildlife.add("salmon");
         t.setTile(30, habitats, wildlife, 0 );
@@ -281,8 +269,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         wildlife.add("fox");
         t.setTile(31, habitats, wildlife, 0 );
@@ -290,8 +278,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         wildlife.add("fox");
         t.setTile(32, habitats, wildlife, 0 );
@@ -299,16 +287,16 @@ public class Tiles {
         
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         wildlife.add("salmon");
         t.setTile(33, habitats, wildlife, 0 );
         tiles.add(t);  
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         wildlife.add("salmon");
         t.setTile(34, habitats, wildlife, 0 );
@@ -316,16 +304,16 @@ public class Tiles {
         
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         wildlife.add("hawk");
         t.setTile(35, habitats, wildlife, 0 );
         tiles.add(t);   
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         wildlife.add("hawk");
         t.setTile(36, habitats, wildlife, 0 );
@@ -333,16 +321,16 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         wildlife.add("hawk");
         t.setTile(37, habitats, wildlife, 0 );
         tiles.add(t);  
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         wildlife.add("salmon");
         t.setTile(38, habitats, wildlife, 0 );
@@ -350,24 +338,24 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         wildlife.add("bear");
         t.setTile(39, habitats, wildlife, 0 );
         tiles.add(t);   
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         wildlife.add("bear");
         t.setTile(40, habitats, wildlife, 0 );
         tiles.add(t);   
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("forest");
         wildlife.add("hawk");
@@ -377,8 +365,8 @@ public class Tiles {
         tiles.add(t);  
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("forest");
         wildlife.add("fox");
@@ -388,8 +376,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("desert");
         wildlife.add("fox");
@@ -399,8 +387,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("desert");
         wildlife.add("salmon");
@@ -410,8 +398,8 @@ public class Tiles {
         tiles.add(t);  
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("desert");
         wildlife.add("salmon");
@@ -421,8 +409,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("swamp");
         wildlife.add("salmon");
@@ -432,8 +420,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("swamp");
         wildlife.add("salmon");
@@ -443,8 +431,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("swamp");
         wildlife.add("fox");
@@ -454,8 +442,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("swamp");
         wildlife.add("salmon");
@@ -465,8 +453,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("swamp");
         wildlife.add("salmon");
@@ -477,8 +465,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         habitats.add("lake");
         wildlife.add("salmon");
@@ -489,8 +477,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("lake");
         wildlife.add("hawk");
@@ -500,8 +488,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         habitats.add("mountain");
         wildlife.add("salmon");
@@ -512,8 +500,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("lake");
         wildlife.add("salmon");
@@ -524,8 +512,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("lake");
         wildlife.add("fox");
@@ -536,8 +524,8 @@ public class Tiles {
         
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("forest");
         wildlife.add("hawk");
@@ -546,8 +534,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("forest");
         wildlife.add("hawk");
@@ -556,8 +544,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("forest");
         wildlife.add("bear");
@@ -567,8 +555,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("forest");
         wildlife.add("elk");
@@ -578,8 +566,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("desert");
         wildlife.add("bear");
@@ -588,8 +576,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("desert");
         wildlife.add("bear");
@@ -598,8 +586,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("desert");
         wildlife.add("elk");
@@ -608,8 +596,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("desert");
         wildlife.add("elk");
@@ -618,8 +606,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("desert");
         wildlife.add("fox");
@@ -628,8 +616,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("swamp");
         wildlife.add("elk");
@@ -639,8 +627,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("swamp");
         wildlife.add("elk");
@@ -649,8 +637,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("swamp");
         wildlife.add("fox");
@@ -659,8 +647,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("swamp");
         wildlife.add("salmon");
@@ -669,8 +657,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         habitats.add("lake");
         wildlife.add("fox");
@@ -679,8 +667,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("swamp");
         wildlife.add("salmon");
@@ -689,8 +677,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         habitats.add("lake");
         wildlife.add("salmon");
@@ -699,8 +687,8 @@ public class Tiles {
         tiles.add(t);  
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         habitats.add("lake");
         wildlife.add("salmon");
@@ -709,8 +697,8 @@ public class Tiles {
         tiles.add(t); 
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("swamp");
         habitats.add("lake");
         wildlife.add("hawk");
@@ -719,8 +707,8 @@ public class Tiles {
         tiles.add(t);      
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         habitats.add("mountain");
         wildlife.add("salmon");
@@ -729,8 +717,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         habitats.add("mountain");
         wildlife.add("salmon");
@@ -739,8 +727,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         habitats.add("mountain");
         wildlife.add("hawk");
@@ -749,8 +737,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         habitats.add("mountain");
         wildlife.add("hawk");
@@ -759,8 +747,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("lake");
         habitats.add("mountain");
         wildlife.add("bear");
@@ -769,8 +757,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("desert");
         wildlife.add("hawk");
@@ -780,8 +768,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("desert");
         wildlife.add("hawk");
@@ -789,8 +777,8 @@ public class Tiles {
         
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("swamp");
         wildlife.add("salmon");
@@ -801,8 +789,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("desert");
         wildlife.add("bear");
@@ -811,8 +799,8 @@ public class Tiles {
         tiles.add(t);         
         
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("desert");
         wildlife.add("elk");
@@ -821,8 +809,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("swamp");
         wildlife.add("hawk");
@@ -831,8 +819,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("swamp");
         wildlife.add("bear");
@@ -841,8 +829,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("swamp");
         wildlife.add("elk");
@@ -851,8 +839,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("mountain");
         habitats.add("swamp");
         wildlife.add("elk");
@@ -862,8 +850,8 @@ public class Tiles {
 
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("swamp");
         wildlife.add("bear");
@@ -872,8 +860,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("swamp");
         wildlife.add("bear");
@@ -882,8 +870,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("swamp");
         wildlife.add("elk");
@@ -892,8 +880,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("swamp");
         wildlife.add("elk");
@@ -902,8 +890,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("swamp");
         wildlife.add("fox");
@@ -912,8 +900,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("lake");
         wildlife.add("bear");
@@ -922,8 +910,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("lake");
         wildlife.add("fox");
@@ -932,8 +920,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("lake");
         wildlife.add("elk");
@@ -942,8 +930,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("lake");
         wildlife.add("elk");
@@ -952,8 +940,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("forest");
         habitats.add("lake");
         wildlife.add("fox");
@@ -962,8 +950,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("lake");
         wildlife.add("elk");
@@ -972,8 +960,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("lake");
         wildlife.add("elk");
@@ -982,8 +970,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("lake");
         wildlife.add("fox");
@@ -992,8 +980,8 @@ public class Tiles {
         tiles.add(t);  
 
         t = new Tile();
-        habitats.clear();
-        wildlife.clear();
+        habitats = new ArrayList<String>();
+        wildlife = new ArrayList<String>();
         habitats.add("desert");
         habitats.add("lake");
         wildlife.add("fox");
@@ -1003,7 +991,7 @@ public class Tiles {
 
     }
  
-    public ArrayList<Tile> getStartingTiles() {
+    public Tile[][] getStartingTiles() {
         return startingTiles;
     }
 

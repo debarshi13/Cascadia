@@ -21,10 +21,14 @@ import java.io.IOException;
 public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage background;
 	private ArrayList<Player> players;
-	private ArrayList<Habitat> unclaimedHabitats;
 	private ArrayList<Habitat> pile1, pile2, pile3, pile4;
 	private Polygon hexagonTest;
-	private Font font = new Font("Arial", Font.BOLD, 18);
+	private Tiles tiles;
+	private Wildlife animals;
+	private ArrayList<Tile> tilesOnTable;
+	private ArrayList<String> animalsOnTable;
+	private int gameStatus = 0;
+	private Font font = new Font("Arial", Font.BOLD, 24);
 	int activePlayerNum = 0;
 	FontMetrics metrics;
 	BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
@@ -59,14 +63,23 @@ public class GamePanel extends JPanel implements MouseListener{
 			e.printStackTrace();
 		}
 
-		unclaimedHabitats = new ArrayList<>();
 		players = new ArrayList<>();
 		for (int i = 1 ; i < 4 ; i++) {
 			
 			players.add(new Player(i, 0));
 			
 		}
+		tiles = new Tiles();
+		Collections.shuffle(tiles.getStartingTiles());
+		Collections.shuffle(tiles.getTiles());
+		animals =  new Wildlife();
+		Collections.shuffle(animals.getWildlife());
 
+		tilesOnTable = new ArrayList<Tile>();
+		animalsOnTable = new ArrayList<String>();
+		// for(int i = 0; i < 10; i++){
+		// 	System.out.println("animal: " + animals.getWildlife().get(i));
+		// }
 		addMouseListener(this);
 	}
 
@@ -74,42 +87,55 @@ public class GamePanel extends JPanel implements MouseListener{
 		
 		
 		g.drawImage(background, 0, 0, null);
+		if(gameStatus == 0){
+			g.setColor(Color.green);
+			g.fillRect(getWidth() / 2 - 100, 200, 200, 60);
+			g.setColor(Color.white);
+			g.setFont(font);
+			g.drawString("Start Game", getWidth() / 2 - 70, 235);
+		}
+		else{
+			double ang30 = Math.toRadians(30);
+			int radius = 57;
+			double xOff = Math.cos(ang30) * (radius +0.3);
+			double yOff = Math.sin(ang30) * (radius +0.3);
+			Point origin = new Point (133, 136);
 
-		
-		double ang30 = Math.toRadians(30);
-		int radius = 57;
-        double xOff = Math.cos(ang30) * (radius +0.3);
-        double yOff = Math.sin(ang30) * (radius +0.3);
-		Point origin = new Point (133, 136);
+			int x = (int) (origin.x + (0%2)*xOff + 2*7*xOff -xOff);
+			int y = (int) (origin.y + 3*yOff*0) -radius;
+			int x2 = (int) (origin.x + (1%2)*xOff + 2*6*xOff -xOff);
+			int y2 = (int) (origin.y + 3*yOff*1) -radius;
+			int x3 = (int) (origin.x + (1%2)*xOff + 2*7*xOff -xOff);
+			int y3 = (int) (origin.y + 3*yOff*1) -radius;
 
-		int x = (int) (origin.x + (0%2)*xOff + 2*7*xOff -xOff);
-        int y = (int) (origin.y + 3*yOff*0) -radius;
-		int x2 = (int) (origin.x + (1%2)*xOff + 2*6*xOff -xOff);
-        int y2 = (int) (origin.y + 3*yOff*1) -radius;
-		int x3 = (int) (origin.x + (1%2)*xOff + 2*7*xOff -xOff);
-        int y3 = (int) (origin.y + 3*yOff*1) -radius;
+			g.drawImage(forestTileImage, x, y, null);
+			g.drawImage(lakeTileImage, x2, y2, null);
+			g.drawImage(swampTileImage, x3, y3, null);
 
-		g.drawImage(forestTileImage, x, y, null);
-		g.drawImage(lakeTileImage, x2, y2, null);
-		g.drawImage(swampTileImage, x3, y3, null);
+			//paingBackgroundGrid(g, radius);
 
-		//paingBackgroundGrid(g, radius);
-
-		int x4 = (int) (origin.x + (0%2)*xOff + 2*9*xOff -xOff);
-        int y4 = (int) (origin.y + 3*yOff*2) -radius;
+			int x4 = (int) (origin.x + (0%2)*xOff + 2*9*xOff -xOff);
+			int y4 = (int) (origin.y + 3*yOff*2) -radius;
 
 
-		// try rotate image
-		g.drawImage(lakeMountainTileImage, x4, y4, null);
-		int x5 = (int) (origin.x + (1%2)*xOff + 2*8*xOff -xOff);
-        int y5 = (int) (origin.y + 3*yOff*3) -radius;
-		double locationX = lakeMountainTileImage.getWidth() / 2;
-		double locationY = lakeMountainTileImage.getHeight() / 2;
-		Graphics2D g2d = (Graphics2D) g;
-		AffineTransform identity = AffineTransform.getRotateInstance(Math.toRadians(120), locationX, locationY);		
-		AffineTransformOp op = new AffineTransformOp(identity, AffineTransformOp.TYPE_BILINEAR);
-		g2d.drawImage(op.filter(lakeMountainTileImage, null), x5, y5, null);
+			// try rotate image
+			g.drawImage(lakeMountainTileImage, x4, y4, null);
+			int x5 = (int) (origin.x + (1%2)*xOff + 2*8*xOff -xOff);
+			int y5 = (int) (origin.y + 3*yOff*3) -radius;
+			double locationX = lakeMountainTileImage.getWidth() / 2;
+			double locationY = lakeMountainTileImage.getHeight() / 2;
+			Graphics2D g2d = (Graphics2D) g;
+			AffineTransform identity = AffineTransform.getRotateInstance(Math.toRadians(120), locationX, locationY);		
+			AffineTransformOp op = new AffineTransformOp(identity, AffineTransformOp.TYPE_BILINEAR);
+			g2d.drawImage(op.filter(lakeMountainTileImage, null), x5, y5, null);
 
+			for(int i = 0; i <  tilesOnTable.size(); i++){
+				Tile t = tilesOnTable.get(i);
+				System.out.println(t.getTileNum() + " with habitats size of " + t.getHabitats().size());
+				for(int j = 0; j < t.getHabitats().size(); j++)
+					System.out.println(t.getHabitats().get(j));
+			}
+		}
 	}
 
 
@@ -156,12 +182,37 @@ public class GamePanel extends JPanel implements MouseListener{
        
     }
 
+	private void StartGame(){
+		gameStatus = 1;
+		System.out.println("tilesOnTable has what: " + tilesOnTable.size() + " tiles have how many: " + tiles.getTiles().size());
+		for(int i = 0; i < 4; i++){
+			Tile t = tiles.getTiles().remove(i);
+			for(int j = 0; j < t.getHabitats().size(); j++)
+				System.out.println(t.getTileNum() + "  -  " + t.getHabitats().get(j));
 
+
+			tilesOnTable.add(tiles.getTiles().remove(i));
+			animalsOnTable.add(animals.getWildlife().remove(i));
+		}
+		System.out.println("tilesOnTable has what: " + tilesOnTable.size() + " tiles have how many: " + tiles.getTiles().size());
+		repaint();
+	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println( "" + e.getX() + "  " + e.getY());
-		if(hexagonTest.contains(e.getPoint()))
-		System.out.println("debarshi is a stinky indian");
+		if(gameStatus == 0){
+			int x = e.getX();
+			int y = e.getY();
+
+			if(x >= getWidth() / 2 - 100 && x <= getWidth() / 2 + 100 && y >= 200 && y <= 260){
+				System.out.println("Start Game");
+				StartGame();
+			}
+		}
+		else{
+			System.out.println( "" + e.getX() + "  " + e.getY());
+			if(hexagonTest.contains(e.getPoint()))
+			System.out.println("debarshi is a stinky indian");
+		}
 	}
 	@Override
 	public void mousePressed(MouseEvent e) {

@@ -33,16 +33,39 @@ public class GamePanel extends JPanel implements MouseListener{
 	FontMetrics metrics;
 	BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
 	BufferedImage lakeMountainTileImage = null, mountainDesertTileImage =  null ,mountainForestTileImage = null;
+	BufferedImage desertTileImage = null, desertLakeTileImage =  null ,desertSwampTileImage = null;
+	BufferedImage forestDesertTileImage = null, forestLakeTileImage =  null ,forestSwampTileImage = null;
+	BufferedImage mountainTileImage = null, mountainSwampTileImage =  null ,starterTile1 = null;
+	BufferedImage swampLakeTileImage = null;
+	BufferedImage elkImage  = null, foxImage = null, hawkImage = null, salmonImage = null, bearImage = null;
+
 	public GamePanel() {
 
 
 		try {
+			desertTileImage = ImageIO.read(new File("src/images/desert.png"));
+			desertLakeTileImage = ImageIO.read(new File("src/images/desert+lake.png"));
+			desertSwampTileImage = ImageIO.read(new File("src/images/desert+swamp.png"));
 			forestTileImage = ImageIO.read(new File("src/images/forest.png"));
+			forestDesertTileImage = ImageIO.read(new File("src/images/forest+desert.png"));
+			forestLakeTileImage = ImageIO.read(new File("src/images/forest+lake.png"));
+			forestSwampTileImage = ImageIO.read(new File("src/images/forest+swamp.png"));
 			lakeTileImage = ImageIO.read(new File("src/images/lake.png"));
-			swampTileImage = ImageIO.read(new File("src/images/swamp.png"));
 			lakeMountainTileImage = ImageIO.read(new File("src/images/lake+mountain.png"));
+			mountainTileImage = ImageIO.read(new File("src/images/mountain.png"));
 			mountainDesertTileImage = ImageIO.read(new File("src/images/mountain+desert.png"));
 			mountainForestTileImage = ImageIO.read(new File("src/images/mountain+forest.png"));
+			mountainSwampTileImage = ImageIO.read(new File("src/images/mountain+swamp.png"));
+			swampTileImage = ImageIO.read(new File("src/images/swamp.png"));
+			starterTile1 = ImageIO.read(new File("src/images/starterTile1.png"));
+			swampLakeTileImage = ImageIO.read(new File("src/images/swamp+lake.png"));
+			background = ImageIO.read(new File("src/images/background.png"));
+
+			bearImage = ImageIO.read(new File("src/images/bear.png"));
+			elkImage = ImageIO.read(new File("src/images/elk.png"));
+			salmonImage = ImageIO.read(new File("src/images/salmon.png"));
+			foxImage = ImageIO.read(new File("src/images/fox.png"));
+			hawkImage = ImageIO.read(new File("src/images/hawk.png"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -70,7 +93,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			
 		}
 		tiles = new Tiles();
-		Collections.shuffle(tiles.getStartingTiles());
+		//Collections.shuffle(tiles.getStartingTiles());
 		Collections.shuffle(tiles.getTiles());
 		animals =  new Wildlife();
 		Collections.shuffle(animals.getWildlife());
@@ -136,6 +159,27 @@ public class GamePanel extends JPanel implements MouseListener{
 					System.out.println(t.getHabitats().get(j));
 			}
 		}
+
+
+		for(int i = 0; i < tilesOnTable.size(); i++){
+			ArrayList<String> habitat = tilesOnTable.get(i).getHabitats();
+			String imgName = "";
+			
+			for(int j = 0; j < habitat.size(); j++){
+				if(j == 0)
+					imgName += habitat.get(j);
+				else
+					imgName += ("+" + habitat.get(j));
+			}
+			System.out.println("Will load this image file: " + imgName);
+			BufferedImage img = getImage(imgName);
+			g.drawImage(img, 50 + i * 120, getHeight() - 300, 100, 100, null);
+		}
+		for(int i = 0; i < animalsOnTable.size(); i++){
+			System.out.println("Should get an image of " + animalsOnTable.get(i));
+			BufferedImage img = getImage(animalsOnTable.get(i));
+			g.drawImage(img, 55 + i * 120, getHeight() - 200, 80, 80, null);
+		}
 	}
 
 
@@ -184,18 +228,87 @@ public class GamePanel extends JPanel implements MouseListener{
 
 	private void StartGame(){
 		gameStatus = 1;
-		System.out.println("tilesOnTable has what: " + tilesOnTable.size() + " tiles have how many: " + tiles.getTiles().size());
+		// System.out.println("tilesOnTable has what: " + tilesOnTable.size() + " tiles have how many: " + tiles.getTiles().size());
 		for(int i = 0; i < 4; i++){
-			Tile t = tiles.getTiles().remove(i);
-			for(int j = 0; j < t.getHabitats().size(); j++)
-				System.out.println(t.getTileNum() + "  -  " + t.getHabitats().get(j));
 
 
 			tilesOnTable.add(tiles.getTiles().remove(i));
 			animalsOnTable.add(animals.getWildlife().remove(i));
 		}
-		System.out.println("tilesOnTable has what: " + tilesOnTable.size() + " tiles have how many: " + tiles.getTiles().size());
+		
 		repaint();
+	}
+
+	private BufferedImage getImage(String name){
+		BufferedImage img = null;
+		switch(name) {
+			case "desert":
+			img = desertTileImage;
+			  	break;
+			case "desert+lake":
+			img = desertLakeTileImage;
+			  	break;
+			case "desert+swamp":
+			img = desertSwampTileImage;
+				break;
+			case "forest":
+			img = forestTileImage;
+		  		break;
+		  	case "forest+desert":
+		  	img = forestDesertTileImage;
+				break;
+			case "forest+lake":
+			  img = forestLakeTileImage;
+				break;
+			case "forest+swamp":
+			img = forestSwampTileImage;
+		  		break;
+		  	case "lake":
+		  	img = lakeTileImage;
+				break;
+			case "lake+mountain":
+			  img = lakeMountainTileImage;
+				break;
+			case "mountain":
+			img = mountainTileImage;
+		  		break;
+		  	case "mountain+desert":
+		  	img = mountainDesertTileImage;
+				break;
+
+			case "mountain+forest":
+			img = mountainForestTileImage;
+				break;
+			case "mountain+swamp":
+			img = mountainSwampTileImage;
+				break;
+			case "swamp":
+			img = swampTileImage;
+				break;
+			case "swampTileImage":
+				img = swampTileImage;
+				break;
+			case "hawk":
+			img = hawkImage;
+				break;
+			case "elk":
+			img = elkImage;
+				break;
+			case "fox":
+			img = foxImage;
+				break;
+			case "salmon":
+			img = salmonImage;
+				break;
+			case "bear":
+			img = bearImage;
+				break;
+
+															
+			default:
+			  // code block
+		  }
+		return img;
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {

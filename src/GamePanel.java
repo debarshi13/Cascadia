@@ -3,7 +3,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -110,18 +112,25 @@ public class GamePanel extends JPanel implements MouseListener{
         double xOff = Math.cos(ang30) * (radius +0.3);
         double yOff = Math.sin(ang30) * (radius +0.3);
 		Point origin = new Point (133, 136);
+
 		int x = (int) (origin.x + (0%2)*xOff + 2*7*xOff -xOff);
         int y = (int) (origin.y + 3*yOff*0) -radius;
 		int x2 = (int) (origin.x + (1%2)*xOff + 2*6*xOff -xOff);
         int y2 = (int) (origin.y + 3*yOff*1) -radius;
 		int x3 = (int) (origin.x + (1%2)*xOff + 2*7*xOff -xOff);
         int y3 = (int) (origin.y + 3*yOff*1) -radius;
-		//g.drawImage(pile1.get(0).getImg(), 778, 78, null);
+	
 		BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
+		BufferedImage lakeMountainTileImage = null, mountainDesertTileImage =  null ,mountainForestTileImage = null;
+
 		try {
 			forestTileImage = ImageIO.read(new File("src/images/forest.png"));
 			lakeTileImage = ImageIO.read(new File("src/images/lake.png"));
 			swampTileImage = ImageIO.read(new File("src/images/swamp.png"));
+			lakeMountainTileImage = ImageIO.read(new File("src/images/lake+mountain.png"));
+			mountainDesertTileImage = ImageIO.read(new File("src/images/mountain+desert.png"));
+			mountainForestTileImage = ImageIO.read(new File("src/images/mountain+forest.png"));
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -137,7 +146,22 @@ public class GamePanel extends JPanel implements MouseListener{
 		// }
 		
 		paingBackgroundGrid(g, radius);
-		
+
+		int x4 = (int) (origin.x + (0%2)*xOff + 2*9*xOff -xOff);
+        int y4 = (int) (origin.y + 3*yOff*2) -radius;
+
+
+		// try rotate image
+		g.drawImage(lakeMountainTileImage, x4, y4, null);
+		int x5 = (int) (origin.x + (1%2)*xOff + 2*8*xOff -xOff);
+        int y5 = (int) (origin.y + 3*yOff*3) -radius;
+		double locationX = lakeMountainTileImage.getWidth() / 2;
+		double locationY = lakeMountainTileImage.getHeight() / 2;
+		Graphics2D g2d = (Graphics2D) g;
+		AffineTransform identity = AffineTransform.getRotateInstance(Math.toRadians(120), locationX, locationY);		
+		AffineTransformOp op = new AffineTransformOp(identity, AffineTransformOp.TYPE_BILINEAR);
+		g2d.drawImage(op.filter(lakeMountainTileImage, null), x5, y5, null);
+
 	}
 
 

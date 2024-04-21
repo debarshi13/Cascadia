@@ -11,12 +11,19 @@ import java.util.Collections;
 import java.util.Random;
 import java.util.Stack;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage background;
 	private ArrayList<Player> players;
 	private ArrayList<Habitat> unclaimedHabitats;
 	private ArrayList<Habitat> pile1, pile2, pile3, pile4;
 	private Polygon hexagonTest;
+	private Font font = new Font("Arial", Font.BOLD, 18);
+	FontMetrics metrics;
 	public GamePanel() {
 		
 		hexagonTest = new Polygon();
@@ -83,10 +90,10 @@ public class GamePanel extends JPanel implements MouseListener{
 			}
 					
 		}
-		Collections.shuffle(pile1, new Random(1253));
-		Collections.shuffle(pile2, new Random(1232));
-		Collections.shuffle(pile3, new Random(551252135));
-		Collections.shuffle(pile4, new Random(512341255));
+		// Collections.shuffle(pile1, new Random(1253));
+		// Collections.shuffle(pile2, new Random(1232));
+		// Collections.shuffle(pile3, new Random(551252135));
+		// Collections.shuffle(pile4, new Random(512341255));
 		
 	
 	}
@@ -98,17 +105,80 @@ public class GamePanel extends JPanel implements MouseListener{
 		g.drawImage(players.get(0).getHabitats().get(0).getImg() , 250, 500, null);
 
 		//System.out.println(pile1);
-		g.drawImage(pile1.get(pile1.size() - 1).getImg(), 800, 80, null);
+		double ang30 = Math.toRadians(30);
+		int radius = 57;
+        double xOff = Math.cos(ang30) * (radius +0.3);
+        double yOff = Math.sin(ang30) * (radius +0.3);
+		Point origin = new Point (133, 136);
+		int x = (int) (origin.x + (0%2)*xOff + 2*7*xOff -xOff);
+        int y = (int) (origin.y + 3*yOff*0) -radius;
+		int x2 = (int) (origin.x + (1%2)*xOff + 2*6*xOff -xOff);
+        int y2 = (int) (origin.y + 3*yOff*1) -radius;
+		int x3 = (int) (origin.x + (1%2)*xOff + 2*7*xOff -xOff);
+        int y3 = (int) (origin.y + 3*yOff*1) -radius;
+		//g.drawImage(pile1.get(0).getImg(), 778, 78, null);
+		BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
+		try {
+			forestTileImage = ImageIO.read(new File("src/images/forest.png"));
+			lakeTileImage = ImageIO.read(new File("src/images/lake.png"));
+			swampTileImage = ImageIO.read(new File("src/images/swamp.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		g.drawImage(forestTileImage, x, y, null);
+		g.drawImage(lakeTileImage, x2, y2, null);
+		g.drawImage(swampTileImage, x3, y3, null);
+
 		
-		
-		g.drawPolygon(hexagonTest);
+		//g.drawPolygon(hexagonTest);
 		// for(int i = 0; i < pile1.size(); i++) {
 		// 	g.drawImage(pile1.get(pile1.size() - 1).getImg(), 800, 80, null);
 		// }
 		
-		
+		paingBackgroundGrid(g, radius);
 		
 	}
+
+
+	public void paingBackgroundGrid(Graphics g, int radius) {
+		Graphics2D g2d = (Graphics2D) g;
+
+        g2d.setStroke(new BasicStroke(4.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
+        g2d.setFont(font);
+        metrics = g.getFontMetrics();
+
+        Point origin = new Point (133, 136);
+        drawHexGrid(g2d, origin, 21, radius);
+
+	}
+
+    private void drawHexGrid(Graphics g, Point origin, int size, int radius) {
+    	double ang30 = Math.toRadians(30);
+        double xOff = Math.cos(ang30) * (radius +0.5);
+        double yOff = Math.sin(ang30) * (radius +0.5);
+        
+        for (int i = 0; i < 21; i++) {
+        	for (int j = 0; j<21; j++) {
+        		int xLbl = i;
+        		int yLbl = j;        		
+        		int x = (int) (origin.x + (i%2)*xOff + 2*j*xOff);
+        		int y = (int) (origin.y + 3*yOff*i);
+        		 drawHex(g, xLbl, yLbl, x, y, radius);
+        	}
+        }
+    }
+
+
+	private void drawHex(Graphics g, int posX, int posY, int x, int y, int r) {
+        Graphics2D g2d = (Graphics2D) g;
+        Hexagon hex = new Hexagon(x, y, r);
+        hex.draw(g2d, x, y, 1, 0xFFDD88, false);
+        //g.setColor(Color.blue);
+       
+    }
+
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		System.out.println( "" + e.getX() + "  " + e.getY());

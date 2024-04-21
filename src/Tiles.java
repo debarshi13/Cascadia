@@ -1,12 +1,6 @@
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-import java.io.*;
 
 public class Tiles {
     private ArrayList<Tile> startingTiles;
@@ -16,7 +10,6 @@ public class Tiles {
     public Tiles(){
         startingTiles =  new ArrayList<Tile>();
         tiles =  new ArrayList<Tile>();
-
         Tile t = new Tile();
         habitats = new ArrayList<String>();
         habitats.add("mountain");
@@ -25,6 +18,7 @@ public class Tiles {
         t.setTile(1, habitats, wildlife, 0 );
         startingTiles.add(t);
 
+        t = new Tile();        
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -35,6 +29,7 @@ public class Tiles {
         t.setTile(2, habitats, wildlife, 60 );
         startingTiles.add(t);        
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -44,6 +39,7 @@ public class Tiles {
         t.setTile(3, habitats, wildlife, 300 );
         startingTiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
@@ -51,6 +47,7 @@ public class Tiles {
         t.setTile(4, habitats, wildlife, 0 );
         startingTiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -61,6 +58,7 @@ public class Tiles {
         t.setTile(5, habitats, wildlife, 240 );
         startingTiles.add(t); 
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -70,6 +68,7 @@ public class Tiles {
         t.setTile(6, habitats, wildlife, 300 );
         startingTiles.add(t);         
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -77,6 +76,7 @@ public class Tiles {
         t.setTile(7, habitats, wildlife, 0 );
         startingTiles.add(t);  
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
@@ -87,6 +87,7 @@ public class Tiles {
         t.setTile(8, habitats, wildlife, 60 );
         startingTiles.add(t);       
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");  
@@ -96,6 +97,7 @@ public class Tiles {
         t.setTile(9, habitats, wildlife, 300 );
         startingTiles.add(t); 
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -103,6 +105,7 @@ public class Tiles {
         t.setTile(10, habitats, wildlife, 0 );
         startingTiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("lake");
@@ -113,6 +116,7 @@ public class Tiles {
         t.setTile(11, habitats, wildlife, 240 );
         startingTiles.add(t);    
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -122,6 +126,7 @@ public class Tiles {
         t.setTile(12, habitats, wildlife, 300 );
         startingTiles.add(t);      
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("lake");
@@ -131,6 +136,7 @@ public class Tiles {
         startingTiles.add(t);         
 
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -141,6 +147,7 @@ public class Tiles {
         t.setTile(14, habitats, wildlife, 240 );
         startingTiles.add(t);     
     
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -151,7 +158,7 @@ public class Tiles {
         startingTiles.add(t);         
 
 
-
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -159,6 +166,7 @@ public class Tiles {
         t.setTile(16, habitats, wildlife, 0 );
         tiles.add(t);   
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -166,6 +174,7 @@ public class Tiles {
         t.setTile(17, habitats, wildlife, 0 );
         tiles.add(t);      
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -173,6 +182,7 @@ public class Tiles {
         t.setTile(18, habitats, wildlife, 0 );
         tiles.add(t);   
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -180,6 +190,7 @@ public class Tiles {
         t.setTile(19, habitats, wildlife, 0 );
         tiles.add(t);           
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -187,7 +198,7 @@ public class Tiles {
         t.setTile(20, habitats, wildlife, 0 );
         tiles.add(t);   
 
-
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -195,6 +206,7 @@ public class Tiles {
         t.setTile(21, habitats, wildlife, 0 );
         tiles.add(t);   
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -202,6 +214,7 @@ public class Tiles {
         t.setTile(22, habitats, wildlife, 0 );
         tiles.add(t);    
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -209,7 +222,7 @@ public class Tiles {
         t.setTile(23, habitats, wildlife, 0 );
         tiles.add(t);           
 
-
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -217,6 +230,7 @@ public class Tiles {
         t.setTile(24, habitats, wildlife, 0 );
         tiles.add(t);     
     
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -224,22 +238,24 @@ public class Tiles {
         t.setTile(25, habitats, wildlife, 0 );
         tiles.add(t); 
         
-        
-                habitats.clear();
+        t = new Tile();        
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         wildlife.add("elk");
         t.setTile(26, habitats, wildlife, 0 );
         tiles.add(t);   
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         wildlife.add("elk");
         t.setTile(27, habitats, wildlife, 0 );
         tiles.add(t); 
  
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         wildlife.add("fox");
@@ -247,14 +263,16 @@ public class Tiles {
         tiles.add(t);   
         
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         wildlife.add("salmon");
         t.setTile(29, habitats, wildlife, 0 );
         tiles.add(t);   
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         wildlife.add("salmon");
@@ -262,7 +280,8 @@ public class Tiles {
         tiles.add(t);   
 
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
         wildlife.add("fox");
@@ -270,7 +289,8 @@ public class Tiles {
         tiles.add(t);   
 
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
         wildlife.add("fox");
@@ -278,14 +298,16 @@ public class Tiles {
         tiles.add(t);  
         
         
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
         wildlife.add("salmon");
         t.setTile(33, habitats, wildlife, 0 );
         tiles.add(t);  
         
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
         wildlife.add("salmon");
@@ -293,14 +315,16 @@ public class Tiles {
         tiles.add(t);  
         
         
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
         wildlife.add("hawk");
         t.setTile(35, habitats, wildlife, 0 );
         tiles.add(t);   
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("lake");
         wildlife.add("hawk");
@@ -308,14 +332,16 @@ public class Tiles {
         tiles.add(t);   
 
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("lake");
         wildlife.add("hawk");
         t.setTile(37, habitats, wildlife, 0 );
         tiles.add(t);  
         
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("lake");
         wildlife.add("salmon");
@@ -323,21 +349,24 @@ public class Tiles {
         tiles.add(t);   
 
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("lake");
         wildlife.add("bear");
         t.setTile(39, habitats, wildlife, 0 );
         tiles.add(t);   
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("lake");
         wildlife.add("bear");
         t.setTile(40, habitats, wildlife, 0 );
         tiles.add(t);   
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
         habitats.add("forest");
@@ -347,6 +376,7 @@ public class Tiles {
         t.setTile(41, habitats, wildlife, 0 );
         tiles.add(t);  
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -357,7 +387,8 @@ public class Tiles {
         t.setTile(42, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
         habitats.add("desert");
@@ -367,7 +398,8 @@ public class Tiles {
         t.setTile(43, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
         habitats.add("desert");
@@ -377,7 +409,8 @@ public class Tiles {
         t.setTile(44, habitats, wildlife, 0 );
         tiles.add(t);  
         
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("forest");
         habitats.add("desert");
@@ -387,7 +420,8 @@ public class Tiles {
         t.setTile(45, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         habitats.add("swamp");
@@ -397,7 +431,8 @@ public class Tiles {
         t.setTile(46, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         habitats.add("swamp");
@@ -407,7 +442,8 @@ public class Tiles {
         t.setTile(47, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
         habitats.add("swamp");
@@ -417,7 +453,8 @@ public class Tiles {
         t.setTile(48, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
         habitats.add("swamp");
@@ -427,7 +464,8 @@ public class Tiles {
         t.setTile(49, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("forest");
         habitats.add("swamp");
@@ -438,7 +476,8 @@ public class Tiles {
         tiles.add(t);  
 
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
         habitats.add("lake");
@@ -449,7 +488,8 @@ public class Tiles {
         tiles.add(t);  
 
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("forest");
         habitats.add("lake");
@@ -459,7 +499,8 @@ public class Tiles {
         t.setTile(52, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("lake");
         habitats.add("mountain");
@@ -470,7 +511,8 @@ public class Tiles {
         tiles.add(t);  
 
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         habitats.add("lake");
@@ -481,7 +523,8 @@ public class Tiles {
         tiles.add(t);  
 
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         habitats.add("lake");
@@ -492,7 +535,8 @@ public class Tiles {
         tiles.add(t); 
         
         
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
         habitats.add("forest");
@@ -501,7 +545,8 @@ public class Tiles {
         t.setTile(56, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
         habitats.add("forest");
@@ -510,7 +555,8 @@ public class Tiles {
         t.setTile(57, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
         habitats.add("forest");
@@ -520,7 +566,8 @@ public class Tiles {
         tiles.add(t);  
 
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
         habitats.add("forest");
@@ -530,7 +577,8 @@ public class Tiles {
         tiles.add(t);  
 
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("forest");
         habitats.add("desert");
@@ -539,7 +587,8 @@ public class Tiles {
         t.setTile(60, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("forest");
         habitats.add("desert");
@@ -548,7 +597,8 @@ public class Tiles {
         t.setTile(61, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("forest");
         habitats.add("desert");
@@ -557,7 +607,8 @@ public class Tiles {
         t.setTile(62, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("forest");
         habitats.add("desert");
@@ -566,7 +617,8 @@ public class Tiles {
         t.setTile(63, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("forest");
         habitats.add("desert");
@@ -575,7 +627,8 @@ public class Tiles {
         t.setTile(64, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         habitats.add("swamp");
@@ -585,7 +638,8 @@ public class Tiles {
         tiles.add(t);  
 
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         habitats.add("swamp");
@@ -594,7 +648,8 @@ public class Tiles {
         t.setTile(66, habitats, wildlife, 0 );
         tiles.add(t);  
 
-                        habitats.clear();
+        t = new Tile();
+        habitats.clear();
         wildlife.clear();
         habitats.add("desert");
         habitats.add("swamp");
@@ -603,6 +658,7 @@ public class Tiles {
         t.setTile(67, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -612,6 +668,7 @@ public class Tiles {
         t.setTile(68, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
@@ -621,6 +678,7 @@ public class Tiles {
         t.setTile(69, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -630,6 +688,7 @@ public class Tiles {
         t.setTile(70, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
@@ -639,6 +698,7 @@ public class Tiles {
         t.setTile(71, habitats, wildlife, 0 );
         tiles.add(t);  
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
@@ -648,6 +708,7 @@ public class Tiles {
         t.setTile(72, habitats, wildlife, 0 );
         tiles.add(t); 
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("swamp");
@@ -657,6 +718,7 @@ public class Tiles {
         t.setTile(73, habitats, wildlife, 0 );
         tiles.add(t);      
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("lake");
@@ -666,6 +728,7 @@ public class Tiles {
         t.setTile(74, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("lake");
@@ -675,6 +738,7 @@ public class Tiles {
         t.setTile(75, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("lake");
@@ -684,6 +748,7 @@ public class Tiles {
         t.setTile(76, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("lake");
@@ -693,6 +758,7 @@ public class Tiles {
         t.setTile(77, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("lake");
@@ -702,6 +768,7 @@ public class Tiles {
         t.setTile(78, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -712,6 +779,7 @@ public class Tiles {
         tiles.add(t);  
 
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -720,6 +788,7 @@ public class Tiles {
         wildlife.add("fox");       
         
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -731,6 +800,7 @@ public class Tiles {
         t.setTile(80, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -740,6 +810,7 @@ public class Tiles {
         t.setTile(81, habitats, wildlife, 0 );
         tiles.add(t);         
         
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -749,6 +820,7 @@ public class Tiles {
         t.setTile(82, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -758,6 +830,7 @@ public class Tiles {
         t.setTile(83, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -767,6 +840,7 @@ public class Tiles {
         t.setTile(84, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -776,6 +850,7 @@ public class Tiles {
         t.setTile(85, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("mountain");
@@ -786,6 +861,7 @@ public class Tiles {
         tiles.add(t);  
 
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -795,6 +871,7 @@ public class Tiles {
         t.setTile(87, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -804,6 +881,7 @@ public class Tiles {
         t.setTile(88, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -813,6 +891,7 @@ public class Tiles {
         t.setTile(89, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -822,6 +901,7 @@ public class Tiles {
         t.setTile(90, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -831,6 +911,7 @@ public class Tiles {
         t.setTile(91, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -840,6 +921,7 @@ public class Tiles {
         t.setTile(92, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -849,6 +931,7 @@ public class Tiles {
         t.setTile(93, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -858,6 +941,7 @@ public class Tiles {
         t.setTile(94, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -867,6 +951,7 @@ public class Tiles {
         t.setTile(95, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("forest");
@@ -876,6 +961,7 @@ public class Tiles {
         t.setTile(96, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -885,6 +971,7 @@ public class Tiles {
         t.setTile(97, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -894,6 +981,7 @@ public class Tiles {
         t.setTile(98, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -903,6 +991,7 @@ public class Tiles {
         t.setTile(99, habitats, wildlife, 0 );
         tiles.add(t);  
 
+        t = new Tile();
         habitats.clear();
         wildlife.clear();
         habitats.add("desert");
@@ -914,5 +1003,11 @@ public class Tiles {
 
     }
  
-        
+    public ArrayList<Tile> getStartingTiles() {
+        return startingTiles;
+    }
+
+    public ArrayList<Tile> getTiles() {
+        return tiles;
+    }
 }

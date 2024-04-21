@@ -25,9 +25,11 @@ public class GamePanel extends JPanel implements MouseListener{
 	private ArrayList<Habitat> pile1, pile2, pile3, pile4;
 	private Polygon hexagonTest;
 	private Font font = new Font("Arial", Font.BOLD, 18);
+	int activePlayerNum = 0;
 	FontMetrics metrics;
 	public GamePanel() {
 		
+
 		hexagonTest = new Polygon();
 		for (int i = 0; i < 6; i++){
 			hexagonTest.addPoint((int) (150 + 150 * Math.cos(Math.PI/2 + i * 2 * Math.PI / 6)),
@@ -60,7 +62,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		//System.out.println(unclaimedHabitats);
 		for (int i = 1 ; i < 4 ; i++) {
 			
-			players.add(new Player(i));
+			players.add(new Player(i, 0));
 			
 		}
 		makePiles();
@@ -103,9 +105,8 @@ public class GamePanel extends JPanel implements MouseListener{
 		
 		
 		g.drawImage(background, 0, 0, null);
-		//System.out.println((players.get(0).getHabitats().get(0).getBiome()));
-		g.drawImage(players.get(0).getHabitats().get(0).getImg() , 250, 500, null);
 
+		
 		//System.out.println(pile1);
 		double ang30 = Math.toRadians(30);
 		int radius = 57;
@@ -145,7 +146,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		// 	g.drawImage(pile1.get(pile1.size() - 1).getImg(), 800, 80, null);
 		// }
 		
-		paingBackgroundGrid(g, radius);
+		//paingBackgroundGrid(g, radius);
 
 		int x4 = (int) (origin.x + (0%2)*xOff + 2*9*xOff -xOff);
         int y4 = (int) (origin.y + 3*yOff*2) -radius;
@@ -161,6 +162,12 @@ public class GamePanel extends JPanel implements MouseListener{
 		AffineTransform identity = AffineTransform.getRotateInstance(Math.toRadians(120), locationX, locationY);		
 		AffineTransformOp op = new AffineTransformOp(identity, AffineTransformOp.TYPE_BILINEAR);
 		g2d.drawImage(op.filter(lakeMountainTileImage, null), x5, y5, null);
+
+	}
+
+
+	public void drawStartingTiles(Graphics g)
+	{
 
 	}
 

@@ -1,31 +1,50 @@
 import java.util.*;
+
 import java.io.*;
 import java.awt.*;
 import java.io.BufferedReader.*;
 public class Player {
 	
+
 	private int natureTokens, numTiles;
-	private ArrayList<Habitat> habitats; //will store them in graph l8r
-	public Player(int playerNum) {
-		
-		 habitats = new ArrayList<>();
+	private Tiles allTiles = new Tiles();
+	private ArrayList<TreeMap<String, Object>> claimedHabitats;
 
-		 switch (playerNum) {
-		 
-		 	case 1:
-		 		//16 - 20 is for starter tiles
-		 		habitats.add(new Habitat(16));
-		 		break;
-		 	
-		 
-		 }
-		 
-		 
+	
+	public Player(int playerNum, int startingTileIdx) {
+		claimedHabitats = new ArrayList<>();
+		
+		ArrayList<Tile> startingTiles = allTiles.getStartingTiles();
 
-	}
-	public ArrayList<Habitat> getHabitats() {
+		TreeMap<String, Object> habitatInfo = new TreeMap<>();
+		habitatInfo.put("row_idx", 10);
+		habitatInfo.put("col_idx", 10);
+		habitatInfo.put("habitats", startingTiles.get(startingTileIdx).getHabitats());
+		habitatInfo.put("wildlife", startingTiles.get(startingTileIdx).getHabitats());
+		habitatInfo.put("tokenPlaced", false);
+		habitatInfo.put("rotation", startingTiles.get(startingTileIdx).getRotation());
+		claimedHabitats.add(habitatInfo);
 		
-		return habitats;
-		
+		habitatInfo = new TreeMap<>();
+		habitatInfo.put("row_idx", 11);
+		habitatInfo.put("col_idx", 9);
+		habitatInfo.put("habitats", startingTiles.get(startingTileIdx+1).getHabitats());
+		habitatInfo.put("wildlife", startingTiles.get(startingTileIdx+1).getHabitats());
+		habitatInfo.put("tokenPlaced", false);
+		habitatInfo.put("rotation", startingTiles.get(startingTileIdx+1).getRotation());
+		claimedHabitats.add(habitatInfo);
+	
+		habitatInfo = new TreeMap<>();
+		habitatInfo.put("row_idx", 11);
+		habitatInfo.put("col_idx", 10);
+		habitatInfo.put("habitats", startingTiles.get(startingTileIdx+2).getHabitats());
+		habitatInfo.put("wildlife", startingTiles.get(startingTileIdx+2).getHabitats());
+		habitatInfo.put("tokenPlaced", false);
+		habitatInfo.put("rotation", startingTiles.get(startingTileIdx+2).getRotation());
+		claimedHabitats.add(habitatInfo);
 	}
+
+
+
+	
 }

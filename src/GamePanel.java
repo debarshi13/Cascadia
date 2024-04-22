@@ -38,6 +38,7 @@ public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage mountainTileImage = null, mountainSwampTileImage =  null ,starterTile1 = null;
 	BufferedImage swampLakeTileImage = null;
 	BufferedImage elkImage  = null, foxImage = null, hawkImage = null, salmonImage = null, bearImage = null;
+	BufferedImage bearScoreImage = null, elkScoreImage = null, foxScoreImage = null, hawkScoreImage = null, salmonScoreImage = null;
 
 	public GamePanel() {
 
@@ -66,6 +67,12 @@ public class GamePanel extends JPanel implements MouseListener{
 			salmonImage = ImageIO.read(new File("src/images/salmon.png"));
 			foxImage = ImageIO.read(new File("src/images/fox.png"));
 			hawkImage = ImageIO.read(new File("src/images/hawk.png"));
+
+			bearScoreImage = ImageIO.read(new File("src/images/bear-large.jpg"));
+			elkScoreImage = ImageIO.read(new File("src/images/elk-large.jpg"));
+			hawkScoreImage = ImageIO.read(new File("src/images/hawk-large.jpg"));
+			foxScoreImage = ImageIO.read(new File("src/images/fox-large.jpg"));
+			salmonScoreImage = ImageIO.read(new File("src/images/salmon-large.jpg"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -134,7 +141,11 @@ public class GamePanel extends JPanel implements MouseListener{
 			g.drawImage(forestTileImage, x, y, null);
 			g.drawImage(lakeTileImage, x2, y2, null);
 			g.drawImage(swampTileImage, x3, y3, null);
-
+		    g.drawImage(bearScoreImage, 10, 200, 160, 110, null);
+			g.drawImage(elkScoreImage, 10, 320, 160, 110, null);
+			g.drawImage(foxScoreImage, 10, 440, 160, 110, null);
+			g.drawImage(hawkScoreImage, 10, 560, 160, 110, null);
+			g.drawImage(salmonScoreImage, 10, 680, 160, 110, null);
 			//paingBackgroundGrid(g, radius);
 
 			int x4 = (int) (origin.x + (0%2)*xOff + 2*9*xOff -xOff);
@@ -173,13 +184,15 @@ public class GamePanel extends JPanel implements MouseListener{
 			}
 			System.out.println("Will load this image file: " + imgName);
 			BufferedImage img = getImage(imgName);
-			g.drawImage(img, 50 + i * 120, getHeight() - 300, 100, 100, null);
+			g.drawImage(img, 250 + i * 120, getHeight() - 250, 100, 100, null);
 		}
 		for(int i = 0; i < animalsOnTable.size(); i++){
 			System.out.println("Should get an image of " + animalsOnTable.get(i));
 			BufferedImage img = getImage(animalsOnTable.get(i));
-			g.drawImage(img, 55 + i * 120, getHeight() - 200, 80, 80, null);
+			g.drawImage(img, 255 + i * 120, getHeight() - 150, 80, 80, null);
 		}
+
+		
 	}
 
 
@@ -285,8 +298,8 @@ public class GamePanel extends JPanel implements MouseListener{
 			case "swamp":
 			img = swampTileImage;
 				break;
-			case "swampTileImage":
-				img = swampTileImage;
+			case "swamp+lake":
+			img = swampLakeTileImage;
 				break;
 			case "hawk":
 			img = hawkImage;

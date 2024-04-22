@@ -19,6 +19,20 @@ import java.util.TreeMap;
 
 
 public class GamePanel extends JPanel implements MouseListener{
+
+	enum PlayerState {
+		TILES_ON_TABLE_UPDATED,
+		TILE_ON_TABLE_IS_SELECTED,
+		CANDIDATE_TILE_CLICKED,
+		ROTATE_CW,
+		ROTATE_COUNTER_CW,
+		COMFIRM_HABITAT_PLACE,
+		CANCEL_HABITAT_PLACE,
+		TOKEN_PLACED,
+	}
+	
+	PlayerState playerState = PlayerState.TILES_ON_TABLE_UPDATED;
+
 	BufferedImage background;
 	private ArrayList<Player> players;
 
@@ -38,6 +52,7 @@ public class GamePanel extends JPanel implements MouseListener{
 
 	int activePlayerIdx = 0;
 	TreeMap<String, Hexagon> candidateHabitatHexagon = null;
+	TreeMap<String, Object> candidateHabitatInfo =null;
 	FontMetrics metrics;
 	BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
 	BufferedImage lakeMountainTileImage = null, mountainDesertTileImage =  null ,mountainForestTileImage = null;
@@ -397,6 +412,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			if(x >= getWidth() / 2 - 100 && x <= getWidth() / 2 + 100 && y >= 200 && y <= 260){
 				System.out.println("Start Game");
 				StartGame();
+				playerState = PlayerState.TILES_ON_TABLE_UPDATED;
 			}
 		}
 		else{
@@ -406,17 +422,21 @@ public class GamePanel extends JPanel implements MouseListener{
 			TreeMap<String, Object> habiTile = players.get(activePlayerIdx).searchHabitat(e.getPoint());
 			if (habiTile != null)
 				foundClaimedHabitat = true;
-			for (Tile tile : tilesOnTable) {
-				Hexagon hex = (Hexagon) tile.getHexagon();
-				if(hex.contains(e.getPoint()))
-				{
-					selectedTileOnTable = tile;
-					tileOnTableIsSelected = true;
-					System.out.println("~~~~~~~~~~~~~" + tile.getWildlife().get(0));
+
+			if (playerState == PlayerState.TILES_ON_TABLE_UPDATED) 
+			{
+				for (Tile tile : tilesOnTable) {
+					Hexagon hex = (Hexagon) tile.getHexagon();
+					if(hex.contains(e.getPoint()))
+					{
+						selectedTileOnTable = tile;
+						playerState = PlayerState.TILE_ON_TABLE_IS_SELECTED;
+						System.out.println("~~~~~~~~~~~~~" + tile.getWildlife().get(0));
+					}
 				}
 			}
 
-			if (tileOnTableIsSelected == true)
+			if (playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED)
 			{
 				//loop through player's claimedhabitats, find candidate tiles, hgihtlight potential hexagons to put new habitats
 
@@ -440,11 +460,13 @@ public class GamePanel extends JPanel implements MouseListener{
 						checkAndAddCandidateHexTile(row_i+1, col_j, claimedHab);
 						checkAndAddCandidateHexTile(row_i+1, col_j+1, claimedHab);
 					}
-
 				}
-			}
 
-			players.get(activePlayerIdx).searchHabitat(e.getPoint());
+				findClickedHexagonAddHabitat(e.getPoint());
+			}
+			
+
+			// players.get(activePlayerIdx).searchHabitat(e.getPoint());
 			if(rcCancel.contains(e.getPoint()))
 				System.out.println("Cancel clicked");
 			if(rcConfirm.contains(e.getPoint()))
@@ -504,6 +526,34 @@ public class GamePanel extends JPanel implements MouseListener{
 		return false;
 	}
 
+	public Point findClickedHexagonAddHabitat(Point pt)
+	{
+		Point hex_loc = new Point(-999, -999);
+		for (Map.Entry<String, Hexagon> entry : candidateHabitatHexagon.entrySet()) 
+		{
+			Hexagon hex = entry.getValue();
+			if(hex.contains(pt))
+			{
+				System.out.println("@@@@@@" + entry.getKey());
+				String s = entry.getKey();
+				String[] loc_idx_strings = s.split(":");
+
+				TreeMap<String, Object> candidateHabitat = new TreeMap<>();
+				candidateHabitat.put("row_idx", Integer.parseInt(loc_idx_strings[0]));
+				candidateHabitat.put("col_idx", Integer.parseInt(loc_idx_strings[1]));
+				candidateHabitat.put("habitats", selectedTileOnTable.getHabitats());
+				candidateHabitat.put("wildlife", selectedTileOnTable.getWildlife());
+				candidateHabitat.put("tokenPlaced", false);
+				candidateHabitat.put("rotation", selectedTileOnTable.getRotation());
+				candidateHabitat.put("hexagon", hex);
+				//players.get(activePlayerIdx).getClaimedHabitats().add(habitatInfo);
+				drawHabitatTile(getGraphics(), candidateHabitat);
+				playerState = PlayerState.CANDIDATE_TILE_CLICKED;
+			}
+		}
+
+		return hex_loc;
+	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {

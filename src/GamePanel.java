@@ -177,16 +177,23 @@ public class GamePanel extends JPanel implements MouseListener{
 			g.drawImage(hawkScoreImage, 10, 560, 160, 110, null);
 			g.drawImage(salmonScoreImage, 10, 680, 160, 110, null);
 
-			//paingBackgroundGrid(g, radius);
+			//paintBackgroundGrid(g, radius);
 
 			// starting tiles
 			drawStartingTiles(g);
 
 			for(int i = 0; i <  tilesOnTable.size(); i++){
 				Tile t = tilesOnTable.get(i);
-				System.out.println(t.getTileNum() + " with habitats size of " + t.getHabitats().size());
+				//System.out.println(t.getTileNum() + " with habitats size of " + t.getHabitats().size());
 				for(int j = 0; j < t.getHabitats().size(); j++)
 					System.out.println(t.getHabitats().get(j));
+			}
+
+			
+			drawCandidateHexTiles(g);
+			if (candidateHabitat != null) {
+				drawHabitatTile(g, candidateHabitat);
+				drawHabitatWildlife(g, candidateHabitat);
 			}
 		}
 
@@ -194,7 +201,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		for(int i = 0; i < tilesOnTable.size(); i++){
 			ArrayList<String> habitat = tilesOnTable.get(i).getHabitats();
 			BufferedImage img = getHabiImageFromName (habitat);
-			//System.out.println("height: "+ img.getHeight() + "====" + "width: " + img.getWidth());
+			
 			int width = (int)(img.getWidth()*0.8);
 			int height = (int)(img.getHeight()*0.8);
 			int x0 = 250 + i * 120;
@@ -204,6 +211,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			Hexagon hex = new Hexagon(x0+width/2, y0+height/2, radius);
 			tilesOnTable.get(i).setHexagon(hex);
 			drawTileWildlife(g, tilesOnTable.get(i));
+			drawHighlightedTileOnTable(g);
 		}
 		for(int i = 0; i < animalsOnTable.size(); i++){
 			//System.out.println("Should get an image of " + animalsOnTable.get(i));
@@ -233,6 +241,8 @@ public class GamePanel extends JPanel implements MouseListener{
 		g.setColor(Color.white);
 		g.setFont(smallfont);
 		g.drawString("Rotate Clockwise", rcClockwise.x + 30, rcClockwise.y + 30);
+
+
 	}
 
 	public String constructNameString (ArrayList<String> names)
@@ -282,7 +292,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		int y = (int) cTile.getHexagon().getBounds().getCenterY();
 		ArrayList<String> wildlifeList = (ArrayList<String>) cTile.getWildlife();
 		int num = wildlifeList.size();
-		System.out.println("Number of wildlife: " + num);
+		//System.out.println("Number of wildlife: " + num);
 		if(num == 1){
 			x-=(int)xOff/4;
 			y-=(int)(yOff/2);
@@ -328,7 +338,6 @@ public class GamePanel extends JPanel implements MouseListener{
 		int row_i = (int) cTile.get("row_idx");
 		int col_j = (int) cTile.get("col_idx");
 		ArrayList<String> habitatsList = (ArrayList<String>) cTile.get("habitats");			
-		ArrayList<String> WidelifeList = (ArrayList<String>) cTile.get("wildlife");
 		BufferedImage bImage = getHabiImageFromName(habitatsList);
 		int rot = (int) cTile.get("rotation");
 		int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff -xOff);
@@ -397,7 +406,38 @@ public class GamePanel extends JPanel implements MouseListener{
 
 	}
 
-	public void paingBackgroundGrid(Graphics g, int radius) {
+	public void drawCandidateHexTiles(Graphics g)
+	{
+		metrics = g.getFontMetrics();
+		if (candidateHabitatHexagon != null) {
+			for (Map.Entry<String, Hexagon> entry : candidateHabitatHexagon.entrySet()) 
+			{
+				//Hexagon hex = entry.getValue();
+				String s = entry.getKey();
+				String[] loc_idx_strings = s.split(":");
+				int row_i = Integer.parseInt(loc_idx_strings[0]);
+				int col_j = Integer.parseInt(loc_idx_strings[1]);
+				int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff);
+				int y = (int) (origin.y + 3*yOff*row_i);
+				drawHex(g, row_i, col_j, x, y, radius);
+			}
+		}
+	}
+
+	public void drawHighlightedTileOnTable(Graphics g) {
+		if (playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED  && selectedTileOnTable !=null) {
+
+			Hexagon hex = (Hexagon) selectedTileOnTable.getHexagon();
+			Point center = hex.getCenter();
+			int x = (int)(center.getX() - xOff*0.8);
+			int y = (int)(center.getY() - radius*0.8);
+			g.drawImage(selectedTileImage, x, y, (int)(selectedTileImage.getWidth()*0.8), (int)( selectedTileImage.getHeight()*0.8), null);
+			
+		}
+	}
+	
+
+	public void paintBackgroundGrid(Graphics g, int radius) {
 		Graphics2D g2d = (Graphics2D) g;
 
         g2d.setStroke(new BasicStroke(4.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER));
@@ -409,6 +449,7 @@ public class GamePanel extends JPanel implements MouseListener{
 
 	}
 
+	
     private void drawHexGrid(Graphics g, Point origin, int size, int radius) {
     	double ang30 = Math.toRadians(30);
         double xOff = Math.cos(ang30) * (radius +0.5);
@@ -527,7 +568,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			if (habiTile != null)
 				playerState = PlayerState.CLAIMED_HABITAT_CLICKED;
 
-			if (playerState == PlayerState.TILES_ON_TABLE_UPDATED) 
+			if (playerState == PlayerState.TILES_ON_TABLE_UPDATED || playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED) 
 			{
 				for (Tile tile : tilesOnTable) {
 					Hexagon hex = (Hexagon) tile.getHexagon();
@@ -536,12 +577,7 @@ public class GamePanel extends JPanel implements MouseListener{
 						selectedTileOnTable = tile;
 						
 						playerState = PlayerState.TILE_ON_TABLE_IS_SELECTED;
-						Graphics g = getGraphics();
-						Point center = hex.getCenter();
-						int x = (int)(center.getX() - xOff*0.8);
-						int y = (int)(center.getY() - radius*0.8);
-						g.drawImage(selectedTileImage, x, y, (int)(selectedTileImage.getWidth()*0.8), (int)( selectedTileImage.getHeight()*0.8), null);
-						System.out.println("~~~~~~~~~~~~~" + tile.getWildlife().get(0));
+
 					}
 				}
 			}
@@ -571,10 +607,11 @@ public class GamePanel extends JPanel implements MouseListener{
 						checkAndAddCandidateHexTile(row_i+1, col_j+1, claimedHab);
 					}
 				}
-
+				
 				findClickedHexagonAddHabitat(e.getPoint());
+				
 			}
-			
+			repaint();
 
 			// players.get(activePlayerIdx).searchHabitat(e.getPoint());
 			if(rcCancel.contains(e.getPoint()))
@@ -588,6 +625,7 @@ public class GamePanel extends JPanel implements MouseListener{
 					int rotatAng = counterCWclickedCnt%6;
 					candidateHabitat.put("rotation", rotatAng*60);
 					drawHabitatTile(getGraphics(), candidateHabitat);
+					drawHabitatWildlife(getGraphics(), candidateHabitat);
 				}
 
 			}
@@ -603,39 +641,32 @@ public class GamePanel extends JPanel implements MouseListener{
 		if (!indexInClaimedHabitats(row_i, col_j, claminedHab))
 		{
 			String key = Integer.toString(row_i) + ":" + Integer.toString(col_j);
-			Graphics g = getGraphics();
-			metrics = g.getFontMetrics();
+			//Graphics g = getGraphics();
+			
 			if (candidateHabitatHexagon == null)
 			{
 				candidateHabitatHexagon = new TreeMap<>();
 				int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff);
 				int y = (int) (origin.y + 3*yOff*row_i);
 				Hexagon hex = new Hexagon(x, y, radius);
-				System.out.println("--------> " + key);
+				//System.out.println("--------> " + key);
 				candidateHabitatHexagon.put(key, hex);
-				int xLbl = row_i;
-        		int yLbl = col_j;        		
-        		drawHex(getGraphics(), xLbl, yLbl, x, y, radius);
 			}
 			else if (!candidateHabitatHexagon.containsKey(row_i + ":" + col_j)) {
-
 				int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff);
 				int y = (int) (origin.y + 3*yOff*row_i);
 				Hexagon hex = new Hexagon(x, y, radius);
-				System.out.println("--------> " + key);
+				//System.out.println("--------> " + key);
 				candidateHabitatHexagon.put(key, hex);
-				int xLbl = row_i;
-        		int yLbl = col_j;        		
-        		drawHex(getGraphics(), xLbl, yLbl, x, y, radius);
-
 			}
 		}
-	}
 
+	}
 
 	public boolean indexInClaimedHabitats(int i_idx, int j_idx, ArrayList<TreeMap<String, Object>> claminedHab)
 	{
 		for (TreeMap<String, Object> cTile : claminedHab) {
+			
 			int row_i = (int) cTile.get("row_idx");
 			int col_j = (int) cTile.get("col_idx");
 			if (i_idx == row_i && j_idx == col_j)
@@ -665,7 +696,6 @@ public class GamePanel extends JPanel implements MouseListener{
 				candidateHabitat.put("rotation", selectedTileOnTable.getRotation());
 				candidateHabitat.put("hexagon", hex);
 				//players.get(activePlayerIdx).getClaimedHabitats().add(habitatInfo);
-				drawHabitatTile(getGraphics(), candidateHabitat);
 				playerState = PlayerState.CANDIDATE_TILE_CLICKED;
 			}
 		}

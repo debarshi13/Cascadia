@@ -29,7 +29,7 @@ public class GamePanel extends JPanel implements MouseListener{
 	private ArrayList<String> animalsOnTable;
 	private int gameStatus = 0;
 	private Font font = new Font("Arial", Font.BOLD, 24);
-
+	private Font smallfont = new Font("Arial", Font.BOLD, 20);
 	int activePlayerIdx = 0;
 	FontMetrics metrics;
 	BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
@@ -45,6 +45,8 @@ public class GamePanel extends JPanel implements MouseListener{
 	int radius = 57;
 	double xOff = Math.cos(ang30) * (radius +0.3);
 	double yOff = Math.sin(ang30) * (radius +0.3);
+
+	Rectangle rcCancel, rcConfirm, rcClockwise, rcCounterClockwise;
 	public GamePanel() {
 
 
@@ -104,14 +106,16 @@ public class GamePanel extends JPanel implements MouseListener{
 
 		tilesOnTable = new ArrayList<Tile>();
 		animalsOnTable = new ArrayList<String>();
-		// for(int i = 0; i < 10; i++){
-		// 	System.out.println("animal: " + animals.getWildlife().get(i));
-		// }
+		rcCancel = new Rectangle();
+		rcConfirm = new Rectangle();
+		rcClockwise = new Rectangle();
+		rcCounterClockwise =  new Rectangle();
 		addMouseListener(this);
 	}
 
 	public void paint(Graphics g) {
-		
+	
+	
 		
 		g.drawImage(background, 0, 0, null);
 		if(gameStatus == 0){
@@ -122,7 +126,12 @@ public class GamePanel extends JPanel implements MouseListener{
 			g.drawString("Start Game", getWidth() / 2 - 70, 235);
 		}
 		else{
-		    g.drawImage(bearScoreImage, 10, 200, 160, 110, null);
+			rcCancel.setBounds(getWidth() * 2 / 5, getHeight() - 150, 140, 50);
+			rcConfirm.setBounds(rcCancel.x + rcCancel.width + 10, getHeight() - 150, 140, 50);
+			rcCounterClockwise.setBounds(rcConfirm.x + rcConfirm.width + 10, getHeight() - 150, 300, 50);
+			rcClockwise.setBounds(rcCounterClockwise.x + rcCounterClockwise.width + 10, getHeight() - 150, 220, 50);
+
+			g.drawImage(bearScoreImage, 10, 200, 160, 110, null);
 			g.drawImage(elkScoreImage, 10, 320, 160, 110, null);
 			g.drawImage(foxScoreImage, 10, 440, 160, 110, null);
 			g.drawImage(hawkScoreImage, 10, 560, 160, 110, null);
@@ -153,6 +162,29 @@ public class GamePanel extends JPanel implements MouseListener{
 			BufferedImage img = getImage(animalsOnTable.get(i));
 			g.drawImage(img, 255 + i * 120, getHeight() - 150, 80, 80, null);
 		}
+		g.setColor(Color.red);
+		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
+		g.setColor(Color.white);
+		g.setFont(smallfont);
+		g.drawString("Cancel", rcCancel.x + 30, rcCancel.y + 30);
+
+		g.setColor(Color.green);
+		g.fillRect(rcConfirm.x, rcConfirm.y, rcConfirm.width, rcConfirm.height);
+		g.setColor(Color.white);
+		g.setFont(smallfont);
+		g.drawString("Confirm", rcConfirm.x + 30, rcConfirm.y + 30);
+
+		g.setColor(Color.blue);
+		g.fillRect(rcCounterClockwise.x, rcCounterClockwise.y, rcCounterClockwise.width, rcCounterClockwise.height);
+		g.setColor(Color.white);
+		g.setFont(smallfont);
+		g.drawString("Rotate Counterclockwise", rcCounterClockwise.x + 30, rcCounterClockwise.y + 30);
+
+		g.setColor(Color.cyan);
+		g.fillRect(rcClockwise.x, rcClockwise.y, rcClockwise.width, rcClockwise.height);
+		g.setColor(Color.white);
+		g.setFont(smallfont);
+		g.drawString("Rotate Clockwise", rcClockwise.x + 30, rcClockwise.y + 30);
 	}
 
 	public BufferedImage getHabiImageFromName(ArrayList<String> habitat) 
@@ -348,6 +380,14 @@ public class GamePanel extends JPanel implements MouseListener{
 		else{
 			System.out.println( "" + e.getX() + "  " + e.getY());
 			players.get(activePlayerIdx).searchHabitat(e.getPoint());
+			if(rcCancel.contains(e.getPoint()))
+				System.out.println("Cancel clicked");
+			if(rcConfirm.contains(e.getPoint()))
+				System.out.println("Confirm clicked");		
+			if(rcCounterClockwise.contains(e.getPoint()))
+				System.out.println("CounterClockwise clicked");
+			if(rcClockwise.contains(e.getPoint()))
+				System.out.println("Clockwise clicked");		
 		}
 	}
 	@Override

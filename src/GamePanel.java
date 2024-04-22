@@ -8,20 +8,20 @@ import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
+import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.Collections;
+
 import java.util.Random;
 import java.util.Stack;
+import java.util.TreeMap;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+
 
 public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage background;
 	private ArrayList<Player> players;
-	private ArrayList<Habitat> pile1, pile2, pile3, pile4;
+
 	private Polygon hexagonTest;
 	private Tiles tiles;
 	private Wildlife animals;
@@ -29,7 +29,8 @@ public class GamePanel extends JPanel implements MouseListener{
 	private ArrayList<String> animalsOnTable;
 	private int gameStatus = 0;
 	private Font font = new Font("Arial", Font.BOLD, 24);
-	int activePlayerNum = 0;
+
+	int activePlayerIdx = 0;
 	FontMetrics metrics;
 	BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
 	BufferedImage lakeMountainTileImage = null, mountainDesertTileImage =  null ,mountainForestTileImage = null;
@@ -39,7 +40,11 @@ public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage swampLakeTileImage = null;
 	BufferedImage elkImage  = null, foxImage = null, hawkImage = null, salmonImage = null, bearImage = null;
 	BufferedImage bearScoreImage = null, elkScoreImage = null, foxScoreImage = null, hawkScoreImage = null, salmonScoreImage = null;
-
+	Point origin = new Point (133, 136);
+	double ang30 = Math.toRadians(30);
+	int radius = 57;
+	double xOff = Math.cos(ang30) * (radius +0.3);
+	double yOff = Math.sin(ang30) * (radius +0.3);
 	public GamePanel() {
 
 
@@ -85,16 +90,8 @@ public class GamePanel extends JPanel implements MouseListener{
 			(int) (150 + 150 * Math.sin(Math.PI/2 + i * 2 * Math.PI / 6)));
 		}
 
-
-		try {
-			background = ImageIO.read(new File("src/images/background.png"));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		players = new ArrayList<>();
-		for (int i = 1 ; i < 4 ; i++) {
+		for (int i = 0 ; i < 3 ; i++) {
 			
 			players.add(new Player(i, 0));
 			
@@ -125,43 +122,16 @@ public class GamePanel extends JPanel implements MouseListener{
 			g.drawString("Start Game", getWidth() / 2 - 70, 235);
 		}
 		else{
-			double ang30 = Math.toRadians(30);
-			int radius = 57;
-			double xOff = Math.cos(ang30) * (radius +0.3);
-			double yOff = Math.sin(ang30) * (radius +0.3);
-			Point origin = new Point (133, 136);
-
-			int x = (int) (origin.x + (0%2)*xOff + 2*7*xOff -xOff);
-			int y = (int) (origin.y + 3*yOff*0) -radius;
-			int x2 = (int) (origin.x + (1%2)*xOff + 2*6*xOff -xOff);
-			int y2 = (int) (origin.y + 3*yOff*1) -radius;
-			int x3 = (int) (origin.x + (1%2)*xOff + 2*7*xOff -xOff);
-			int y3 = (int) (origin.y + 3*yOff*1) -radius;
-
-			g.drawImage(forestTileImage, x, y, null);
-			g.drawImage(lakeTileImage, x2, y2, null);
-			g.drawImage(swampTileImage, x3, y3, null);
 		    g.drawImage(bearScoreImage, 10, 200, 160, 110, null);
 			g.drawImage(elkScoreImage, 10, 320, 160, 110, null);
 			g.drawImage(foxScoreImage, 10, 440, 160, 110, null);
 			g.drawImage(hawkScoreImage, 10, 560, 160, 110, null);
 			g.drawImage(salmonScoreImage, 10, 680, 160, 110, null);
+
 			//paingBackgroundGrid(g, radius);
 
-			int x4 = (int) (origin.x + (0%2)*xOff + 2*9*xOff -xOff);
-			int y4 = (int) (origin.y + 3*yOff*2) -radius;
-
-
-			// try rotate image
-			g.drawImage(lakeMountainTileImage, x4, y4, null);
-			int x5 = (int) (origin.x + (1%2)*xOff + 2*8*xOff -xOff);
-			int y5 = (int) (origin.y + 3*yOff*3) -radius;
-			double locationX = lakeMountainTileImage.getWidth() / 2;
-			double locationY = lakeMountainTileImage.getHeight() / 2;
-			Graphics2D g2d = (Graphics2D) g;
-			AffineTransform identity = AffineTransform.getRotateInstance(Math.toRadians(120), locationX, locationY);		
-			AffineTransformOp op = new AffineTransformOp(identity, AffineTransformOp.TYPE_BILINEAR);
-			g2d.drawImage(op.filter(lakeMountainTileImage, null), x5, y5, null);
+			// starting tiles
+			drawStartingTiles(g);
 
 			for(int i = 0; i <  tilesOnTable.size(); i++){
 				Tile t = tilesOnTable.get(i);
@@ -174,33 +144,74 @@ public class GamePanel extends JPanel implements MouseListener{
 
 		for(int i = 0; i < tilesOnTable.size(); i++){
 			ArrayList<String> habitat = tilesOnTable.get(i).getHabitats();
-			String imgName = "";
-			
-			for(int j = 0; j < habitat.size(); j++){
-				if(j == 0)
-					imgName += habitat.get(j);
-				else
-					imgName += ("+" + habitat.get(j));
-			}
-			System.out.println("Will load this image file: " + imgName);
-			BufferedImage img = getImage(imgName);
+			BufferedImage img = getHabiImageFromName (habitat);
 			g.drawImage(img, 250 + i * 120, getHeight() - 250, 100, 100, null);
+
 		}
 		for(int i = 0; i < animalsOnTable.size(); i++){
 			System.out.println("Should get an image of " + animalsOnTable.get(i));
 			BufferedImage img = getImage(animalsOnTable.get(i));
 			g.drawImage(img, 255 + i * 120, getHeight() - 150, 80, 80, null);
 		}
-
-		
 	}
 
+	public BufferedImage getHabiImageFromName(ArrayList<String> habitat) 
+	{
+		String imgName = "";
+		for(int j = 0; j < habitat.size(); j++){
+			if(j == 0)
+				imgName += habitat.get(j);
+			else
+				imgName += ("+" + habitat.get(j));
+		}
+		BufferedImage img = getImage(imgName);
+		return img;
+	}
 
 	public void drawStartingTiles(Graphics g)
 	{
-
+		Player activePlayer = players.get(activePlayerIdx);
+		ArrayList<TreeMap<String, Object>> startingTiles = activePlayer.getClaimedHabitats();
+		for (TreeMap<String, Object> cTile : startingTiles) {
+			drawHabitatTile(g, cTile);
+			addHexagonToTile(cTile);
+		}
 	}
 
+	public void addHexagonToTile(TreeMap<String, Object> cTile)
+	{
+		int row_i = (int) cTile.get("row_idx");
+		int col_j = (int) cTile.get("col_idx");
+		int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff);
+		int y = (int) (origin.y + 3*yOff*row_i);
+		Hexagon hex = new Hexagon(x, y, radius);
+		cTile.put("hexagon", hex);
+		
+	}
+
+	public void drawHabitatTile(Graphics g, TreeMap<String, Object> cTile) 
+	{		
+		int row_i = (int) cTile.get("row_idx");
+		int col_j = (int) cTile.get("col_idx");
+		ArrayList<String> habitatsList = (ArrayList<String>) cTile.get("habitats");			
+		ArrayList<String> WidelifeList = (ArrayList<String>) cTile.get("wildlife");
+		BufferedImage bImage = getHabiImageFromName(habitatsList);
+		int rot = (int) cTile.get("rotation");
+		int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff -xOff);
+		int y = (int) (origin.y + 3*yOff*row_i) -radius;
+		double locationX = lakeMountainTileImage.getWidth() / 2;
+		double locationY = lakeMountainTileImage.getHeight() / 2;
+		Graphics2D g2d = (Graphics2D) g;
+		if (rot > 0) {
+			AffineTransform identity = AffineTransform.getRotateInstance(Math.toRadians(rot), locationX, locationY);		
+			AffineTransformOp op = new AffineTransformOp(identity, AffineTransformOp.TYPE_BILINEAR);
+			g2d.drawImage(op.filter(bImage, null), x, y, null);
+		}
+		else {
+			g.drawImage(bImage, x, y, null);
+		}
+
+	}
 
 	public void paingBackgroundGrid(Graphics g, int radius) {
 		Graphics2D g2d = (Graphics2D) g;
@@ -336,8 +347,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		}
 		else{
 			System.out.println( "" + e.getX() + "  " + e.getY());
-			if(hexagonTest.contains(e.getPoint()))
-			System.out.println("debarshi is a stinky indian");
+			players.get(activePlayerIdx).searchHabitat(e.getPoint());
 		}
 	}
 	@Override

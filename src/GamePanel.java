@@ -200,6 +200,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			g.drawImage(img, x0, y0, width, height, null);
 			Hexagon hex = new Hexagon(x0+width/2, y0+height/2, radius);
 			tilesOnTable.get(i).setHexagon(hex);
+			drawTileWildlife(g, tilesOnTable.get(i));
 		}
 		for(int i = 0; i < animalsOnTable.size(); i++){
 			//System.out.println("Should get an image of " + animalsOnTable.get(i));
@@ -273,6 +274,52 @@ public class GamePanel extends JPanel implements MouseListener{
 		
 	}
 
+	public void drawTileWildlife(Graphics g, Tile cTile){
+		int x = (int) cTile.getHexagon().getBounds().getCenterX();
+		int y = (int) cTile.getHexagon().getBounds().getCenterY();
+		ArrayList<String> wildlifeList = (ArrayList<String>) cTile.getWildlife();
+		int num = wildlifeList.size();
+		System.out.println("Number of wildlife: " + num);
+		if(num == 1){
+			x-=(int)xOff/4;
+			y-=(int)(yOff/2);
+			BufferedImage bImage = animalImageMap.get(wildlifeList.get(0));
+			g.drawImage(bImage, x, y, (int)(xOff * 0.5), (int)(yOff),null);
+			
+		}
+		else if(num == 2){
+			y-=(int)(yOff/2);
+			for(int i = 0; i < wildlifeList.size(); i++){		
+				if(i == 0)	
+					x -= (int)(xOff * 0.6);	
+				else
+					x += (int)(xOff * 0.6);
+				BufferedImage bImage = animalImageMap.get(wildlifeList.get(i));
+				g.drawImage(bImage, x, y, (int)(xOff * 0.5), (int)(yOff),null);
+			
+			}
+		}
+		else if(num == 3){
+			int x1, y1;
+			for(int i = 0; i < wildlifeList.size(); i++){		
+				if(i == 0)	{
+					x1 = x-(int)xOff/4;
+					y1 = y-(int)(yOff*0.75);
+				}
+				else if(i == 1){
+					x1 = x - (int)(xOff * 0.6);	
+					y1 = y-(int)(yOff/3);
+				}
+				else{
+					x1 = x + (int)(xOff * 0.1);
+					y1 = y-(int)(yOff/3);
+				}
+				BufferedImage bImage = animalImageMap.get(wildlifeList.get(i));
+				g.drawImage(bImage, x1, y1, (int)(xOff * 0.5), (int)(yOff),null);
+			
+			}
+		}
+	}
 	public void drawHabitatTile(Graphics g, TreeMap<String, Object> cTile) 
 	{		
 		int row_i = (int) cTile.get("row_idx");
@@ -296,6 +343,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		}
 
 	}
+	
 	public void drawHabitatWildlife(Graphics g, TreeMap<String, Object> cTile) 
 	{		
 		int row_i = (int) cTile.get("row_idx");
@@ -315,9 +363,9 @@ public class GamePanel extends JPanel implements MouseListener{
 			y+=(int)(yOff + 6);
 			for(int i = 0; i < wildlifeList.size(); i++){		
 				if(i == 0)	
-					x += (int)(xOff * 0.1);	
+					x += (int)(xOff * 0.2);	
 				else
-					x += (int)(xOff);
+					x += (int)(xOff * 0.8);
 				BufferedImage bImage = animalImageMap.get(wildlifeList.get(i));
 				g.drawImage(bImage, x, y, (int)(xOff * 1.5 / 2), (int)yOff*3/2,null);
 			
@@ -328,15 +376,15 @@ public class GamePanel extends JPanel implements MouseListener{
 			for(int i = 0; i < wildlifeList.size(); i++){		
 				if(i == 0)	{
 					x1 = x + (int)(xOff * 0.75);
-					y1 = y+(int)(yOff*0.75);
+					y1 = y+(int)(yOff*0.85);
 				}
 				else if(i == 1){
-					x1 = x + (int)(xOff * 0.1);	
-					y1 = y+(int)(yOff * 2);
+					x1 = x + (int)(xOff * 0.5);	
+					y1 = y+(int)(yOff * 1.7);
 				}
 				else{
-					x1 = x + (int)(xOff * 1.4);
-					y1 = y+(int)(yOff * 2);
+					x1 = x + (int)(xOff * 1.1);
+					y1 = y+(int)(yOff * 1.6);
 				}
 				BufferedImage bImage = animalImageMap.get(wildlifeList.get(i));
 				g.drawImage(bImage, x1, y1, (int)(xOff * 1.2 / 2), (int)(yOff*1.2),null);

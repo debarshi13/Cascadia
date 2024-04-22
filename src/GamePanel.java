@@ -28,6 +28,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		ROTATE_COUNTER_CW,
 		COMFIRM_HABITAT_PLACE,
 		CANCEL_HABITAT_PLACE,
+		CLAIMED_HABITAT_CLICKED,
 		TOKEN_PLACED,
 	}
 	
@@ -45,14 +46,14 @@ public class GamePanel extends JPanel implements MouseListener{
 	private Font font = new Font("Arial", Font.BOLD, 24);
 
 	private Tile selectedTileOnTable = null;
-	boolean tileOnTableIsSelected = false;
-	boolean foundClaimedHabitat = false;
+
+	int counterCWclickedCnt = 0;
 
 	private Font smallfont = new Font("Arial", Font.BOLD, 20);
 
 	int activePlayerIdx = 0;
 	TreeMap<String, Hexagon> candidateHabitatHexagon = null;
-	TreeMap<String, Object> candidateHabitatInfo =null;
+	TreeMap<String, Object> candidateHabitat =null;
 	FontMetrics metrics;
 	BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
 	BufferedImage lakeMountainTileImage = null, mountainDesertTileImage =  null ,mountainForestTileImage = null;
@@ -61,6 +62,7 @@ public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage mountainTileImage = null, mountainSwampTileImage =  null ,starterTile1 = null;
 	BufferedImage swampLakeTileImage = null;
 	BufferedImage bearScoreImage = null, elkScoreImage = null, foxScoreImage = null, hawkScoreImage = null, salmonScoreImage = null;
+	BufferedImage selectedTileImage = null;
 
 	TreeMap<String, BufferedImage> animalImageMap = new TreeMap<>();
 	Point origin = new Point (133, 136);
@@ -91,7 +93,8 @@ public class GamePanel extends JPanel implements MouseListener{
 			starterTile1 = ImageIO.read(new File("src/images/starterTile1.png"));
 			swampLakeTileImage = ImageIO.read(new File("src/images/swamp+lake.png"));
 			background = ImageIO.read(new File("src/images/background.png"));
-			
+			selectedTileImage = ImageIO.read(new File("src/images/selectedTile.png"));
+
 			animalImageMap.put ("bear", ImageIO.read(new File("src/images/bear.png")));
 			animalImageMap.put ("bearActive", ImageIO.read(new File("src/images/bearActive.png")));
 			animalImageMap.put ("bearInactive", ImageIO.read(new File("src/images/bearInactive.png")));
@@ -447,6 +450,9 @@ public class GamePanel extends JPanel implements MouseListener{
 			case "swamp+lake":
 			img = swampLakeTileImage;
 				break;
+			case "selectedTile":
+			img = selectedTileImage;
+				break;
 														
 			default:
 			  // code block
@@ -471,7 +477,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			
 			TreeMap<String, Object> habiTile = players.get(activePlayerIdx).searchHabitat(e.getPoint());
 			if (habiTile != null)
-				foundClaimedHabitat = true;
+				playerState = PlayerState.CLAIMED_HABITAT_CLICKED;
 
 			if (playerState == PlayerState.TILES_ON_TABLE_UPDATED) 
 			{
@@ -480,7 +486,13 @@ public class GamePanel extends JPanel implements MouseListener{
 					if(hex.contains(e.getPoint()))
 					{
 						selectedTileOnTable = tile;
+						
 						playerState = PlayerState.TILE_ON_TABLE_IS_SELECTED;
+						Graphics g = getGraphics();
+						Point center = hex.getCenter();
+						int x = (int)(center.getX() - xOff*0.8);
+						int y = (int)(center.getY() - radius*0.8);
+						g.drawImage(selectedTileImage, x, y, (int)(selectedTileImage.getWidth()*0.8), (int)( selectedTileImage.getHeight()*0.8), null);
 						System.out.println("~~~~~~~~~~~~~" + tile.getWildlife().get(0));
 					}
 				}
@@ -521,8 +533,16 @@ public class GamePanel extends JPanel implements MouseListener{
 				System.out.println("Cancel clicked");
 			if(rcConfirm.contains(e.getPoint()))
 				System.out.println("Confirm clicked");		
-			if(rcCounterClockwise.contains(e.getPoint()))
+			if(rcCounterClockwise.contains(e.getPoint())) {
 				System.out.println("CounterClockwise clicked");
+				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
+					counterCWclickedCnt ++;
+					int rotatAng = counterCWclickedCnt%6;
+					candidateHabitat.put("rotation", rotatAng*60);
+					drawHabitatTile(getGraphics(), candidateHabitat);
+				}
+
+			}
 			if(rcClockwise.contains(e.getPoint()))
 				System.out.println("Clockwise clicked");		
 
@@ -588,7 +608,7 @@ public class GamePanel extends JPanel implements MouseListener{
 				String s = entry.getKey();
 				String[] loc_idx_strings = s.split(":");
 
-				TreeMap<String, Object> candidateHabitat = new TreeMap<>();
+				candidateHabitat = new TreeMap<>();
 				candidateHabitat.put("row_idx", Integer.parseInt(loc_idx_strings[0]));
 				candidateHabitat.put("col_idx", Integer.parseInt(loc_idx_strings[1]));
 				candidateHabitat.put("habitats", selectedTileOnTable.getHabitats());

@@ -57,6 +57,10 @@ public class Hexagon extends Polygon {
         setCenter(new Point(x, y));
     }
 
+    public Point getCenter() {
+        return center;
+    }
+
     private double findAngle(double fraction) {
         return fraction * Math.PI * 2 + Math.toRadians((rotation + 180) % 360);
     }

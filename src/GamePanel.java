@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.security.KeyStore.Entry;
 import java.util.ArrayList;
 import java.util.Collections;
-
+import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.TreeMap;
@@ -29,8 +29,12 @@ public class GamePanel extends JPanel implements MouseListener{
 	private ArrayList<String> animalsOnTable;
 	private int gameStatus = 0;
 	private Font font = new Font("Arial", Font.BOLD, 24);
+	private Tile selectedTileOnTable = null;
+	boolean tileOnTableIsSelected = false;
+	boolean foundClaimedHabitat = false;
 
 	int activePlayerIdx = 0;
+	TreeMap<String, Hexagon> candidateHabitatHexagon = null;
 	FontMetrics metrics;
 	BufferedImage forestTileImage = null, lakeTileImage =  null ,swampTileImage = null;
 	BufferedImage lakeMountainTileImage = null, mountainDesertTileImage =  null ,mountainForestTileImage = null;
@@ -38,15 +42,16 @@ public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage forestDesertTileImage = null, forestLakeTileImage =  null ,forestSwampTileImage = null;
 	BufferedImage mountainTileImage = null, mountainSwampTileImage =  null ,starterTile1 = null;
 	BufferedImage swampLakeTileImage = null;
-	BufferedImage elkImage  = null, foxImage = null, hawkImage = null, salmonImage = null, bearImage = null;
 	BufferedImage bearScoreImage = null, elkScoreImage = null, foxScoreImage = null, hawkScoreImage = null, salmonScoreImage = null;
+
+	TreeMap<String, BufferedImage> animalImageMap = new TreeMap<>();
 	Point origin = new Point (133, 136);
 	double ang30 = Math.toRadians(30);
 	int radius = 57;
 	double xOff = Math.cos(ang30) * (radius +0.3);
 	double yOff = Math.sin(ang30) * (radius +0.3);
 	public GamePanel() {
-
+		
 
 		try {
 			desertTileImage = ImageIO.read(new File("src/images/desert.png"));
@@ -66,12 +71,26 @@ public class GamePanel extends JPanel implements MouseListener{
 			starterTile1 = ImageIO.read(new File("src/images/starterTile1.png"));
 			swampLakeTileImage = ImageIO.read(new File("src/images/swamp+lake.png"));
 			background = ImageIO.read(new File("src/images/background.png"));
+			
+			animalImageMap.put ("bear", ImageIO.read(new File("src/images/bear.png")));
+			animalImageMap.put ("bearActive", ImageIO.read(new File("src/images/bearActive.png")));
+			animalImageMap.put ("bearInactive", ImageIO.read(new File("src/images/bearInactive.png")));
 
-			bearImage = ImageIO.read(new File("src/images/bear.png"));
-			elkImage = ImageIO.read(new File("src/images/elk.png"));
-			salmonImage = ImageIO.read(new File("src/images/salmon.png"));
-			foxImage = ImageIO.read(new File("src/images/fox.png"));
-			hawkImage = ImageIO.read(new File("src/images/hawk.png"));
+			animalImageMap.put("elk", ImageIO.read(new File("src/images/elk.png")));
+			animalImageMap.put("elkActive", ImageIO.read(new File("src/images/elkActive.png")));
+			animalImageMap.put("elkInactive", ImageIO.read(new File("src/images/elkInactive.png")));
+
+			animalImageMap.put ("salmon",ImageIO.read(new File("src/images/salmon.png")));
+			animalImageMap.put ("salmonActive",ImageIO.read(new File("src/images/salmonActive.png")));
+			animalImageMap.put ("salmonInactive",ImageIO.read(new File("src/images/salmonInactive.png")));
+
+			animalImageMap.put ("fox", ImageIO.read(new File("src/images/fox.png")));
+			animalImageMap.put ("foxActive", ImageIO.read(new File("src/images/foxActive.png")));
+			animalImageMap.put ("foxInactive", ImageIO.read(new File("src/images/foxInactive.png")));
+
+			animalImageMap.put ("hawk", ImageIO.read(new File("src/images/hawk.png")));
+			animalImageMap.put ("hawkActive", ImageIO.read(new File("src/images/hawkActive.png")));
+			animalImageMap.put ("hawkInactive", ImageIO.read(new File("src/images/hawkInactive.png")));
 
 			bearScoreImage = ImageIO.read(new File("src/images/bear-large.jpg"));
 			elkScoreImage = ImageIO.read(new File("src/images/elk-large.jpg"));
@@ -145,25 +164,39 @@ public class GamePanel extends JPanel implements MouseListener{
 		for(int i = 0; i < tilesOnTable.size(); i++){
 			ArrayList<String> habitat = tilesOnTable.get(i).getHabitats();
 			BufferedImage img = getHabiImageFromName (habitat);
-			g.drawImage(img, 250 + i * 120, getHeight() - 250, 100, 100, null);
+			//System.out.println("height: "+ img.getHeight() + "====" + "width: " + img.getWidth());
+			int width = (int)(img.getWidth()*0.8);
+			int height = (int)(img.getHeight()*0.8);
+			int x0 = 250 + i * 120;
+			int y0 = getHeight() - 250;
 
+			g.drawImage(img, x0, y0, width, height, null);
+			Hexagon hex = new Hexagon(x0+width/2, y0+height/2, radius);
+			tilesOnTable.get(i).setHexagon(hex);
 		}
 		for(int i = 0; i < animalsOnTable.size(); i++){
-			System.out.println("Should get an image of " + animalsOnTable.get(i));
-			BufferedImage img = getImage(animalsOnTable.get(i));
+			//System.out.println("Should get an image of " + animalsOnTable.get(i));
+			BufferedImage img = animalImageMap.get(animalsOnTable.get(i));
 			g.drawImage(img, 255 + i * 120, getHeight() - 150, 80, 80, null);
 		}
 	}
 
-	public BufferedImage getHabiImageFromName(ArrayList<String> habitat) 
+	public String constructNameString (ArrayList<String> names)
 	{
 		String imgName = "";
-		for(int j = 0; j < habitat.size(); j++){
+		for(int j = 0; j < names.size(); j++){
 			if(j == 0)
-				imgName += habitat.get(j);
+				imgName += names.get(j);
 			else
-				imgName += ("+" + habitat.get(j));
+				imgName += ("+" + names.get(j));
 		}
+		return imgName;
+	}
+
+
+	public BufferedImage getHabiImageFromName(ArrayList<String> habitat) 
+	{
+		String imgName = constructNameString(habitat);
 		BufferedImage img = getImage(imgName);
 		return img;
 	}
@@ -245,17 +278,19 @@ public class GamePanel extends JPanel implements MouseListener{
 	private void drawHex(Graphics g, int posX, int posY, int x, int y, int r) {
         Graphics2D g2d = (Graphics2D) g;
         Hexagon hex = new Hexagon(x, y, r);
+		String text = String.format("%s : %s",Integer.toString(posX), Integer.toString(posY));
+        int w = metrics.stringWidth(text);
+        int h = metrics.getHeight();
+
         hex.draw(g2d, x, y, 1, 0xFFDD88, false);
-        //g.setColor(Color.blue);
-       
+        g.setColor(Color.blue);
+		g.drawString(text, x - w/2, y + h/2);
     }
 
 	private void StartGame(){
 		gameStatus = 1;
 		// System.out.println("tilesOnTable has what: " + tilesOnTable.size() + " tiles have how many: " + tiles.getTiles().size());
 		for(int i = 0; i < 4; i++){
-
-
 			tilesOnTable.add(tiles.getTiles().remove(i));
 			animalsOnTable.add(animals.getWildlife().remove(i));
 		}
@@ -312,23 +347,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			case "swamp+lake":
 			img = swampLakeTileImage;
 				break;
-			case "hawk":
-			img = hawkImage;
-				break;
-			case "elk":
-			img = elkImage;
-				break;
-			case "fox":
-			img = foxImage;
-				break;
-			case "salmon":
-			img = salmonImage;
-				break;
-			case "bear":
-			img = bearImage;
-				break;
-
-															
+														
 			default:
 			  // code block
 		  }
@@ -347,9 +366,98 @@ public class GamePanel extends JPanel implements MouseListener{
 		}
 		else{
 			System.out.println( "" + e.getX() + "  " + e.getY());
-			players.get(activePlayerIdx).searchHabitat(e.getPoint());
+			
+			TreeMap<String, Object> habiTile = players.get(activePlayerIdx).searchHabitat(e.getPoint());
+			if (habiTile != null)
+				foundClaimedHabitat = true;
+			for (Tile tile : tilesOnTable) {
+				Hexagon hex = (Hexagon) tile.getHexagon();
+				if(hex.contains(e.getPoint()))
+				{
+					selectedTileOnTable = tile;
+					tileOnTableIsSelected = true;
+					System.out.println("~~~~~~~~~~~~~" + tile.getWildlife().get(0));
+				}
+			}
+
+			if (tileOnTableIsSelected == true)
+			{
+				//loop through player's claimedhabitats, find candidate tiles, hgihtlight potential hexagons to put new habitats
+
+				Player activePlayer = players.get(activePlayerIdx);
+				ArrayList<TreeMap<String, Object>> claimedHab = activePlayer.getClaimedHabitats();
+				for (TreeMap<String, Object> cTile : claimedHab) {
+					int row_i = (int) cTile.get("row_idx");
+					int col_j = (int) cTile.get("col_idx");
+
+					checkAndAddCandidateHexTile(row_i, col_j-1, claimedHab);
+					checkAndAddCandidateHexTile(row_i, col_j+1, claimedHab);
+					if (row_i %2 == 0) {
+						checkAndAddCandidateHexTile(row_i-1, col_j-1, claimedHab);
+						checkAndAddCandidateHexTile(row_i-1, col_j, claimedHab);
+						checkAndAddCandidateHexTile(row_i+1, col_j-1, claimedHab);
+						checkAndAddCandidateHexTile(row_i+1, col_j, claimedHab);
+					}
+					else {
+						checkAndAddCandidateHexTile(row_i-1, col_j, claimedHab);
+						checkAndAddCandidateHexTile(row_i-1, col_j+1, claimedHab);
+						checkAndAddCandidateHexTile(row_i+1, col_j, claimedHab);
+						checkAndAddCandidateHexTile(row_i+1, col_j+1, claimedHab);
+					}
+
+				}
+			}
 		}
 	}
+
+	
+	public void checkAndAddCandidateHexTile(int row_i, int col_j, ArrayList<TreeMap<String, Object>> claminedHab)
+	{
+		if (!indexInClaimedHabitats(row_i, col_j, claminedHab))
+		{
+			String key = Integer.toString(row_i) + ":" + Integer.toString(col_j);
+			Graphics g = getGraphics();
+			metrics = g.getFontMetrics();
+			if (candidateHabitatHexagon == null)
+			{
+				candidateHabitatHexagon = new TreeMap<>();
+				int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff);
+				int y = (int) (origin.y + 3*yOff*row_i);
+				Hexagon hex = new Hexagon(x, y, radius);
+				System.out.println("--------> " + key);
+				candidateHabitatHexagon.put(key, hex);
+				int xLbl = row_i;
+        		int yLbl = col_j;        		
+        		drawHex(getGraphics(), xLbl, yLbl, x, y, radius);
+			}
+			else if (!candidateHabitatHexagon.containsKey(row_i + ":" + col_j)) {
+
+				int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff);
+				int y = (int) (origin.y + 3*yOff*row_i);
+				Hexagon hex = new Hexagon(x, y, radius);
+				System.out.println("--------> " + key);
+				candidateHabitatHexagon.put(key, hex);
+				int xLbl = row_i;
+        		int yLbl = col_j;        		
+        		drawHex(getGraphics(), xLbl, yLbl, x, y, radius);
+
+			}
+		}
+	}
+
+
+	public boolean indexInClaimedHabitats(int i_idx, int j_idx, ArrayList<TreeMap<String, Object>> claminedHab)
+	{
+		for (TreeMap<String, Object> cTile : claminedHab) {
+			int row_i = (int) cTile.get("row_idx");
+			int col_j = (int) cTile.get("col_idx");
+			if (i_idx == row_i && j_idx == col_j)
+				return true;
+		}
+		return false;
+	}
+
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub

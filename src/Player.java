@@ -15,8 +15,8 @@ public class Player {
 
 		Hexagon hex = null;
 		TreeMap<String, Object> habitatInfo = new TreeMap<>();
-		habitatInfo.put("row_idx", 6);
-		habitatInfo.put("col_idx", 8);
+		habitatInfo.put("row_idx", 4);
+		habitatInfo.put("col_idx", 10);
 		habitatInfo.put("habitats", startingTiles[startingTileIdx][0].getHabitats());
 		habitatInfo.put("wildlife", startingTiles[startingTileIdx][0].getWildlife());
 		habitatInfo.put("tokenPlaced", false);
@@ -26,8 +26,8 @@ public class Player {
 
 		
 		habitatInfo = new TreeMap<>();
-		habitatInfo.put("row_idx", 7);
-		habitatInfo.put("col_idx", 7);
+		habitatInfo.put("row_idx", 5);
+		habitatInfo.put("col_idx", 9);
 		habitatInfo.put("habitats", startingTiles[startingTileIdx][1].getHabitats());
 		habitatInfo.put("wildlife", startingTiles[startingTileIdx][1].getWildlife());
 		habitatInfo.put("tokenPlaced", false);
@@ -37,8 +37,8 @@ public class Player {
 
 
 		habitatInfo = new TreeMap<>();
-		habitatInfo.put("row_idx", 7);
-		habitatInfo.put("col_idx", 8);
+		habitatInfo.put("row_idx", 5);
+		habitatInfo.put("col_idx", 10);
 		habitatInfo.put("habitats", startingTiles[startingTileIdx][2].getHabitats());
 		habitatInfo.put("wildlife", startingTiles[startingTileIdx][2].getWildlife());
 		habitatInfo.put("tokenPlaced", false);

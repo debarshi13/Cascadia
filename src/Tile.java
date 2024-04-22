@@ -9,6 +9,7 @@ public class Tile {
     private ArrayList<String> habitats;
     private ArrayList<String> wildlife;
     private int rotation;
+    Hexagon hexagon = null;
     public Tile(){
         habitats = new ArrayList<String>();
         wildlife = new ArrayList<String>();
@@ -33,5 +34,11 @@ public class Tile {
     }
     public ArrayList<String> getWildlife(){
         return wildlife;
+    }
+    public void setHexagon(Hexagon hex) {
+        hexagon = hex;
+    }
+    public Hexagon getHexagon() {
+        return hexagon;
     }
 }

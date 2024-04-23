@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.geom.AffineTransform;
@@ -18,7 +19,7 @@ import java.util.TreeMap;
 
 
 
-public class GamePanel extends JPanel implements MouseListener{
+public class GamePanel extends JPanel implements MouseListener, MouseMotionListener{
 
 	enum PlayerState {
 		TILES_ON_TABLE_UPDATED,
@@ -26,10 +27,11 @@ public class GamePanel extends JPanel implements MouseListener{
 		CANDIDATE_TILE_CLICKED,
 		ROTATE_CW,
 		ROTATE_COUNTER_CW,
-		COMFIRM_HABITAT_PLACE,
+		HABITAT_PLACE_COMFIRMED,
 		CANCEL_HABITAT_PLACE,
 		CLAIMED_HABITAT_CLICKED,
 		TOKEN_PLACED,
+		TURN_IS_DONE
 	}
 	
 	PlayerState playerState = PlayerState.TILES_ON_TABLE_UPDATED;
@@ -37,7 +39,6 @@ public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage background;
 	private ArrayList<Player> players;
 
-	private Polygon hexagonTest;
 	private Tiles tiles;
 	private Wildlife animals;
 	private ArrayList<Tile> tilesOnTable;
@@ -52,6 +53,11 @@ public class GamePanel extends JPanel implements MouseListener{
 	private Font smallfont = new Font("Arial", Font.BOLD, 20);
 
 	int activePlayerIdx = 0;
+	String activeAnimalToken = "bear";
+	boolean activeAnimalTokenShown = false;
+	int previousMouseMovedinHabitatNum = -1;
+	
+	TreeMap<String, Object> previousTokenMatchHabit = null;
 	TreeMap<String, Hexagon> candidateHabitatHexagon = null;
 	TreeMap<String, Object> candidateHabitat =null;
 	FontMetrics metrics;
@@ -62,7 +68,9 @@ public class GamePanel extends JPanel implements MouseListener{
 	BufferedImage mountainTileImage = null, mountainSwampTileImage =  null ,starterTile1 = null;
 	BufferedImage swampLakeTileImage = null;
 	BufferedImage bearScoreImage = null, elkScoreImage = null, foxScoreImage = null, hawkScoreImage = null, salmonScoreImage = null;
-	BufferedImage selectedTileImage = null;
+	BufferedImage selectedTileImage = null, tilePlacementCancelImage = null, tilePlacementConfirmImage = null;
+	BufferedImage tilePlacementRotateCWImage = null, tilePlacementRotateCounterCWImage = null;
+
 
 	TreeMap<String, BufferedImage> animalImageMap = new TreeMap<>();
 	Point origin = new Point (133, 136);
@@ -71,7 +79,8 @@ public class GamePanel extends JPanel implements MouseListener{
 	double xOff = Math.cos(ang30) * (radius +0.3);
 	double yOff = Math.sin(ang30) * (radius +0.3);
 
-	Rectangle rcCancel, rcConfirm, rcClockwise, rcCounterClockwise;
+	Rectangle rcCancel, rcConfirm;
+	Hexagon  hexClockwiise, hexCounterClockwise;
 	public GamePanel() {
 		
 
@@ -93,6 +102,11 @@ public class GamePanel extends JPanel implements MouseListener{
 			starterTile1 = ImageIO.read(new File("src/images/starterTile1.png"));
 			swampLakeTileImage = ImageIO.read(new File("src/images/swamp+lake.png"));
 			background = ImageIO.read(new File("src/images/background.png"));
+			tilePlacementCancelImage = ImageIO.read(new File("src/images/tilePlacementCancel.png"));
+			tilePlacementConfirmImage = ImageIO.read(new File("src/images/tilePlacementConfirm.png")); 
+			tilePlacementRotateCWImage = ImageIO.read(new File("src/images/tilePlacementRotateClockwise.png")); 
+			tilePlacementRotateCounterCWImage = ImageIO.read(new File("src/images/tilePlacementRotateCounterClockwise.png")); 
+
 			selectedTileImage = ImageIO.read(new File("src/images/selectedTile.png"));
 
 			animalImageMap.put ("bear", ImageIO.read(new File("src/images/bear.png")));
@@ -126,12 +140,6 @@ public class GamePanel extends JPanel implements MouseListener{
 			e.printStackTrace();
 		}
 
-		hexagonTest = new Polygon();
-		for (int i = 0; i < 6; i++){
-			hexagonTest.addPoint((int) (150 + 150 * Math.cos(Math.PI/2 + i * 2 * Math.PI / 6)),
-			(int) (150 + 150 * Math.sin(Math.PI/2 + i * 2 * Math.PI / 6)));
-		}
-
 		players = new ArrayList<>();
 		for (int i = 0 ; i < 3 ; i++) {
 			
@@ -148,9 +156,8 @@ public class GamePanel extends JPanel implements MouseListener{
 		animalsOnTable = new ArrayList<String>();
 		rcCancel = new Rectangle();
 		rcConfirm = new Rectangle();
-		rcClockwise = new Rectangle();
-		rcCounterClockwise =  new Rectangle();
 		addMouseListener(this);
+		addMouseMotionListener(this);
 	}
 
 	public void paint(Graphics g) {
@@ -168,8 +175,14 @@ public class GamePanel extends JPanel implements MouseListener{
 		else{
 			rcCancel.setBounds(getWidth() * 2 / 5, getHeight() - 150, 140, 50);
 			rcConfirm.setBounds(rcCancel.x + rcCancel.width + 10, getHeight() - 150, 140, 50);
-			rcCounterClockwise.setBounds(rcConfirm.x + rcConfirm.width + 10, getHeight() - 150, 300, 50);
-			rcClockwise.setBounds(rcCounterClockwise.x + rcCounterClockwise.width + 10, getHeight() - 150, 220, 50);
+
+			int buttonWidth = (int)(tilePlacementCancelImage.getWidth()*0.6);
+			int buttonHeight = (int)(tilePlacementCancelImage.getHeight()*0.6);
+			hexCounterClockwise = new Hexagon((int )((rcConfirm.x + rcConfirm.width + 10 + buttonWidth/2)), (int)(getHeight()-40 - buttonWidth), (int)(radius*0.8));
+			hexClockwiise = new Hexagon((int )((rcConfirm.x + rcConfirm.width + 15 + buttonWidth*1.5)), (int)(getHeight()-40 - buttonWidth), (int)(radius*0.8));
+			g.drawImage(tilePlacementRotateCounterCWImage, (int)(hexCounterClockwise.getCenter().x-buttonWidth/2), (int)(hexCounterClockwise.getCenter().y- buttonHeight/2), buttonWidth, buttonHeight, null);
+			g.drawImage(tilePlacementRotateCWImage, (int)(hexClockwiise.getCenter().x-buttonWidth/2), (int)(hexClockwiise.getCenter().y- buttonHeight/2), buttonWidth, buttonHeight, null);
+			
 
 			g.drawImage(bearScoreImage, 10, 200, 160, 110, null);
 			g.drawImage(elkScoreImage, 10, 320, 160, 110, null);
@@ -181,13 +194,6 @@ public class GamePanel extends JPanel implements MouseListener{
 
 			// starting tiles
 			drawClaimedHabitats(g);
-
-			for(int i = 0; i <  tilesOnTable.size(); i++){
-				Tile t = tilesOnTable.get(i);
-				//System.out.println(t.getTileNum() + " with habitats size of " + t.getHabitats().size());
-				for(int j = 0; j < t.getHabitats().size(); j++)
-					System.out.println(t.getHabitats().get(j));
-			}
 
 			
 			drawCandidateHexTiles(g);
@@ -230,19 +236,6 @@ public class GamePanel extends JPanel implements MouseListener{
 		g.setColor(Color.white);
 		g.setFont(smallfont);
 		g.drawString("Confirm", rcConfirm.x + 30, rcConfirm.y + 30);
-
-		g.setColor(Color.blue);
-		g.fillRect(rcCounterClockwise.x, rcCounterClockwise.y, rcCounterClockwise.width, rcCounterClockwise.height);
-		g.setColor(Color.white);
-		g.setFont(smallfont);
-		g.drawString("Rotate Counterclockwise", rcCounterClockwise.x + 30, rcCounterClockwise.y + 30);
-
-		g.setColor(Color.cyan);
-		g.fillRect(rcClockwise.x, rcClockwise.y, rcClockwise.width, rcClockwise.height);
-		g.setColor(Color.white);
-		g.setFont(smallfont);
-		g.drawString("Rotate Clockwise", rcClockwise.x + 30, rcClockwise.y + 30);
-
 
 	}
 
@@ -368,9 +361,12 @@ public class GamePanel extends JPanel implements MouseListener{
 		if(num == 1){
 			x+=(int)xOff/2;
 			y+=(int)(yOff + 6);
-			BufferedImage bImage = animalImageMap.get(wildlifeList.get(0));
+			BufferedImage bImage = null;
+			if ((boolean)cTile.get("tokenPlaced") == false) 
+				bImage = animalImageMap.get(wildlifeList.get(0));
+			else
+				bImage = animalImageMap.get(wildlifeList.get(0)+"Active");
 			g.drawImage(bImage, x, y, (int)xOff, (int)yOff*2,null);
-			System.out.println(x + " -  " + y + " xoff - " + xOff + " yOff - " + yOff);
 		}
 		else if(num == 2){
 			y+=(int)(yOff + 6);
@@ -559,6 +555,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		  }
 		return img;
 	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		if(gameStatus == 0){
@@ -579,7 +576,28 @@ public class GamePanel extends JPanel implements MouseListener{
 			if (habiTile != null)
 			{
 				// add token to claimed habitat
-				//playerState = PlayerState.CLAIMED_HABITAT_CLICKED;
+				// playerState = PlayerState.CLAIMED_HABITAT_CLICKED;
+				if (playerState == PlayerState.HABITAT_PLACE_COMFIRMED)
+				{
+					ArrayList<TreeMap<String, Object>> claimedHabitats = players.get(activePlayerIdx).getClaimedHabitats();
+					for (TreeMap<String, Object> cHabitat : claimedHabitats) {
+						ArrayList<String> wildlifeNames =( ArrayList<String>)cHabitat.get("wildlife");
+						Hexagon hex = (Hexagon) cHabitat.get("hexagon");
+						if(hex.contains(e.getPoint()))
+						{						
+							ArrayList<String> wildlifeLists = new ArrayList<>();
+							wildlifeLists.add(activeAnimalToken);
+							cHabitat.put("wildlife", wildlifeLists);
+							cHabitat.put("tokenPlaced", true);
+							Graphics g = getGraphics();
+							drawHabitatTile(g, cHabitat);
+							drawHabitatWildlife(g, cHabitat);
+							playerState = PlayerState.TURN_IS_DONE;
+							break;
+						}
+					}
+				}
+
 			}
 
 			if (playerState == PlayerState.TILES_ON_TABLE_UPDATED || playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED) 
@@ -637,18 +655,30 @@ public class GamePanel extends JPanel implements MouseListener{
 			repaint();
 
 			// players.get(activePlayerIdx).searchHabitat(e.getPoint());
-			if(rcCancel.contains(e.getPoint()))
-				System.out.println("Cancel clicked");
+			if(rcCancel.contains(e.getPoint())) {
+
+				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
+					playerState = PlayerState.TILES_ON_TABLE_UPDATED;
+					tilesOnTable.add(selectedTileOnTable);
+					candidateHabitat = null;
+				
+				}
+			}
 			if(rcConfirm.contains(e.getPoint())) {
-				ArrayList<TreeMap<String, Object>> claimedHab = players.get(activePlayerIdx).getClaimedHabitats();
-				TreeMap<String, Object> newHab = new TreeMap<>();
-				newHab = candidateHabitat;
-				claimedHab.add(newHab);
-				candidateHabitat = null;
-				playerState = PlayerState.COMFIRM_HABITAT_PLACE;
-				System.out.println("Confirm clicked");
+				
+				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED && candidateHabitat != null) {
+					ArrayList<TreeMap<String, Object>> claimedHab = players.get(activePlayerIdx).getClaimedHabitats();
+					TreeMap<String, Object> newHab = new TreeMap<>();
+					newHab = candidateHabitat;
+					claimedHab.add(newHab);
+					candidateHabitat = null;
+					playerState = PlayerState.HABITAT_PLACE_COMFIRMED;
+					System.out.println("Confirm clicked");
+				}
+				//draw the paired animal token in active
+
 			}		
-			if(rcCounterClockwise.contains(e.getPoint())) {
+			if(hexCounterClockwise.contains(e.getPoint())) {
 				System.out.println("CounterClockwise clicked");
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
 					counterCWclickedCnt ++;
@@ -659,7 +689,7 @@ public class GamePanel extends JPanel implements MouseListener{
 				}
 
 			}
-			if(rcClockwise.contains(e.getPoint())) {
+			if(hexClockwiise.contains(e.getPoint())) {
 				System.out.println("Clockwise clicked");		
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
 					counterCWclickedCnt ++;
@@ -724,6 +754,7 @@ public class GamePanel extends JPanel implements MouseListener{
 				String[] loc_idx_strings = s.split(":");
 
 				candidateHabitat = new TreeMap<>();
+				candidateHabitat.put("tileNum", selectedTileOnTable.getTileNum());
 				candidateHabitat.put("row_idx", Integer.parseInt(loc_idx_strings[0]));
 				candidateHabitat.put("col_idx", Integer.parseInt(loc_idx_strings[1]));
 				candidateHabitat.put("habitats", selectedTileOnTable.getHabitats());
@@ -733,7 +764,6 @@ public class GamePanel extends JPanel implements MouseListener{
 				candidateHabitat.put("hexagon", hex);
 				//players.get(activePlayerIdx).getClaimedHabitats().add(habitatInfo);
 				playerState = PlayerState.CANDIDATE_TILE_CLICKED;
-
 				return true;
 			}
 		}
@@ -759,5 +789,109 @@ public class GamePanel extends JPanel implements MouseListener{
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		//throw new UnsupportedOperationException("Unimplemented method 'mouseDragged'");
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+
+		//System.out.println( "moust enter " + e.getX() + "  " + e.getY());
+
+		// highlight the animal on habitat based on active token
+		if (playerState == PlayerState.HABITAT_PLACE_COMFIRMED) {
+			boolean foundTokenMatchHab = false;
+			ArrayList<TreeMap<String, Object>> claimedHabitats = players.get(activePlayerIdx).getClaimedHabitats();
+			Graphics g= getGraphics();
+			int foundMatchHabitatNum = -1;
+			TreeMap<String, Object> foundMatchHabitat = null;
+			for (TreeMap<String, Object> cHabitat : claimedHabitats) {
+					ArrayList<String> wildlifeNames =( ArrayList<String>)cHabitat.get("wildlife");
+					Hexagon hex = (Hexagon) cHabitat.get("hexagon");
+					if(hex.contains(e.getPoint()))
+					{						
+						if (wildlifeNames.contains(activeAnimalToken))
+						{
+							foundTokenMatchHab = true;
+							foundMatchHabitatNum = (int)(cHabitat.get("tileNum"));
+							break;
+						}
+					}
+			}
+
+			if (foundTokenMatchHab == true )
+			{
+				if (previousMouseMovedinHabitatNum != foundMatchHabitatNum)
+				{
+					if (previousMouseMovedinHabitatNum == -1)
+					{
+						foundMatchHabitat = searchClaimedHabitat(foundMatchHabitatNum);
+						drawHabitatTile(g, foundMatchHabitat);
+						int row_i = (int) foundMatchHabitat.get("row_idx");
+						int col_j = (int) foundMatchHabitat.get("col_idx");
+						int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff -xOff);
+						int y = (int) (origin.y + 3*yOff*row_i) -radius;							
+						x+=(int)xOff/2;
+						y+=(int)(yOff + 6);
+						BufferedImage bImage = animalImageMap.get(activeAnimalToken+"Active");
+						g.drawImage(bImage, x, y, (int)xOff, (int)yOff*2,null);
+						
+						previousMouseMovedinHabitatNum = foundMatchHabitatNum;
+					}
+					else 
+					{
+						//clear up old one
+						previousTokenMatchHabit = searchClaimedHabitat(previousMouseMovedinHabitatNum);
+						drawHabitatTile(g, previousTokenMatchHabit);
+						drawHabitatWildlife(g, previousTokenMatchHabit);
+						previousMouseMovedinHabitatNum = foundMatchHabitatNum;
+					
+						//draw new match hab with active token
+						foundMatchHabitat = searchClaimedHabitat(foundMatchHabitatNum);
+						drawHabitatTile(g, foundMatchHabitat);
+						int row_i = (int) foundMatchHabitat.get("row_idx");
+						int col_j = (int) foundMatchHabitat.get("col_idx");
+						int x = (int) (origin.x + (row_i%2)*xOff + 2*col_j*xOff -xOff);
+						int y = (int) (origin.y + 3*yOff*row_i) -radius;							
+						x+=(int)xOff/2;
+						y+=(int)(yOff + 6);
+						BufferedImage bImage = animalImageMap.get(activeAnimalToken+"Active");
+						g.drawImage(bImage, x, y, (int)xOff, (int)yOff*2,null);
+
+
+					}
+				}
+			}
+			else
+			{
+				if (previousMouseMovedinHabitatNum != -1)
+				{
+					previousTokenMatchHabit = searchClaimedHabitat(previousMouseMovedinHabitatNum);
+					drawHabitatTile(g, previousTokenMatchHabit);
+					drawHabitatWildlife(g, previousTokenMatchHabit);
+					previousMouseMovedinHabitatNum = -1;
+					foundTokenMatchHab = false;
+				}
+			
+			}
+		}
+
+	}
+
+
+	public TreeMap<String, Object> searchClaimedHabitat(int tilenumber)
+	{
+		for (TreeMap<String, Object> cHabitat : players.get(activePlayerIdx).getClaimedHabitats()) 
+		{
+			if (tilenumber == (int)(cHabitat.get("tileNum")))
+			{
+				return cHabitat;
+			}
+		}
+		return null;
 	}
 }

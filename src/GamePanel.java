@@ -42,6 +42,8 @@ public class GamePanel extends JPanel implements MouseListener{
 	private Wildlife animals;
 	private ArrayList<Tile> tilesOnTable;
 	private ArrayList<String> animalsOnTable;
+	String [] tilesAnimalsOnTable = {"", "", "", ""};
+	private ArrayList<String> tilesAndAnimalsOnTable = new ArrayList<String>();
 	private int gameStatus = 0;
 	private Font font = new Font("Arial", Font.BOLD, 24);
 
@@ -72,6 +74,8 @@ public class GamePanel extends JPanel implements MouseListener{
 	double yOff = Math.sin(ang30) * (radius +0.3);
 
 	Rectangle rcCancel, rcConfirm, rcClockwise, rcCounterClockwise;
+	Rectangle[] rcTilesOnTable = null;
+	Rectangle[] rcAnimalsOnTable = null;
 	public GamePanel() {
 		
 
@@ -146,6 +150,7 @@ public class GamePanel extends JPanel implements MouseListener{
 
 		tilesOnTable = new ArrayList<Tile>();
 		animalsOnTable = new ArrayList<String>();
+
 		rcCancel = new Rectangle();
 		rcConfirm = new Rectangle();
 		rcClockwise = new Rectangle();
@@ -197,8 +202,15 @@ public class GamePanel extends JPanel implements MouseListener{
 				highlightNewHabitat(g);
 			}
 		}
-
-
+		if(rcTilesOnTable == null){
+			rcTilesOnTable = new Rectangle[4];
+			rcAnimalsOnTable = new Rectangle[4];
+			for(int i = 0; i < 4; i++)
+			{
+				rcTilesOnTable[i] = new Rectangle(0,0,0,0);
+				rcAnimalsOnTable[i] = new Rectangle(0,0,0,0);
+			}
+		}
 		for(int i = 0; i < tilesOnTable.size(); i++){
 			ArrayList<String> habitat = tilesOnTable.get(i).getHabitats();
 			BufferedImage img = getHabiImageFromName (habitat);
@@ -209,6 +221,13 @@ public class GamePanel extends JPanel implements MouseListener{
 			int y0 = getHeight() - 250;
 
 			g.drawImage(img, x0, y0, width, height, null);
+			if(rcTilesOnTable[i].width == 0){
+				rcTilesOnTable[i].x = x0;
+				rcTilesOnTable[i].y = y0;
+				rcTilesOnTable[i].width = width;
+				rcTilesOnTable[i].height = height;
+				System.out.println("tiles " + i + " which is " + rcTilesOnTable[i].x + "-" + rcTilesOnTable[i].y);
+			}
 			Hexagon hex = new Hexagon(x0+width/2, y0+height/2, radius);
 			tilesOnTable.get(i).setHexagon(hex);
 			drawTileWildlife(g, tilesOnTable.get(i));
@@ -218,6 +237,13 @@ public class GamePanel extends JPanel implements MouseListener{
 			//System.out.println("Should get an image of " + animalsOnTable.get(i));
 			BufferedImage img = animalImageMap.get(animalsOnTable.get(i));
 			g.drawImage(img, 255 + i * 120, getHeight() - 150, 80, 80, null);
+			if(rcAnimalsOnTable[i].width == 0){
+				rcAnimalsOnTable[i].x = 255 + i * 120;
+				rcAnimalsOnTable[i].y = getHeight() - 150;
+				rcAnimalsOnTable[i].width = 80;
+				rcAnimalsOnTable[i].height = 80;
+				System.out.println("animal " + i + " which is " + rcAnimalsOnTable[i].x + "-" + rcAnimalsOnTable[i].y);
+			}
 		}
 		g.setColor(Color.red);
 		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
@@ -493,11 +519,16 @@ public class GamePanel extends JPanel implements MouseListener{
 	private void StartGame(){
 		gameStatus = 1;
 		// System.out.println("tilesOnTable has what: " + tilesOnTable.size() + " tiles have how many: " + tiles.getTiles().size());
+
 		for(int i = 0; i < 4; i++){
-			tilesOnTable.add(tiles.getTiles().remove(i));
-			animalsOnTable.add(animals.getWildlife().remove(i));
+			Tile t = tiles.getTiles().remove(i);
+			String w = animals.getWildlife().remove(i);
+			tilesOnTable.add(t);
+			animalsOnTable.add(w);
+			tilesAnimalsOnTable[i] = Integer.toString(t.getTileNum()) + "-" + w;
 		}
-		
+		for(int i = 0; i < 4; i++)
+			System.out.println(tilesAnimalsOnTable[i]);
 		repaint();
 	}
 
@@ -573,7 +604,18 @@ public class GamePanel extends JPanel implements MouseListener{
 		}
 		else{
 			System.out.println( "" + e.getX() + "  " + e.getY());
-
+			for(int i = 0; i < 4; i++){
+				if(rcTilesOnTable[i].contains(e.getPoint())){
+					System.out.println("tiles " + i + " which is " + tilesOnTable.get(i).getTileNum());// + " corresponds to " + tilesAnimalsOnTable[i].split("-")[1]);
+					String[] sTmps = tilesAnimalsOnTable[i].split("-");
+					System.out.println(sTmps[1]);
+				}
+				if(rcAnimalsOnTable[i].contains(e.getPoint())){
+					System.out.println("animal " + i + " which is " + animalsOnTable.get(i));// + " corresponds to " + tilesAnimalsOnTable[i].split("-")[0]);
+					String[] sTmps = tilesAnimalsOnTable[i].split("-");
+					System.out.println(sTmps[0]);				
+				}
+			}
 			
 			TreeMap<String, Object> habiTile = players.get(activePlayerIdx).searchHabitat(e.getPoint());
 			if (habiTile != null)
@@ -671,6 +713,7 @@ public class GamePanel extends JPanel implements MouseListener{
 				}
 			}
 		}
+
 	}
 
 	

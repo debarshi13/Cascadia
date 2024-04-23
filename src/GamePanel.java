@@ -449,7 +449,7 @@ public class GamePanel extends JPanel implements MouseListener{
 
 	}
 
-	
+
     private void drawHexGrid(Graphics g, Point origin, int size, int radius) {
     	double ang30 = Math.toRadians(30);
         double xOff = Math.cos(ang30) * (radius +0.5);
@@ -574,8 +574,8 @@ public class GamePanel extends JPanel implements MouseListener{
 					Hexagon hex = (Hexagon) tile.getHexagon();
 					if(hex.contains(e.getPoint()))
 					{
+						selectedTileOnTable = new Tile();
 						selectedTileOnTable = tile;
-						
 						playerState = PlayerState.TILE_ON_TABLE_IS_SELECTED;
 
 					}
@@ -608,7 +608,17 @@ public class GamePanel extends JPanel implements MouseListener{
 					}
 				}
 				
-				findClickedHexagonAddHabitat(e.getPoint());
+				boolean newHabitatPlaced = findAndPlaceSelectedHabitat(e.getPoint());
+				if (newHabitatPlaced == true) {
+					// remove the selected tile from the tilesOnTable
+					for(int i = 0; i <  tilesOnTable.size(); i++){
+						Tile t = tilesOnTable.get(i);
+						if (t.getTileNum() == selectedTileOnTable.getTileNum())
+						{
+							tilesOnTable.remove(t);
+						}
+					}
+				}
 				
 			}
 			repaint();
@@ -641,8 +651,6 @@ public class GamePanel extends JPanel implements MouseListener{
 		if (!indexInClaimedHabitats(row_i, col_j, claminedHab))
 		{
 			String key = Integer.toString(row_i) + ":" + Integer.toString(col_j);
-			//Graphics g = getGraphics();
-			
 			if (candidateHabitatHexagon == null)
 			{
 				candidateHabitatHexagon = new TreeMap<>();
@@ -675,9 +683,9 @@ public class GamePanel extends JPanel implements MouseListener{
 		return false;
 	}
 
-	public Point findClickedHexagonAddHabitat(Point pt)
+	public boolean findAndPlaceSelectedHabitat(Point pt)
 	{
-		Point hex_loc = new Point(-999, -999);
+		boolean newHabitatSelected = false;
 		for (Map.Entry<String, Hexagon> entry : candidateHabitatHexagon.entrySet()) 
 		{
 			Hexagon hex = entry.getValue();
@@ -697,10 +705,12 @@ public class GamePanel extends JPanel implements MouseListener{
 				candidateHabitat.put("hexagon", hex);
 				//players.get(activePlayerIdx).getClaimedHabitats().add(habitatInfo);
 				playerState = PlayerState.CANDIDATE_TILE_CLICKED;
+
+				return true;
 			}
 		}
 
-		return hex_loc;
+		return newHabitatSelected;
 	}
 
 	@Override

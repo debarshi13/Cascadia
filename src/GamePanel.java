@@ -194,6 +194,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			if (candidateHabitat != null) {
 				drawHabitatTile(g, candidateHabitat);
 				drawHabitatWildlife(g, candidateHabitat);
+				highlightNewHabitat(g);
 			}
 		}
 
@@ -436,6 +437,16 @@ public class GamePanel extends JPanel implements MouseListener{
 		}
 	}
 	
+	public void highlightNewHabitat(Graphics g) {
+		if (candidateHabitat != null)
+		{
+			Hexagon hex = (Hexagon) candidateHabitat.get("hexagon");
+			Point center = hex.getCenter();
+			int x = (int)(center.getX() - xOff);
+			int y = (int)(center.getY() - radius);
+			g.drawImage(selectedTileImage, x, y, (int)(selectedTileImage.getWidth()), (int)( selectedTileImage.getHeight()), null);
+		}
+	}
 
 	public void paintBackgroundGrid(Graphics g, int radius) {
 		Graphics2D g2d = (Graphics2D) g;
@@ -566,7 +577,10 @@ public class GamePanel extends JPanel implements MouseListener{
 			
 			TreeMap<String, Object> habiTile = players.get(activePlayerIdx).searchHabitat(e.getPoint());
 			if (habiTile != null)
-				playerState = PlayerState.CLAIMED_HABITAT_CLICKED;
+			{
+				// add token to claimed habitat
+				//playerState = PlayerState.CLAIMED_HABITAT_CLICKED;
+			}
 
 			if (playerState == PlayerState.TILES_ON_TABLE_UPDATED || playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED) 
 			{
@@ -577,7 +591,6 @@ public class GamePanel extends JPanel implements MouseListener{
 						selectedTileOnTable = new Tile();
 						selectedTileOnTable = tile;
 						playerState = PlayerState.TILE_ON_TABLE_IS_SELECTED;
-
 					}
 				}
 			}
@@ -633,14 +646,23 @@ public class GamePanel extends JPanel implements MouseListener{
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
 					counterCWclickedCnt ++;
 					int rotatAng = counterCWclickedCnt%6;
-					candidateHabitat.put("rotation", rotatAng*60);
+					candidateHabitat.put("rotation", 360 - rotatAng*60);
 					drawHabitatTile(getGraphics(), candidateHabitat);
 					drawHabitatWildlife(getGraphics(), candidateHabitat);
 				}
 
 			}
-			if(rcClockwise.contains(e.getPoint()))
+			if(rcClockwise.contains(e.getPoint())) {
 				System.out.println("Clockwise clicked");		
+				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
+					counterCWclickedCnt ++;
+					int rotatAng = counterCWclickedCnt%6;
+					candidateHabitat.put("rotation", rotatAng*(60));
+					drawHabitatTile(getGraphics(), candidateHabitat);
+					drawHabitatWildlife(getGraphics(), candidateHabitat);
+
+				}
+			}
 
 		}
 	}

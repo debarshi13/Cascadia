@@ -180,7 +180,7 @@ public class GamePanel extends JPanel implements MouseListener{
 			//paintBackgroundGrid(g, radius);
 
 			// starting tiles
-			drawStartingTiles(g);
+			drawClaimedHabitats(g);
 
 			for(int i = 0; i <  tilesOnTable.size(); i++){
 				Tile t = tilesOnTable.get(i);
@@ -266,7 +266,7 @@ public class GamePanel extends JPanel implements MouseListener{
 		return img;
 	}
 
-	public void drawStartingTiles(Graphics g)
+	public void drawClaimedHabitats(Graphics g)
 	{
 		Player activePlayer = players.get(activePlayerIdx);
 		ArrayList<TreeMap<String, Object>> startingTiles = activePlayer.getClaimedHabitats();
@@ -639,8 +639,15 @@ public class GamePanel extends JPanel implements MouseListener{
 			// players.get(activePlayerIdx).searchHabitat(e.getPoint());
 			if(rcCancel.contains(e.getPoint()))
 				System.out.println("Cancel clicked");
-			if(rcConfirm.contains(e.getPoint()))
-				System.out.println("Confirm clicked");		
+			if(rcConfirm.contains(e.getPoint())) {
+				ArrayList<TreeMap<String, Object>> claimedHab = players.get(activePlayerIdx).getClaimedHabitats();
+				TreeMap<String, Object> newHab = new TreeMap<>();
+				newHab = candidateHabitat;
+				claimedHab.add(newHab);
+				candidateHabitat = null;
+				playerState = PlayerState.COMFIRM_HABITAT_PLACE;
+				System.out.println("Confirm clicked");
+			}		
 			if(rcCounterClockwise.contains(e.getPoint())) {
 				System.out.println("CounterClockwise clicked");
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
@@ -663,7 +670,6 @@ public class GamePanel extends JPanel implements MouseListener{
 
 				}
 			}
-
 		}
 	}
 

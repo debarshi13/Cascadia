@@ -83,6 +83,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	double yOff = Math.sin(ang30) * (radius +0.3);
 
 	Rectangle rcCancel, rcConfirm;
+	Rectangle rcPlayerIndicator, rcNextPlay, rcTurnsLeft;
 
 	Hexagon  hexClockwiise, hexCounterClockwise;
 	public GamePanel() {
@@ -147,7 +148,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		players = new ArrayList<>();
 		for (int i = 0 ; i < 3 ; i++) {
 			
-			players.add(new Player(i, 0));
+			players.add(new Player(i, 0, 20));
 			
 		}
 		tiles = new Tiles();
@@ -161,6 +162,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 		rcCancel = new Rectangle();
 		rcConfirm = new Rectangle();
+		rcPlayerIndicator = new Rectangle();
+		rcNextPlay = new Rectangle();
+		rcTurnsLeft =  new Rectangle();
 		addMouseListener(this);
 		addMouseMotionListener(this);
 	}
@@ -180,7 +184,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		else{
 			rcCancel.setBounds(getWidth() * 2 / 5, getHeight() - 150, 140, 50);
 			rcConfirm.setBounds(rcCancel.x + rcCancel.width + 10, getHeight() - 150, 140, 50);
-
 			int buttonWidth = (int)(tilePlacementCancelImage.getWidth()*0.6);
 			int buttonHeight = (int)(tilePlacementCancelImage.getHeight()*0.6);
 			hexCounterClockwise = new Hexagon((int )((rcConfirm.x + rcConfirm.width + 10 + buttonWidth/2)), (int)(getHeight()-40 - buttonWidth), (int)(radius*0.8));
@@ -188,7 +191,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(tilePlacementRotateCounterCWImage, (int)(hexCounterClockwise.getCenter().x-buttonWidth/2), (int)(hexCounterClockwise.getCenter().y- buttonHeight/2), buttonWidth, buttonHeight, null);
 			g.drawImage(tilePlacementRotateCWImage, (int)(hexClockwiise.getCenter().x-buttonWidth/2), (int)(hexClockwiise.getCenter().y- buttonHeight/2), buttonWidth, buttonHeight, null);
 			
-
+			rcPlayerIndicator.setBounds((int)(hexClockwiise.getCenter().x+buttonWidth/2) + 15,getHeight() - 150,140,50); 
+			rcTurnsLeft.setBounds(rcPlayerIndicator.x + rcPlayerIndicator.width + 15, getHeight() - 150, 180,50);
+			rcNextPlay.setBounds(rcTurnsLeft.x + rcTurnsLeft.width + 15, getHeight() - 150, 160,50);
 			g.drawImage(bearScoreImage, 10, 200, 160, 110, null);
 			g.drawImage(elkScoreImage, 10, 320, 160, 110, null);
 			g.drawImage(foxScoreImage, 10, 440, 160, 110, null);
@@ -250,7 +255,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
 		g.setColor(Color.white);
 		g.setFont(smallfont);
-		g.drawString("Cancel", rcCancel.x + 30, rcCancel.y + 30);
+		g.drawString("Cancel", rcCancel.x + 35, rcCancel.y + 30);
 
 		g.setColor(Color.green);
 		g.fillRect(rcConfirm.x, rcConfirm.y, rcConfirm.width, rcConfirm.height);
@@ -258,6 +263,23 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		g.setFont(smallfont);
 		g.drawString("Confirm", rcConfirm.x + 30, rcConfirm.y + 30);
 
+		g.setColor(Color.blue);
+		g.fillRect(rcPlayerIndicator.x, rcPlayerIndicator.y, rcPlayerIndicator.width, rcPlayerIndicator.height);
+		g.setColor(Color.white);
+		g.setFont(smallfont);
+		g.drawString("Player " + Integer.toString(activePlayerIdx+1), rcPlayerIndicator.x + 30, rcPlayerIndicator.y + 30);
+		
+		g.setColor(Color.green);
+		g.fillRect(rcTurnsLeft.x, rcTurnsLeft.y, rcTurnsLeft.width, rcTurnsLeft.height);
+		g.setColor(Color.white);
+		g.setFont(smallfont);
+		g.drawString("Turns Left: " + Integer.toString(players.get(activePlayerIdx).getTurnsLeft()), rcTurnsLeft.x + 23, rcTurnsLeft.y + 30);
+
+		g.setColor(Color.red);
+		g.fillRect(rcNextPlay.x, rcNextPlay.y, rcNextPlay.width, rcNextPlay.height);
+		g.setColor(Color.white);
+		g.setFont(smallfont);
+		g.drawString("Next Player", rcNextPlay.x + 23, rcNextPlay.y + 30);
 	}
 
 	public String constructNameString (ArrayList<String> names)

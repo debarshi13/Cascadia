@@ -44,12 +44,14 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	private ArrayList<Tile> tilesOnTable;
 	private ArrayList<String> animalsOnTable;
 	String [] tilesAnimalsOnTable = {"", "", "", ""};
-	private ArrayList<String> tilesAndAnimalsOnTable = new ArrayList<String>();
+	
 	private int gameStatus = 0;
 	private Font font = new Font("Arial", Font.BOLD, 24);
 
 	private Tile selectedTileOnTable = null;
-
+	private int selectedTileOnTableIndex = -1;
+	private int selectedTokenOnTableIndex = -1;
+	private boolean useNatureToken = false;
 	int counterCWclickedCnt = 0;
 
 	private Font smallfont = new Font("Arial", Font.BOLD, 20);
@@ -81,9 +83,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	double xOff = Math.cos(ang30) * (radius +0.3);
 	double yOff = Math.sin(ang30) * (radius +0.3);
 
-	Rectangle rcCancel, rcConfirm, rcClockwise, rcCounterClockwise;
-	Rectangle[] rcTilesOnTable = null;
-	Rectangle[] rcAnimalsOnTable = null;
+	Rectangle rcCancel, rcConfirm;
+
 	Hexagon  hexClockwiise, hexCounterClockwise;
 	public GamePanel() {
 		
@@ -208,48 +209,32 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				highlightNewHabitat(g);
 			}
 		}
-		if(rcTilesOnTable == null){
-			rcTilesOnTable = new Rectangle[4];
-			rcAnimalsOnTable = new Rectangle[4];
-			for(int i = 0; i < 4; i++)
-			{
-				rcTilesOnTable[i] = new Rectangle(0,0,0,0);
-				rcAnimalsOnTable[i] = new Rectangle(0,0,0,0);
-			}
-		}
-		for(int i = 0; i < tilesOnTable.size(); i++){
-			ArrayList<String> habitat = tilesOnTable.get(i).getHabitats();
-			BufferedImage img = getHabiImageFromName (habitat);
-			
-			int width = (int)(img.getWidth()*0.8);
-			int height = (int)(img.getHeight()*0.8);
-			int x0 = 250 + i * 120;
-			int y0 = getHeight() - 250;
 
-			g.drawImage(img, x0, y0, width, height, null);
-			if(rcTilesOnTable[i].width == 0){
-				rcTilesOnTable[i].x = x0;
-				rcTilesOnTable[i].y = y0;
-				rcTilesOnTable[i].width = width;
-				rcTilesOnTable[i].height = height;
-				System.out.println("tiles " + i + " which is " + rcTilesOnTable[i].x + "-" + rcTilesOnTable[i].y);
+		for(int i = 0; i < tilesOnTable.size(); i++){
+			Tile habTile = tilesOnTable.get(i);
+			if (habTile != null) {
+				ArrayList<String> habitat = tilesOnTable.get(i).getHabitats();
+				BufferedImage img = getHabiImageFromName (habitat);
+				
+				int width = (int)(img.getWidth()*0.8);
+				int height = (int)(img.getHeight()*0.8);
+				int x0 = 250 + i * 120;
+				int y0 = getHeight() - 250;
+
+				g.drawImage(img, x0, y0, width, height, null);
+
+				Hexagon hex = new Hexagon(x0+width/2, y0+height/2, radius);
+				tilesOnTable.get(i).setHexagon(hex);
+			
+				drawTileWildlife(g, tilesOnTable.get(i));
+				drawHighlightedTileOnTable(g);
 			}
-			Hexagon hex = new Hexagon(x0+width/2, y0+height/2, radius);
-			tilesOnTable.get(i).setHexagon(hex);
-			drawTileWildlife(g, tilesOnTable.get(i));
-			drawHighlightedTileOnTable(g);
 		}
 		for(int i = 0; i < animalsOnTable.size(); i++){
 			//System.out.println("Should get an image of " + animalsOnTable.get(i));
 			BufferedImage img = animalImageMap.get(animalsOnTable.get(i));
 			g.drawImage(img, 255 + i * 120, getHeight() - 150, 80, 80, null);
-			if(rcAnimalsOnTable[i].width == 0){
-				rcAnimalsOnTable[i].x = 255 + i * 120;
-				rcAnimalsOnTable[i].y = getHeight() - 150;
-				rcAnimalsOnTable[i].width = 80;
-				rcAnimalsOnTable[i].height = 80;
-				System.out.println("animal " + i + " which is " + rcAnimalsOnTable[i].x + "-" + rcAnimalsOnTable[i].y);
-			}
+
 		}
 		g.setColor(Color.red);
 		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
@@ -308,11 +293,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 	public void drawTileWildlife(Graphics g, Tile cTile){
+
 		int x = (int) cTile.getHexagon().getBounds().getCenterX();
 		int y = (int) cTile.getHexagon().getBounds().getCenterY();
 		ArrayList<String> wildlifeList = (ArrayList<String>) cTile.getWildlife();
 		int num = wildlifeList.size();
-		//System.out.println("Number of wildlife: " + num);
+
 		if(num == 1){
 			x-=(int)xOff/4;
 			y-=(int)(yOff/2);
@@ -514,7 +500,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 	private void StartGame(){
 		gameStatus = 1;
-		// System.out.println("tilesOnTable has what: " + tilesOnTable.size() + " tiles have how many: " + tiles.getTiles().size());
+
 
 		for(int i = 0; i < 4; i++){
 			Tile t = tiles.getTiles().remove(i);
@@ -522,9 +508,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			tilesOnTable.add(t);
 			animalsOnTable.add(w);
 			tilesAnimalsOnTable[i] = Integer.toString(t.getTileNum()) + "-" + w;
+
 		}
-		for(int i = 0; i < 4; i++)
-			System.out.println(tilesAnimalsOnTable[i]);
+
 		repaint();
 	}
 
@@ -601,18 +587,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		}
 		else{
 			System.out.println( "" + e.getX() + "  " + e.getY());
-			for(int i = 0; i < 4; i++){
-				if(rcTilesOnTable[i].contains(e.getPoint())){
-					System.out.println("tiles " + i + " which is " + tilesOnTable.get(i).getTileNum());// + " corresponds to " + tilesAnimalsOnTable[i].split("-")[1]);
-					String[] sTmps = tilesAnimalsOnTable[i].split("-");
-					System.out.println(sTmps[1]);
-				}
-				if(rcAnimalsOnTable[i].contains(e.getPoint())){
-					System.out.println("animal " + i + " which is " + animalsOnTable.get(i));// + " corresponds to " + tilesAnimalsOnTable[i].split("-")[0]);
-					String[] sTmps = tilesAnimalsOnTable[i].split("-");
-					System.out.println(sTmps[0]);				
-				}
-			}
+
 			
 			TreeMap<String, Object> habiTile = players.get(activePlayerIdx).searchHabitat(e.getPoint());
 			if (habiTile != null)
@@ -644,7 +619,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 			if (playerState == PlayerState.TILES_ON_TABLE_UPDATED || playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED) 
 			{
-				for (Tile tile : tilesOnTable) {
+				for (int i = 0; i<4; i++) {
+					Tile tile = tilesOnTable.get(i);
 					Hexagon hex = (Hexagon) tile.getHexagon();
 					if(hex.contains(e.getPoint()))
 					{
@@ -683,14 +659,18 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				
 				boolean newHabitatPlaced = findAndPlaceSelectedHabitat(e.getPoint());
 				if (newHabitatPlaced == true) {
-					// remove the selected tile from the tilesOnTable
+					
 					for(int i = 0; i <  tilesOnTable.size(); i++){
 						Tile t = tilesOnTable.get(i);
 						if (t.getTileNum() == selectedTileOnTable.getTileNum())
 						{
-							tilesOnTable.remove(t);
+							tilesOnTable.set(i, null);
+							selectedTileOnTableIndex = i;
+							selectedTokenOnTableIndex = i;
 						}
 					}
+					String tokenToSelect = animalsOnTable.get(selectedTokenOnTableIndex);
+				
 				}
 				
 			}
@@ -701,8 +681,10 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
 					playerState = PlayerState.TILES_ON_TABLE_UPDATED;
-					tilesOnTable.add(selectedTileOnTable);
+					tilesOnTable.set(selectedTileOnTableIndex, selectedTileOnTable);
 					candidateHabitat = null;
+					selectedTileOnTableIndex = -1;
+					selectedTokenOnTableIndex = -1;
 				
 				}
 			}
@@ -715,6 +697,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					claimedHab.add(newHab);
 					candidateHabitat = null;
 					playerState = PlayerState.HABITAT_PLACE_COMFIRMED;
+					selectedTileOnTableIndex = -1;
+					selectedTokenOnTableIndex = -1;
 					System.out.println("Confirm clicked");
 				}
 				//draw the paired animal token in active

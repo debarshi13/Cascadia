@@ -7,8 +7,10 @@ public class Player {
 	private int natureTokens, numTiles;
 	private Tiles allTiles = new Tiles();
 	private ArrayList<TreeMap<String, Object>> claimedHabitats;
+	private int turnsLeft;
 
-	public Player(int playerNum, int startingTileIdx) {
+	public Player(int playerNum, int startingTileIdx, int turns) {
+		turnsLeft = turns;
 		claimedHabitats = new ArrayList<>();
 		
 		Tile[][] startingTiles = allTiles.getStartingTiles();
@@ -67,5 +69,9 @@ public class Player {
 			
 		}
 		return null;
+	}
+
+	public int getTurnsLeft(){
+		return turnsLeft;
 	}
 }

@@ -246,20 +246,28 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				drawHighlightedTileOnTable(g);
 			}
 		}
-		for(int i = 0; i < animalsOnTable.size(); i++){
-			BufferedImage img = null;
-			if (animalsOnTable.get(i) != "empty")
-			{
-				if (i == selectedTokenOnTableIndex)
-					img = animalImageMap.get(animalsOnTable.get(i) + "Active");
-				else
-					img = animalImageMap.get(animalsOnTable.get(i));
-
-				g.drawImage(img, 255 + i * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
-				Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
-				animalOnTableImgElps.add(elps);
-			}
+		if (useNatureToken) {
+			animalOnTableImgElps.clear();
 		}
+			for(int i = 0; i < animalsOnTable.size(); i++){
+				BufferedImage img = null;
+				
+				if (animalsOnTable.get(i) != "empty")
+				{
+					if (i == selectedTokenOnTableIndex)
+						img = animalImageMap.get(animalsOnTable.get(i) + "Active");
+					else
+						img = animalImageMap.get(animalsOnTable.get(i));
+
+					g.drawImage(img, 255 + i * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
+					if (useNatureToken && playerState == PlayerState.HABITAT_PLACE_COMFIRMED) {
+						Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
+						animalOnTableImgElps.add(elps);
+						System.out.println("-------->>>>animalOnTableImgElps.add(elps)" + animalsOnTable.get(i) + "total elps---->" + animalOnTableImgElps.size());
+					}
+				}
+			}
+		
 
 		g.setColor(Color.red);
 		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
@@ -296,6 +304,11 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		g.setColor(Color.white);
 		g.setFont(smallfont);
 		g.drawString("Use Nature Token", rcUseNatureToken.x + 35, rcUseNatureToken.y + 30);
+
+		for (int i = 0; i < players.get(activePlayerIdx).getNumNatureToken(); i++) {
+			g.drawImage(natureTokenImage, (int)(rcUseNatureToken.x + rcUseNatureToken.getWidth() + 20 + (natureTokenImage.getWidth() +15)* i ), (int)(rcUseNatureToken.y-5), null);
+
+		}
 	}
 
 	public String constructNameString (ArrayList<String> names)
@@ -647,6 +660,15 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					if(animalsOnTable.get(i) == "empty")
 						animalsOnTable.set(i, animals.getWildlife().remove(0));
 				}
+				playerState = PlayerState.TILES_ON_TABLE_UPDATED;
+				selectedTileOnTableIndex = -1;
+				selectedTokenOnTableIndex = -1;
+				previousMouseMovedinHabitatNum = -1;
+				activeAnimalToken = "";
+				candidateHabitat = null;
+				candidateHabitatHexagon.clear();
+				animalOnTableImgElps.clear();
+				useNatureToken = false;
 				repaint();
 				return;
 			}
@@ -663,7 +685,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 						for (TreeMap<String, Object> cHabitat : claimedHabitats) {
 							ArrayList<String> wildlifeNames =( ArrayList<String>)cHabitat.get("wildlife");
 							Hexagon hex = (Hexagon) cHabitat.get("hexagon");
-							if(hex.contains(e.getPoint()))
+							if(hex.contains(e.getPoint()) && wildlifeNames.contains(activeAnimalToken))
 							{						
 								ArrayList<String> wildlifeLists = new ArrayList<>();
 								wildlifeLists.add(activeAnimalToken);
@@ -676,6 +698,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 								drawHabitatWildlife(g, cHabitat);
 								playerState = PlayerState.TURN_IS_DONE;
 								animalsOnTable.set(selectedTokenOnTableIndex, "empty");
+								animalOnTableImgElps.clear();
 								break;
 							}
 						}
@@ -723,6 +746,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					int row_i = (int) cTile.get("row_idx");
 					int col_j = (int) cTile.get("col_idx");
 
+					System.out.println("~~~~~~ Check: " + "row==>" + row_i + " col==>" + col_j);
 					checkAndAddCandidateHexTile(row_i, col_j-1, claimedHab);
 					checkAndAddCandidateHexTile(row_i, col_j+1, claimedHab);
 					if (row_i %2 == 0) {
@@ -841,7 +865,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				candidateHabitatHexagon.put(key, hex);
 			}
 		}
-
 	}
 
 	public boolean indexInClaimedHabitats(int i_idx, int j_idx, ArrayList<TreeMap<String, Object>> claminedHab)

@@ -73,6 +73,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	BufferedImage bearScoreImage = null, elkScoreImage = null, foxScoreImage = null, hawkScoreImage = null, salmonScoreImage = null;
 	BufferedImage selectedTileImage = null, tilePlacementCancelImage = null, tilePlacementConfirmImage = null;
 	BufferedImage tilePlacementRotateCWImage = null, tilePlacementRotateCounterCWImage = null;
+	BufferedImage natureTokenImage = null;
 
 
 	TreeMap<String, BufferedImage> animalImageMap = new TreeMap<>();
@@ -111,6 +112,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			tilePlacementConfirmImage = ImageIO.read(new File("src/images/tilePlacementConfirm.png")); 
 			tilePlacementRotateCWImage = ImageIO.read(new File("src/images/tilePlacementRotateClockwise.png")); 
 			tilePlacementRotateCounterCWImage = ImageIO.read(new File("src/images/tilePlacementRotateCounterClockwise.png")); 
+			natureTokenImage = ImageIO.read(new File("src/images/nature-token.png")); 
 
 			selectedTileImage = ImageIO.read(new File("src/images/selectedTile.png"));
 
@@ -643,6 +645,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							wildlifeLists.add(activeAnimalToken);
 							cHabitat.put("wildlife", wildlifeLists);
 							cHabitat.put("tokenPlaced", true);
+							if (wildlifeNames.size() == 1)
+								players.get(activePlayerIdx).increaseNatureToken();
 							Graphics g = getGraphics();
 							drawHabitatTile(g, cHabitat);
 							drawHabitatWildlife(g, cHabitat);

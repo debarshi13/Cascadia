@@ -4,7 +4,7 @@ import java.util.*;
 
 
 public class Player {
-	private int natureTokens, numTiles;
+	private int natureTokenCount, numTiles;
 	private Tiles allTiles = new Tiles();
 	private ArrayList<TreeMap<String, Object>> claimedHabitats;
 	private int turnsLeft;
@@ -76,5 +76,25 @@ public class Player {
 	}
 	public void turnUsed(){
 		turnsLeft--;
+	}
+
+	public int getNumNatureToken() 
+	{
+		return natureTokenCount;
+	}
+
+	public void setNumNatureToken(int numNt)
+	{
+		natureTokenCount = numNt;
+	}
+
+	public void increaseNatureToken()
+	{
+		natureTokenCount++;
+	}
+	
+	public void decreaseNatureToken()
+	{
+		natureTokenCount--;
 	}
 }

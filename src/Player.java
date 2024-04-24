@@ -11,6 +11,7 @@ public class Player {
 
 	public Player(int playerNum, int startingTileIdx, int turns) {
 		turnsLeft = turns;
+		natureTokenCount = 1;
 		claimedHabitats = new ArrayList<>();
 		
 		Tile[][] startingTiles = allTiles.getStartingTiles();

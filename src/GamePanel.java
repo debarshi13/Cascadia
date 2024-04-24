@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.awt.geom.Ellipse2D;
 
 
 
@@ -33,7 +34,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		TOKEN_PLACED,
 		TURN_IS_DONE
 	}
-	
+
 	PlayerState playerState = PlayerState.TILES_ON_TABLE_UPDATED;
 
 	BufferedImage background;
@@ -59,6 +60,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	int activePlayerIdx = 0;
 	String activeAnimalToken = "";
 	int previousMouseMovedinHabitatNum = -1;
+	ArrayList<Ellipse2D> animalOnTableImgElps = null;
 	
 	TreeMap<String, Object> previousTokenMatchHabit = null;
 	TreeMap<String, Hexagon> candidateHabitatHexagon = null;
@@ -83,7 +85,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	double xOff = Math.cos(ang30) * (radius +0.3);
 	double yOff = Math.sin(ang30) * (radius +0.3);
 
-	Rectangle rcCancel, rcConfirm;
+	Rectangle rcCancel, rcConfirm, rcUseNatureToken;
 	Rectangle rcPlayerIndicator, rcNextPlay, rcTurnsLeft;
 
 	Hexagon  hexClockwiise, hexCounterClockwise;
@@ -167,8 +169,11 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		rcPlayerIndicator = new Rectangle();
 		rcNextPlay = new Rectangle();
 		rcTurnsLeft =  new Rectangle();
+		rcUseNatureToken = new Rectangle();
+		animalOnTableImgElps = new ArrayList<>();
 		addMouseListener(this);
 		addMouseMotionListener(this);
+
 	}
 
 	public void paint(Graphics g) {
@@ -196,6 +201,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			rcPlayerIndicator.setBounds((int)(hexClockwiise.getCenter().x+buttonWidth/2) + 15,getHeight() - 150,140,50); 
 			rcTurnsLeft.setBounds(rcPlayerIndicator.x + rcPlayerIndicator.width + 15, getHeight() - 150, 180,50);
 			rcNextPlay.setBounds(rcTurnsLeft.x + rcTurnsLeft.width + 15, getHeight() - 150, 160,50);
+
+			rcUseNatureToken.setBounds(getWidth() * 2 / 5, getHeight() - 220, 240, 50);
 			g.drawImage(bearScoreImage, 10, 200, 160, 110, null);
 			g.drawImage(elkScoreImage, 10, 320, 160, 110, null);
 			g.drawImage(foxScoreImage, 10, 440, 160, 110, null);
@@ -240,7 +247,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			}
 		}
 		for(int i = 0; i < animalsOnTable.size(); i++){
-			//System.out.println("Should get an image of " + animalsOnTable.get(i));
 			BufferedImage img = null;
 			if (animalsOnTable.get(i) != "empty")
 			{
@@ -249,7 +255,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				else
 					img = animalImageMap.get(animalsOnTable.get(i));
 
-				g.drawImage(img, 255 + i * 120, getHeight() - 150, 80, 80, null);
+				g.drawImage(img, 255 + i * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
+				Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
+				animalOnTableImgElps.add(elps);
 			}
 		}
 
@@ -282,6 +290,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		g.setColor(Color.white);
 		g.setFont(smallfont);
 		g.drawString("Next Player", rcNextPlay.x + 23, rcNextPlay.y + 30);
+
+		g.setColor(Color.blue);
+		g.fillRect(rcUseNatureToken.x, rcUseNatureToken.y, rcUseNatureToken.width, rcUseNatureToken.height);
+		g.setColor(Color.white);
+		g.setFont(smallfont);
+		g.drawString("Use Nature Token", rcUseNatureToken.x + 35, rcUseNatureToken.y + 30);
 	}
 
 	public String constructNameString (ArrayList<String> names)
@@ -609,10 +623,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		int x = e.getX();
+		int y = e.getY();
 		if(gameStatus == 0){
-			int x = e.getX();
-			int y = e.getY();
-
 			if(x >= getWidth() / 2 - 100 && x <= getWidth() / 2 + 100 && y >= 200 && y <= 260){
 				System.out.println("Start Game");
 				StartGame();
@@ -645,28 +658,45 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				// playerState = PlayerState.CLAIMED_HABITAT_CLICKED;
 				if (playerState == PlayerState.HABITAT_PLACE_COMFIRMED)
 				{
-					ArrayList<TreeMap<String, Object>> claimedHabitats = players.get(activePlayerIdx).getClaimedHabitats();
-					for (TreeMap<String, Object> cHabitat : claimedHabitats) {
-						ArrayList<String> wildlifeNames =( ArrayList<String>)cHabitat.get("wildlife");
-						Hexagon hex = (Hexagon) cHabitat.get("hexagon");
-						if(hex.contains(e.getPoint()))
-						{						
-							ArrayList<String> wildlifeLists = new ArrayList<>();
-							wildlifeLists.add(activeAnimalToken);
-							cHabitat.put("wildlife", wildlifeLists);
-							cHabitat.put("tokenPlaced", true);
-							if (wildlifeNames.size() == 1)
-								players.get(activePlayerIdx).increaseNatureToken();
-							Graphics g = getGraphics();
-							drawHabitatTile(g, cHabitat);
-							drawHabitatWildlife(g, cHabitat);
-							playerState = PlayerState.TURN_IS_DONE;
-							animalsOnTable.set(selectedTokenOnTableIndex, "empty");
-							break;
+					if ( activeAnimalToken != "") {
+						ArrayList<TreeMap<String, Object>> claimedHabitats = players.get(activePlayerIdx).getClaimedHabitats();
+						for (TreeMap<String, Object> cHabitat : claimedHabitats) {
+							ArrayList<String> wildlifeNames =( ArrayList<String>)cHabitat.get("wildlife");
+							Hexagon hex = (Hexagon) cHabitat.get("hexagon");
+							if(hex.contains(e.getPoint()))
+							{						
+								ArrayList<String> wildlifeLists = new ArrayList<>();
+								wildlifeLists.add(activeAnimalToken);
+								cHabitat.put("wildlife", wildlifeLists);
+								cHabitat.put("tokenPlaced", true);
+								if (wildlifeNames.size() == 1)
+									players.get(activePlayerIdx).increaseNatureToken();
+								Graphics g = getGraphics();
+								drawHabitatTile(g, cHabitat);
+								drawHabitatWildlife(g, cHabitat);
+								playerState = PlayerState.TURN_IS_DONE;
+								animalsOnTable.set(selectedTokenOnTableIndex, "empty");
+								break;
+							}
 						}
 					}
 				}
 
+			}
+
+			if (playerState == PlayerState.HABITAT_PLACE_COMFIRMED && useNatureToken)
+			{
+				for (int i = 0; i < 4; i++) {
+					Ellipse2D elps = animalOnTableImgElps.get(i);
+					if (elps.contains(e.getPoint())) {
+						selectedTokenOnTableIndex = i;
+						activeAnimalToken = animalsOnTable.get(i);
+						Graphics g = getGraphics();
+						g.drawImage(animalImageMap.get(animalsOnTable.get(i)+"Active"), (int)(elps.getCenterX()-elps.getWidth()/2), (int)(elps.getCenterY()-elps.getHeight()/2), null);
+						break;
+					}
+				}
+				
 			}
 
 			if (playerState == PlayerState.TILES_ON_TABLE_UPDATED || playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED) 
@@ -746,8 +776,11 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					claimedHab.add(newHab);
 					candidateHabitat = null;
 					playerState = PlayerState.HABITAT_PLACE_COMFIRMED;
-					selectedTokenOnTableIndex = selectedTileOnTableIndex;
-					activeAnimalToken = animalsOnTable.get(selectedTokenOnTableIndex);
+					if (!useNatureToken)
+					{
+						selectedTokenOnTableIndex = selectedTileOnTableIndex;
+						activeAnimalToken = animalsOnTable.get(selectedTokenOnTableIndex);
+					}
 					System.out.println("Confirm clicked");
 				}
 
@@ -772,6 +805,13 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					drawHabitatTile(getGraphics(), candidateHabitat);
 					drawHabitatWildlife(getGraphics(), candidateHabitat);
 
+				}
+			}
+			if (rcUseNatureToken.contains(e.getPoint()))
+			{
+				if (players.get(activePlayerIdx).getNumNatureToken() > 0){
+					players.get(activePlayerIdx).decreaseNatureToken();
+					useNatureToken = true;
 				}
 			}
 		}

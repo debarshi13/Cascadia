@@ -624,6 +624,16 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			if(rcNextPlay.contains(e.getPoint())){
 				players.get(activePlayerIdx).turnUsed();
 				activePlayerIdx = (activePlayerIdx + 1) % 3;
+				for(int i = 0; i < tilesOnTable.size(); i++){
+					if(tilesOnTable.get(i) == null){
+						tilesOnTable.set(i, tiles.getTiles().remove(0));
+						break;
+					}
+				}
+				for(int i = 0; i < 4; i++){
+					if(animalsOnTable.get(i) == "empty")
+						animalsOnTable.set(i, animals.getWildlife().remove(0));
+				}
 				repaint();
 				return;
 			}

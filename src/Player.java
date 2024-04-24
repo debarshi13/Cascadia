@@ -74,4 +74,7 @@ public class Player {
 	public int getTurnsLeft(){
 		return turnsLeft;
 	}
+	public void turnUsed(){
+		turnsLeft--;
+	}
 }

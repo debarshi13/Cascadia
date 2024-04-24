@@ -619,7 +619,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		}
 		else{
 			System.out.println( "" + e.getX() + "  " + e.getY());
-
+			if(rcNextPlay.contains(e.getPoint())){
+				players.get(activePlayerIdx).turnUsed();
+				activePlayerIdx = (activePlayerIdx + 1) % 3;
+				repaint();
+				return;
+			}
 			
 			TreeMap<String, Object> habiTile = players.get(activePlayerIdx).searchHabitat(e.getPoint());
 			if (habiTile != null)

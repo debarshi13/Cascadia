@@ -57,8 +57,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	private Font smallfont = new Font("Arial", Font.BOLD, 20);
 
 	int activePlayerIdx = 0;
-	String activeAnimalToken = "bear";
-	boolean activeAnimalTokenShown = false;
+	String activeAnimalToken = "";
 	int previousMouseMovedinHabitatNum = -1;
 	
 	TreeMap<String, Object> previousTokenMatchHabit = null;
@@ -200,9 +199,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 			// starting tiles
 			drawClaimedHabitats(g);
+			highlightNewHabitat(g);
 
-			
-			drawCandidateHexTiles(g);
+			if (playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED || playerState == PlayerState.CANDIDATE_TILE_CLICKED)
+			{
+				drawCandidateHexTiles(g);
+			}
 			if (candidateHabitat != null) {
 				drawHabitatTile(g, candidateHabitat);
 				drawHabitatWildlife(g, candidateHabitat);
@@ -226,16 +228,24 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				Hexagon hex = new Hexagon(x0+width/2, y0+height/2, radius);
 				tilesOnTable.get(i).setHexagon(hex);
 			
-				drawTileWildlife(g, tilesOnTable.get(i));
+				drawTileWildlife(g, tilesOnTable.get(i));				
 				drawHighlightedTileOnTable(g);
 			}
 		}
 		for(int i = 0; i < animalsOnTable.size(); i++){
 			//System.out.println("Should get an image of " + animalsOnTable.get(i));
-			BufferedImage img = animalImageMap.get(animalsOnTable.get(i));
-			g.drawImage(img, 255 + i * 120, getHeight() - 150, 80, 80, null);
+			BufferedImage img = null;
+			if (animalsOnTable.get(i) != "empty")
+			{
+				if (i == selectedTokenOnTableIndex)
+					img = animalImageMap.get(animalsOnTable.get(i) + "Active");
+				else
+					img = animalImageMap.get(animalsOnTable.get(i));
 
+				g.drawImage(img, 255 + i * 120, getHeight() - 150, 80, 80, null);
+			}
 		}
+
 		g.setColor(Color.red);
 		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
 		g.setColor(Color.white);
@@ -610,6 +620,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							drawHabitatTile(g, cHabitat);
 							drawHabitatWildlife(g, cHabitat);
 							playerState = PlayerState.TURN_IS_DONE;
+							animalsOnTable.set(selectedTokenOnTableIndex, "empty");
 							break;
 						}
 					}
@@ -666,11 +677,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 						{
 							tilesOnTable.set(i, null);
 							selectedTileOnTableIndex = i;
-							selectedTokenOnTableIndex = i;
 						}
-					}
-					String tokenToSelect = animalsOnTable.get(selectedTokenOnTableIndex);
-				
+					}				
 				}
 				
 			}
@@ -697,11 +705,10 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					claimedHab.add(newHab);
 					candidateHabitat = null;
 					playerState = PlayerState.HABITAT_PLACE_COMFIRMED;
-					selectedTileOnTableIndex = -1;
-					selectedTokenOnTableIndex = -1;
+					selectedTokenOnTableIndex = selectedTileOnTableIndex;
+					activeAnimalToken = animalsOnTable.get(selectedTokenOnTableIndex);
 					System.out.println("Confirm clicked");
 				}
-				//draw the paired animal token in active
 
 			}		
 			if(hexCounterClockwise.contains(e.getPoint())) {

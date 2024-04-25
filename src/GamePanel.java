@@ -90,6 +90,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	Rectangle rcPlayerIndicator, rcNextPlay, rcTurnsLeft;
 
 	Hexagon  hexClockwiise, hexCounterClockwise;
+
+	int replacetimes = 0;
 	public GamePanel() {
 		
 
@@ -881,14 +883,35 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				{
 					if (entry.getValue().size() == 3)
 					{
-						
 						ArrayList<Integer> idxList = entry.getValue();
+						// if (replacetimes == 0) {
+						// 	int i = 0;
+						// 	for (int idx: idxList) {
+						// 		String w = animals.getWildlife().remove(i);
+						// 		animalsOnTable.set(idx, "bear");
+						// 		i++;
+						// 	}
+						// 	replacetimes++;
+						// }
+						// else if (replacetimes == 1) {
+						// 	int i = 0;
+						// 	for (int idx: idxList) {
+						// 		String w = animals.getWildlife().remove(i);
+						// 		animalsOnTable.set(idx, "elk");
+						// 		i++;
+						// 	}
+						// 	replacetimes++;
+						// }
+						
+						// else {
 						int i = 0;
 						for (int idx: idxList) {
 							String w = animals.getWildlife().remove(i);
-							animalsOnTable.set(idx, w);
+							animalsOnTable.set(idx,w);
 							i++;
+							replacetimes = 0;
 						}
+					//}
 					}
 				}
 				repaint();

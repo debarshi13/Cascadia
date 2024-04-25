@@ -254,6 +254,22 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			animalOnTableImgElps.clear();
 		}
 
+		ArrayList<Integer> dupTokens = checkDuplicatedTokensOnTable();
+		if (dupTokens.size() == 4 && playerState != PlayerState.TURN_IS_DONE)
+		{
+			// try {
+			// 	Thread.sleep(4000);
+			// } catch (InterruptedException e1) {
+			// 	e1.printStackTrace();
+			// }
+
+			for (int i = 0; i < 4; i++)
+			{
+				String w = animals.getWildlife().remove(i);
+				animalsOnTable.set(i, w);
+			}
+		}
+
 		for(int i = 0; i < animalsOnTable.size(); i++){
 			BufferedImage img = null;
 			
@@ -273,22 +289,20 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			}
 		}
 		
-		TreeMap<String, ArrayList<Integer>> dupTokens = checkDuplicatedTokensOnTable();
-		for (Map.Entry<String, ArrayList<Integer>> entry : dupTokens.entrySet()) 
-		{
-			if (entry.getValue().size() == 3 && playerState != PlayerState.TURN_IS_DONE)
-			{
-				rcReplaceDuplicate.setBounds(255, getHeight() -70,290, 50);
-				g.setColor(Color.red);
-				g.fillRect(rcReplaceDuplicate.x, rcReplaceDuplicate.y, rcReplaceDuplicate.width, rcReplaceDuplicate.height);
-				g.setColor(Color.white);
-				g.setFont(smallfont);
-				g.drawString("Replace Duplicate Tokens", rcReplaceDuplicate.x + 35, rcReplaceDuplicate.y + 30);
-				break;
-			}
+		
 
+
+		if (dupTokens.size() == 3 && playerState != PlayerState.TURN_IS_DONE)
+		{
+			rcReplaceDuplicate.setBounds(255, getHeight() -70,290, 50);
+			g.setColor(Color.red);
+			g.fillRect(rcReplaceDuplicate.x, rcReplaceDuplicate.y, rcReplaceDuplicate.width, rcReplaceDuplicate.height);
+			g.setColor(Color.white);
+			g.setFont(smallfont);
+			g.drawString("Replace Duplicate Tokens", rcReplaceDuplicate.x + 35, rcReplaceDuplicate.y + 30);
+			
 		}
-	
+
 		g.setColor(Color.red);
 		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
 		g.setColor(Color.white);
@@ -867,55 +881,45 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			 
 			if (rcReplaceDuplicate.contains(e.getPoint()))
 			{
-
-				// for(int i = 0; i < 4; i++){
-				// 	Tile t = tiles.getTiles().remove(i);
-				// 	String w = animals.getWildlife().remove(i);
-				// 	tilesOnTable.add(t);
-				// 	animalsOnTable.add(w);
-				// 	tilesAnimalsOnTable[i] = Integer.toString(t.getTileNum()) + "-" + w;
-		
-				// }
-				
-				
-				TreeMap<String, ArrayList<Integer>> dupTokens = checkDuplicatedTokensOnTable();
-				for (Map.Entry<String, ArrayList<Integer>> entry : dupTokens.entrySet()) 
+				ArrayList<Integer> dupTokens = checkDuplicatedTokensOnTable();
+				if (dupTokens.size() == 3) 
 				{
-					if (entry.getValue().size() == 3)
+					for (int tokenIdx : dupTokens) 
 					{
-						ArrayList<Integer> idxList = entry.getValue();
-						// if (replacetimes == 0) {
-						// 	int i = 0;
-						// 	for (int idx: idxList) {
-						// 		String w = animals.getWildlife().remove(i);
-						// 		animalsOnTable.set(idx, "bear");
-						// 		i++;
-						// 	}
-						// 	replacetimes++;
-						// }
-						// else if (replacetimes == 1) {
-						// 	int i = 0;
-						// 	for (int idx: idxList) {
-						// 		String w = animals.getWildlife().remove(i);
-						// 		animalsOnTable.set(idx, "elk");
-						// 		i++;
-						// 	}
-						// 	replacetimes++;
-						// }
-						
-						// else {
-						int i = 0;
-						for (int idx: idxList) {
-							String w = animals.getWildlife().remove(i);
-							animalsOnTable.set(idx,w);
-							i++;
-							replacetimes = 0;
-						}
-					//}
+						String w = animals.getWildlife().remove(tokenIdx);
+						animalsOnTable.set(tokenIdx, w);
+
+					}
+					for (int i = 0; i < 4; i++) {
+						animalsOnTable.set(i,"bear");
+					}
+				}	
+
+				dupTokens = checkDuplicatedTokensOnTable();
+				if (dupTokens.size() == 4) 
+				{
+					// Graphics g = getGraphics();
+					// BufferedImage img;
+					// for (int j = 0; j < 4; j++) {
+					// 	img = animalImageMap.get(animalsOnTable.get(j));
+					// 	g.drawImage(img, 255 + j * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
+					// }
+					// try {
+					// 	Thread.sleep(4000);
+					// } catch (InterruptedException e1) {
+					// 	e1.printStackTrace();
+					// }
+					
+					for (int i = 0; i < 4; i++)
+					{
+						String w = animals.getWildlife().remove(i);
+						animalsOnTable.set(i, w);
 					}
 				}
-				repaint();
+
 			}
+			repaint();
+			
 		}
 
 	}
@@ -1111,7 +1115,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		return null;
 	}
 
-	public TreeMap<String, ArrayList<Integer>> checkDuplicatedTokensOnTable() {
+	public ArrayList<Integer> checkDuplicatedTokensOnTable() {
 		TreeMap<String, ArrayList<Integer>> tokenTempMap = new TreeMap<>();
 		for (int i = 0; i < 4; i++) {
 			String token = animalsOnTable.get(i);
@@ -1125,7 +1129,17 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			}
 		}
 
-		return tokenTempMap;
+		String tKey = "";
+		int cnt = 0;
+		for (Map.Entry<String, ArrayList<Integer>> entry : tokenTempMap.entrySet()) 
+		{
+			if (entry.getValue().size() > cnt)
+			{
+				tKey = entry.getKey();
+				cnt = entry.getValue().size();
+			}
+		}
+		return tokenTempMap.get(tKey);
 
 	}
 }

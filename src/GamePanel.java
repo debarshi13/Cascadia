@@ -56,7 +56,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	int counterCWclickedCnt = 0;
 	int clockwiseClickedCnt = 0;
 
-	private Font smallfont = new Font("Arial", Font.BOLD, 20);
+	private Font smallfont = new Font("Arial", Font.BOLD, 18);
 
 	int activePlayerIdx = 0;
 	String activeAnimalToken = "";
@@ -226,7 +226,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				drawHabitatWildlife(g, candidateHabitat);
 				highlightNewHabitat(g);
 			}
-		//}
+		
 
 		for(int i = 0; i < tilesOnTable.size(); i++){
 			Tile habTile = tilesOnTable.get(i);
@@ -274,13 +274,19 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		TreeMap<String, ArrayList<Integer>> dupTokens = checkDuplicatedTokensOnTable();
 		for (Map.Entry<String, ArrayList<Integer>> entry : dupTokens.entrySet()) 
 		{
-			if (entry.getValue().size() == 3)
+			if (entry.getValue().size() == 3 && playerState != PlayerState.TURN_IS_DONE)
 			{
-				rcReplaceDuplicate.setBounds(255, getHeight() -100,140, 50);
+				rcReplaceDuplicate.setBounds(255, getHeight() -70,290, 50);
+				g.setColor(Color.red);
+				g.fillRect(rcReplaceDuplicate.x, rcReplaceDuplicate.y, rcReplaceDuplicate.width, rcReplaceDuplicate.height);
+				g.setColor(Color.white);
+				g.setFont(smallfont);
+				g.drawString("Replace Duplicate Tokens", rcReplaceDuplicate.x + 35, rcReplaceDuplicate.y + 30);
+				break;
 			}
 
 		}
-	//}
+	
 		g.setColor(Color.red);
 		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
 		g.setColor(Color.white);
@@ -856,6 +862,37 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					}
 				}
 			}
+			 
+			if (rcReplaceDuplicate.contains(e.getPoint()))
+			{
+
+				// for(int i = 0; i < 4; i++){
+				// 	Tile t = tiles.getTiles().remove(i);
+				// 	String w = animals.getWildlife().remove(i);
+				// 	tilesOnTable.add(t);
+				// 	animalsOnTable.add(w);
+				// 	tilesAnimalsOnTable[i] = Integer.toString(t.getTileNum()) + "-" + w;
+		
+				// }
+				
+				
+				TreeMap<String, ArrayList<Integer>> dupTokens = checkDuplicatedTokensOnTable();
+				for (Map.Entry<String, ArrayList<Integer>> entry : dupTokens.entrySet()) 
+				{
+					if (entry.getValue().size() == 3)
+					{
+						
+						ArrayList<Integer> idxList = entry.getValue();
+						int i = 0;
+						for (int idx: idxList) {
+							String w = animals.getWildlife().remove(i);
+							animalsOnTable.set(idx, w);
+							i++;
+						}
+					}
+				}
+				repaint();
+			}
 		}
 
 	}
@@ -1066,13 +1103,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		}
 
 		return tokenTempMap;
-		// for (Map.Entry<String, ArrayList<Integer>> entry : tokenTempMap.entrySet()) 
-		// 	{
-		// 		if (entry.getValue().size() >= 3)
-		// 		{
-		// 			return 
-		// 		}
 
-		// 	}
 	}
 }

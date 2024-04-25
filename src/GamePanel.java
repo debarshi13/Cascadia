@@ -54,6 +54,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	private int selectedTokenOnTableIndex = -1;
 	private boolean useNatureToken = false;
 	int counterCWclickedCnt = 0;
+	int clockwiseClickedCnt = 0;
 
 	private Font smallfont = new Font("Arial", Font.BOLD, 20);
 
@@ -85,7 +86,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	double xOff = Math.cos(ang30) * (radius +0.3);
 	double yOff = Math.sin(ang30) * (radius +0.3);
 
-	Rectangle rcCancel, rcConfirm, rcUseNatureToken;
+	Rectangle rcCancel, rcConfirm, rcUseNatureToken, rcReplaceDuplicate;
 	Rectangle rcPlayerIndicator, rcNextPlay, rcTurnsLeft;
 
 	Hexagon  hexClockwiise, hexCounterClockwise;
@@ -171,6 +172,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		rcTurnsLeft =  new Rectangle();
 		rcUseNatureToken = new Rectangle();
 		animalOnTableImgElps = new ArrayList<>();
+		rcReplaceDuplicate = new Rectangle();
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
@@ -224,7 +226,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				drawHabitatWildlife(g, candidateHabitat);
 				highlightNewHabitat(g);
 			}
-		}
+		//}
 
 		for(int i = 0; i < tilesOnTable.size(); i++){
 			Tile habTile = tilesOnTable.get(i);
@@ -249,26 +251,36 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		if (useNatureToken) {
 			animalOnTableImgElps.clear();
 		}
-			for(int i = 0; i < animalsOnTable.size(); i++){
-				BufferedImage img = null;
-				
-				if (animalsOnTable.get(i) != "empty")
-				{
-					if (i == selectedTokenOnTableIndex)
-						img = animalImageMap.get(animalsOnTable.get(i) + "Active");
-					else
-						img = animalImageMap.get(animalsOnTable.get(i));
 
-					g.drawImage(img, 255 + i * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
-					if (useNatureToken && playerState == PlayerState.HABITAT_PLACE_COMFIRMED) {
-						Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
-						animalOnTableImgElps.add(elps);
-						System.out.println("-------->>>>animalOnTableImgElps.add(elps)" + animalsOnTable.get(i) + "total elps---->" + animalOnTableImgElps.size());
-					}
+		for(int i = 0; i < animalsOnTable.size(); i++){
+			BufferedImage img = null;
+			
+			if (animalsOnTable.get(i) != "empty")
+			{
+				if (i == selectedTokenOnTableIndex)
+					img = animalImageMap.get(animalsOnTable.get(i) + "Active");
+				else
+					img = animalImageMap.get(animalsOnTable.get(i));
+
+				g.drawImage(img, 255 + i * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
+				if (useNatureToken && playerState == PlayerState.HABITAT_PLACE_COMFIRMED) {
+					Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
+					animalOnTableImgElps.add(elps);
+					System.out.println("-------->>>>animalOnTableImgElps.add(elps)" + animalsOnTable.get(i) + "total elps---->" + animalOnTableImgElps.size());
 				}
 			}
+		}
 		
+		TreeMap<String, ArrayList<Integer>> dupTokens = checkDuplicatedTokensOnTable();
+		for (Map.Entry<String, ArrayList<Integer>> entry : dupTokens.entrySet()) 
+		{
+			if (entry.getValue().size() == 3)
+			{
+				rcReplaceDuplicate.setBounds(255, getHeight() -100,140, 50);
+			}
 
+		}
+	//}
 		g.setColor(Color.red);
 		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
 		g.setColor(Color.white);
@@ -309,6 +321,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(natureTokenImage, (int)(rcUseNatureToken.x + rcUseNatureToken.getWidth() + 20 + (natureTokenImage.getWidth() +15)* i ), (int)(rcUseNatureToken.y-5), null);
 
 		}
+	}
 	}
 
 	public String constructNameString (ArrayList<String> names)
@@ -699,6 +712,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 								playerState = PlayerState.TURN_IS_DONE;
 								animalsOnTable.set(selectedTokenOnTableIndex, "empty");
 								animalOnTableImgElps.clear();
+								useNatureToken = false;
 								break;
 							}
 						}
@@ -805,6 +819,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 						selectedTokenOnTableIndex = selectedTileOnTableIndex;
 						activeAnimalToken = animalsOnTable.get(selectedTokenOnTableIndex);
 					}
+					clockwiseClickedCnt = 0;
+					counterCWclickedCnt = 0;
 					System.out.println("Confirm clicked");
 				}
 
@@ -823,8 +839,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			if(hexClockwiise.contains(e.getPoint())) {
 				System.out.println("Clockwise clicked");		
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
-					counterCWclickedCnt ++;
-					int rotatAng = counterCWclickedCnt%6;
+					clockwiseClickedCnt ++;
+					int rotatAng = clockwiseClickedCnt%6;
 					candidateHabitat.put("rotation", rotatAng*(60));
 					drawHabitatTile(getGraphics(), candidateHabitat);
 					drawHabitatWildlife(getGraphics(), candidateHabitat);
@@ -833,9 +849,11 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			}
 			if (rcUseNatureToken.contains(e.getPoint()))
 			{
-				if (players.get(activePlayerIdx).getNumNatureToken() > 0){
-					players.get(activePlayerIdx).decreaseNatureToken();
-					useNatureToken = true;
+				if (playerState != PlayerState.TURN_IS_DONE && playerState != PlayerState.HABITAT_PLACE_COMFIRMED) {
+					if (players.get(activePlayerIdx).getNumNatureToken() > 0){
+						players.get(activePlayerIdx).decreaseNatureToken();
+						useNatureToken = true;
+					}
 				}
 			}
 		}
@@ -1031,5 +1049,30 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			}
 		}
 		return null;
+	}
+
+	public TreeMap<String, ArrayList<Integer>> checkDuplicatedTokensOnTable() {
+		TreeMap<String, ArrayList<Integer>> tokenTempMap = new TreeMap<>();
+		for (int i = 0; i < 4; i++) {
+			String token = animalsOnTable.get(i);
+			if (!tokenTempMap.containsKey(token)) {
+				ArrayList<Integer> idxList = new ArrayList<>();
+				idxList.add(i);
+				tokenTempMap.put(token, idxList);
+			}
+			else {
+				tokenTempMap.get(token).add(i);
+			}
+		}
+
+		return tokenTempMap;
+		// for (Map.Entry<String, ArrayList<Integer>> entry : tokenTempMap.entrySet()) 
+		// 	{
+		// 		if (entry.getValue().size() >= 3)
+		// 		{
+		// 			return 
+		// 		}
+
+		// 	}
 	}
 }

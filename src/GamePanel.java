@@ -299,6 +299,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.fillRect(rcReplaceDuplicate.x, rcReplaceDuplicate.y, rcReplaceDuplicate.width, rcReplaceDuplicate.height);
 			g.setColor(Color.white);
 			g.setFont(smallfont);
+			//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
 			g.drawString("Replace Duplicate Tokens", rcReplaceDuplicate.x + 35, rcReplaceDuplicate.y + 30);
 			
 		}
@@ -726,7 +727,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							if (wildlifeNames.size() == 1)
 								players.get(activePlayerIdx).increaseNatureToken();
 
-							players.get(activePlayerIdx).addHabitatLocForToken(activeAnimalToken, (int)(cHabitat.get("row_idx")), (int)(cHabitat.get("col_idx")));
+							players.get(activePlayerIdx).addHabitatLocForToken(activeAnimalToken, 
+								(int)(cHabitat.get("row_idx")), (int)(cHabitat.get("col_idx")), (int)(cHabitat.get("tileNum")));
 							Graphics g = getGraphics();
 							drawHabitatTile(g, cHabitat);
 							drawHabitatWildlife(g, cHabitat);

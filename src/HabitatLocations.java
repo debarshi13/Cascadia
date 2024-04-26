@@ -28,9 +28,9 @@ public class HabitatLocations implements Comparator<Location> {
         }
     }
 
-    public void addLocation (int i, int j)
+    public void addLocation (int i, int j, int n)
     {
-        Location loc = new Location(i, j);
+        Location loc = new Location(i, j, n);
         habiTatLocList.add(loc);
     }
     

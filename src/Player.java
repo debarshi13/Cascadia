@@ -114,10 +114,10 @@ public class Player {
 		natureTokenCount--;
 	}
 
-	public void addHabitatLocForToken(String token, int i, int j)
+	public void addHabitatLocForToken(String token, int i, int j, int n)
 	{
 		HabitatLocations locList = habitatWithTokens.get(token);
-		locList.addLocation(i, j);
+		locList.addLocation(i, j, n);
 	}
 
 	public void printClaimedHabInfo()

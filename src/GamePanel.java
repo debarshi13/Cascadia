@@ -695,6 +695,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					if(animalsOnTable.get(i) == "empty")
 						animalsOnTable.set(i, animals.getWildlife().remove(0));
 				}
+
+
 				playerState = PlayerState.TILES_ON_TABLE_UPDATED;
 				selectedTileOnTableIndex = -1;
 				selectedTokenOnTableIndex = -1;
@@ -705,42 +707,35 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				animalOnTableImgElps.clear();
 				useNatureToken = false;
 				repaint();
+
+				players.get(activePlayerIdx).printClaimedHabInfo();
 				return;
 			}
 			
-			TreeMap<String, Object> habiTile = players.get(activePlayerIdx).searchHabitat(e.getPoint());
-			if (habiTile != null)
+			TreeMap<String, Object> cHabitat = players.get(activePlayerIdx).searchHabitat(e.getPoint());
+			if (cHabitat != null && (boolean)(cHabitat.get("tokenPlaced")) == false)
 			{
-				// add token to claimed habitat
-				// playerState = PlayerState.CLAIMED_HABITAT_CLICKED;
 				if (playerState == PlayerState.HABITAT_PLACE_COMFIRMED)
 				{
 					if ( activeAnimalToken != "") {
-						ArrayList<TreeMap<String, Object>> claimedHabitats = players.get(activePlayerIdx).getClaimedHabitats();
-						for (TreeMap<String, Object> cHabitat : claimedHabitats) {
-							ArrayList<String> wildlifeNames =( ArrayList<String>)cHabitat.get("wildlife");
-							Hexagon hex = (Hexagon) cHabitat.get("hexagon");
-							if(hex.contains(e.getPoint()) && wildlifeNames.contains(activeAnimalToken))
-							{						
-								ArrayList<String> wildlifeLists = new ArrayList<>();
-								wildlifeLists.add(activeAnimalToken);
-								cHabitat.put("wildlife", wildlifeLists);
-								cHabitat.put("tokenPlaced", true);
-								if (wildlifeNames.size() == 1)
-									players.get(activePlayerIdx).increaseNatureToken();
-								Graphics g = getGraphics();
-								drawHabitatTile(g, cHabitat);
-								drawHabitatWildlife(g, cHabitat);
-								playerState = PlayerState.TURN_IS_DONE;
-								animalsOnTable.set(selectedTokenOnTableIndex, "empty");
-								animalOnTableImgElps.clear();
-								useNatureToken = false;
-								break;
-							}
-						}
+						ArrayList<String> wildlifeNames =( ArrayList<String>)cHabitat.get("wildlife");					
+							ArrayList<String> wildlifeLists = new ArrayList<>();
+							wildlifeLists.add(activeAnimalToken);
+							cHabitat.put("wildlife", wildlifeLists);
+							cHabitat.put("tokenPlaced", true);
+							if (wildlifeNames.size() == 1)
+								players.get(activePlayerIdx).increaseNatureToken();
+
+							players.get(activePlayerIdx).addHabitatLocForToken(activeAnimalToken, (int)(cHabitat.get("row_idx")), (int)(cHabitat.get("col_idx")));
+							Graphics g = getGraphics();
+							drawHabitatTile(g, cHabitat);
+							drawHabitatWildlife(g, cHabitat);
+							playerState = PlayerState.TURN_IS_DONE;
+							animalsOnTable.set(selectedTokenOnTableIndex, "empty");
+							animalOnTableImgElps.clear();
+							useNatureToken = false;
 					}
 				}
-
 			}
 
 			if (playerState == PlayerState.HABITAT_PLACE_COMFIRMED && useNatureToken)
@@ -755,7 +750,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 						break;
 					}
 				}
-				
 			}
 
 			if (playerState == PlayerState.TILES_ON_TABLE_UPDATED || playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED) 
@@ -898,18 +892,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				dupTokens = checkDuplicatedTokensOnTable();
 				if (dupTokens.size() == 4) 
 				{
-					// Graphics g = getGraphics();
-					// BufferedImage img;
-					// for (int j = 0; j < 4; j++) {
-					// 	img = animalImageMap.get(animalsOnTable.get(j));
-					// 	g.drawImage(img, 255 + j * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
-					// }
-					// try {
-					// 	Thread.sleep(4000);
-					// } catch (InterruptedException e1) {
-					// 	e1.printStackTrace();
-					// }
-					
 					for (int i = 0; i < 4; i++)
 					{
 						String w = animals.getWildlife().remove(i);

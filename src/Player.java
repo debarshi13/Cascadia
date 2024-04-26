@@ -8,11 +8,26 @@ public class Player {
 	private Tiles allTiles = new Tiles();
 	private ArrayList<TreeMap<String, Object>> claimedHabitats;
 	private int turnsLeft;
+	private TreeMap<String, HabitatLocations> habitatWithTokens;
 
 	public Player(int playerNum, int startingTileIdx, int turns) {
 		turnsLeft = turns;
 		natureTokenCount = 0;
 		claimedHabitats = new ArrayList<>();
+		habitatWithTokens = new TreeMap<>();
+
+		HabitatLocations bearLocations = new HabitatLocations();
+		HabitatLocations elkLocations = new HabitatLocations();
+		HabitatLocations hawkLocations = new HabitatLocations();
+		HabitatLocations salmonLocations = new HabitatLocations();
+		HabitatLocations foxLocations = new HabitatLocations();
+
+		habitatWithTokens.put("bear", bearLocations);
+		habitatWithTokens.put("elk", elkLocations);
+		habitatWithTokens.put("hawk", hawkLocations);
+		habitatWithTokens.put("salmon", salmonLocations);
+		habitatWithTokens.put("fox", foxLocations);
+
 		
 		Tile[][] startingTiles = allTiles.getStartingTiles();
 
@@ -97,5 +112,22 @@ public class Player {
 	public void decreaseNatureToken()
 	{
 		natureTokenCount--;
+	}
+
+	public void addHabitatLocForToken(String token, int i, int j)
+	{
+		HabitatLocations locList = habitatWithTokens.get(token);
+		locList.addLocation(i, j);
+	}
+
+	public void printClaimedHabInfo()
+	{
+		for (Map.Entry<String, HabitatLocations> entry : habitatWithTokens.entrySet()) 
+		{
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+			System.out.println(entry.getKey());
+			System.out.println(entry.getValue());
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+		}
 	}
 }

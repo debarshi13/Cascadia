@@ -1031,7 +1031,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				{
 					if (previousMouseMovedinHabitatNum == -1)
 					{
-						foundMatchHabitat = searchClaimedHabitat(foundMatchHabitatNum);
+						foundMatchHabitat = searchClaimedHabitatByTileNum(foundMatchHabitatNum);
 						drawHabitatTile(g, foundMatchHabitat);
 						int row_i = (int) foundMatchHabitat.get("row_idx");
 						int col_j = (int) foundMatchHabitat.get("col_idx");
@@ -1047,13 +1047,13 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					else 
 					{
 						//clear up old one
-						previousTokenMatchHabit = searchClaimedHabitat(previousMouseMovedinHabitatNum);
+						previousTokenMatchHabit = searchClaimedHabitatByTileNum(previousMouseMovedinHabitatNum);
 						drawHabitatTile(g, previousTokenMatchHabit);
 						drawHabitatWildlife(g, previousTokenMatchHabit);
 						previousMouseMovedinHabitatNum = foundMatchHabitatNum;
 					
 						//draw new match hab with active token
-						foundMatchHabitat = searchClaimedHabitat(foundMatchHabitatNum);
+						foundMatchHabitat = searchClaimedHabitatByTileNum(foundMatchHabitatNum);
 						drawHabitatTile(g, foundMatchHabitat);
 						int row_i = (int) foundMatchHabitat.get("row_idx");
 						int col_j = (int) foundMatchHabitat.get("col_idx");
@@ -1072,7 +1072,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			{
 				if (previousMouseMovedinHabitatNum != -1)
 				{
-					previousTokenMatchHabit = searchClaimedHabitat(previousMouseMovedinHabitatNum);
+					previousTokenMatchHabit = searchClaimedHabitatByTileNum(previousMouseMovedinHabitatNum);
 					drawHabitatTile(g, previousTokenMatchHabit);
 					drawHabitatWildlife(g, previousTokenMatchHabit);
 					previousMouseMovedinHabitatNum = -1;
@@ -1085,13 +1085,29 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 
-	public TreeMap<String, Object> searchClaimedHabitat(int tilenumber)
+	public TreeMap<String, Object> searchClaimedHabitatByTileNum(int tilenumber)
 	{
 		for (TreeMap<String, Object> cHabitat : players.get(activePlayerIdx).getClaimedHabitats()) 
 		{
 			if (tilenumber == (int)(cHabitat.get("tileNum")))
 			{
 				return cHabitat;
+			}
+		}
+		return null;
+	}
+
+
+	public TreeMap<String, Object> searchHabitatWithTokenByTileLoc(int row, int col)
+	{
+		for (TreeMap<String, Object> cHabitat : players.get(activePlayerIdx).getClaimedHabitats()) 
+		{
+			if (row == (int)(cHabitat.get("row_idx")) && col == (int)(cHabitat.get("col_idx")))
+			{
+				if ((boolean)(cHabitat.get("tokenPlaced")) == true)
+					return cHabitat;
+				else
+					return null;
 			}
 		}
 		return null;

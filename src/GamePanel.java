@@ -284,7 +284,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				if (useNatureToken && playerState == PlayerState.HABITAT_PLACE_COMFIRMED) {
 					Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
 					animalOnTableImgElps.add(elps);
-					System.out.println("-------->>>>animalOnTableImgElps.add(elps)" + animalsOnTable.get(i) + "total elps---->" + animalOnTableImgElps.size());
+					//System.out.println("-------->>>>animalOnTableImgElps.add(elps)" + animalsOnTable.get(i) + "total elps---->" + animalOnTableImgElps.size());
 				}
 			}
 		}
@@ -708,7 +708,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				useNatureToken = false;
 				repaint();
 
-				players.get(activePlayerIdx).printClaimedHabInfo();
+				//players.get(activePlayerIdx).printClaimedHabInfo();
 				return;
 			}
 			
@@ -734,6 +734,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							animalsOnTable.set(selectedTokenOnTableIndex, "empty");
 							animalOnTableImgElps.clear();
 							useNatureToken = false;
+
+							players.get(activePlayerIdx).foxScoreCalculate();
 					}
 				}
 			}
@@ -776,7 +778,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					int row_i = (int) cTile.get("row_idx");
 					int col_j = (int) cTile.get("col_idx");
 
-					System.out.println("~~~~~~ Check: " + "row==>" + row_i + " col==>" + col_j);
+					//System.out.println("~~~~~~ Check: " + "row==>" + row_i + " col==>" + col_j);
 					checkAndAddCandidateHexTile(row_i, col_j-1, claimedHab);
 					checkAndAddCandidateHexTile(row_i, col_j+1, claimedHab);
 					if (row_i %2 == 0) {
@@ -837,12 +839,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					}
 					clockwiseClickedCnt = 0;
 					counterCWclickedCnt = 0;
-					System.out.println("Confirm clicked");
+					//System.out.println("Confirm clicked");
 				}
 
 			}		
 			if(hexCounterClockwise.contains(e.getPoint())) {
-				System.out.println("CounterClockwise clicked");
+				//System.out.println("CounterClockwise clicked");
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
 					counterCWclickedCnt ++;
 					int rotatAng = counterCWclickedCnt%6;
@@ -853,7 +855,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 			}
 			if(hexClockwiise.contains(e.getPoint())) {
-				System.out.println("Clockwise clicked");		
+				//System.out.println("Clockwise clicked");		
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
 					clockwiseClickedCnt ++;
 					int rotatAng = clockwiseClickedCnt%6;
@@ -951,7 +953,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			Hexagon hex = entry.getValue();
 			if(hex.contains(pt))
 			{
-				System.out.println("@@@@@@" + entry.getKey());
+				//System.out.println("@@@@@@" + entry.getKey());
 				String s = entry.getKey();
 				String[] loc_idx_strings = s.split(":");
 
@@ -1092,22 +1094,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			if (tilenumber == (int)(cHabitat.get("tileNum")))
 			{
 				return cHabitat;
-			}
-		}
-		return null;
-	}
-
-
-	public TreeMap<String, Object> searchHabitatWithTokenByTileLoc(int row, int col)
-	{
-		for (TreeMap<String, Object> cHabitat : players.get(activePlayerIdx).getClaimedHabitats()) 
-		{
-			if (row == (int)(cHabitat.get("row_idx")) && col == (int)(cHabitat.get("col_idx")))
-			{
-				if ((boolean)(cHabitat.get("tokenPlaced")) == true)
-					return cHabitat;
-				else
-					return null;
 			}
 		}
 		return null;

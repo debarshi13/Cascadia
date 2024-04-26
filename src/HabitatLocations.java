@@ -43,4 +43,9 @@ public class HabitatLocations implements Comparator<Location> {
         }
         return l;
     }
+
+    public ArrayList<Location> getHabitLocList()
+    {
+        return habiTatLocList;
+    }
 }

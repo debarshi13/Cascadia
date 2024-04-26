@@ -130,4 +130,116 @@ public class Player {
 			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		}
 	}
+
+	public int foxScoreCalculate() 
+	{
+		HabitatLocations hList = habitatWithTokens.get("fox");
+		int totalUniqueCnt = 0;
+		
+		for (Location loc : hList.getHabitLocList()) {
+			TreeMap<String, Integer> adjacentTokens = new TreeMap<>();
+			adjacentTokens.put("bear", 0);
+			adjacentTokens.put("elk", 0);
+			adjacentTokens.put("hawk", 0);
+			adjacentTokens.put("fox", 0);
+			adjacentTokens.put("salmon", 0);
+
+			int row_i = loc.getRow();
+			int col_j = loc.getCol();
+			TreeMap<String, Object> claimedHab_above_left = null;
+			TreeMap<String, Object> claimedHab_above_right = null;
+			TreeMap<String, Object> claimedHab_down_left = null;
+			TreeMap<String, Object> claimedHab_down_right = null;
+			ArrayList<String> tokens = null;
+
+			TreeMap<String, Object> claimedHab_left = searchHabitatWithTokenByTileLoc(row_i, col_j-1);
+			if (claimedHab_left != null && (boolean)(claimedHab_left.get("tokenPlaced"))) {
+				tokens = (ArrayList<String>)claimedHab_left.get("wildlife");
+				String w = tokens.get(0);
+				System.out.println(tokens.get(0));
+				adjacentTokens.put(w, adjacentTokens.get(w) +1);
+			}
+			TreeMap<String, Object> claimedHab_right = searchHabitatWithTokenByTileLoc(row_i, col_j+1);
+			if (claimedHab_right != null && (boolean)(claimedHab_right.get("tokenPlaced"))) {
+				tokens = (ArrayList<String>)claimedHab_right.get("wildlife");
+				String w = tokens.get(0);
+				System.out.println(tokens.get(0));
+				adjacentTokens.put(w, adjacentTokens.get(w) +1);
+			}
+			if (row_i %2 == 0) {
+				claimedHab_above_left = searchHabitatWithTokenByTileLoc(row_i-1, col_j-1);
+				claimedHab_above_right = searchHabitatWithTokenByTileLoc(row_i-1, col_j);
+				claimedHab_down_left = searchHabitatWithTokenByTileLoc(row_i+1, col_j-1);
+				claimedHab_down_right = searchHabitatWithTokenByTileLoc(row_i+1, col_j);
+			}
+			else {
+				claimedHab_above_left = searchHabitatWithTokenByTileLoc(row_i-1, col_j);
+				claimedHab_above_right = searchHabitatWithTokenByTileLoc(row_i-1, col_j+1);
+				claimedHab_down_left = searchHabitatWithTokenByTileLoc(row_i+1, col_j);
+				claimedHab_down_right = searchHabitatWithTokenByTileLoc(row_i+1, col_j+1);
+
+			}
+
+			if (claimedHab_above_left != null && (boolean)(claimedHab_above_left.get("tokenPlaced"))) {
+				tokens = (ArrayList<String>)claimedHab_above_left.get("wildlife");
+				String w = tokens.get(0);
+				System.out.println(tokens.get(0));
+				adjacentTokens.put(w, adjacentTokens.get(w) +1);
+			}
+			if (claimedHab_above_right != null && (boolean)(claimedHab_above_right.get("tokenPlaced"))) {
+				tokens = (ArrayList<String>)claimedHab_above_right.get("wildlife");
+				String w = tokens.get(0);
+				System.out.println(tokens.get(0));
+				adjacentTokens.put(w, adjacentTokens.get(w) +1);
+			}
+			if (claimedHab_down_left != null && (boolean)(claimedHab_down_left.get("tokenPlaced"))) {
+				tokens = (ArrayList<String>)claimedHab_down_left.get("wildlife");
+				String w = tokens.get(0);
+				System.out.println(tokens.get(0));
+				adjacentTokens.put(w, adjacentTokens.get(w) +1);
+			}
+			if (claimedHab_down_right != null && (boolean)(claimedHab_down_right.get("tokenPlaced"))) {
+				tokens = (ArrayList<String>)claimedHab_down_right.get("wildlife");
+				String w = tokens.get(0);
+				System.out.println(tokens.get(0));
+				adjacentTokens.put(w, adjacentTokens.get((String)tokens.get(0)) +1);
+			}
+
+			for (Map.Entry<String, Integer> entry : adjacentTokens.entrySet()) {
+				if (entry.getValue() > 0)
+					totalUniqueCnt++;
+			}
+
+		}
+		
+		System.out.println("*******************fox**************  " + totalUniqueCnt + "************");
+		return totalUniqueCnt;
+	}
+
+
+	// public void addAdjcTokenCnt(TreeMap<String, Object> claimedHabNeb) 
+	// {
+	// 	if (claimedHabNeb != null && (boolean)(claimedHabNeb.get("tokenPlaced"))) {
+	// 		tokens = (ArrayList<String>)claimedHabNeb.get("wildlife");
+	// 		String w = tokens.get(0);
+	// 		System.out.println(tokens.get(0));
+	// 		adjacentTokens.put(w, adjacentTokens.get((String)tokens.get(0)) +1);
+	// 	}
+	// }
+
+	public TreeMap<String, Object> searchHabitatWithTokenByTileLoc(int row, int col)
+	{
+		for (TreeMap<String, Object> cHabitat : getClaimedHabitats()) 
+		{
+			if (row == (int)(cHabitat.get("row_idx")) && col == (int)(cHabitat.get("col_idx")))
+			{
+				if ((boolean)(cHabitat.get("tokenPlaced")) == true)
+					return cHabitat;
+				else
+					return null;
+			}
+		}
+		return null;
+	}
+
 }

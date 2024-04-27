@@ -719,7 +719,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				if (playerState == PlayerState.HABITAT_PLACE_COMFIRMED)
 				{
 					if ( activeAnimalToken != "") {
-						ArrayList<String> wildlifeNames =( ArrayList<String>)cHabitat.get("wildlife");					
+						ArrayList<String> wildlifeNames =( ArrayList<String>)cHabitat.get("wildlife");
+						if (wildlifeNames.contains(activeAnimalToken)) {			
 							ArrayList<String> wildlifeLists = new ArrayList<>();
 							wildlifeLists.add(activeAnimalToken);
 							cHabitat.put("wildlife", wildlifeLists);
@@ -738,6 +739,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							useNatureToken = false;
 
 							players.get(activePlayerIdx).foxScoreCalculate();
+						}
 					}
 				}
 			}

@@ -9,6 +9,16 @@ public class Player {
 	private ArrayList<TreeMap<String, Object>> claimedHabitats;
 	private int turnsLeft;
 	private TreeMap<String, HabitatLocations> habitatWithTokens;
+	int center_i = 10;
+	int center_j = 10;
+	Map<Integer, Integer> elkScoring = Map.of(
+		1, 2,
+		2, 5,
+		3, 9,
+		4, 13
+	);
+
+	
 
 	public Player(int playerNum, int startingTileIdx, int turns) {
 		turnsLeft = turns;
@@ -198,6 +208,147 @@ public class Player {
 		return totalUniqueCnt;
 	}
 
+
+	public int elkScoreCalculate() 
+	{
+		ArrayList<ArrayList<Integer>> elkTileCons_all = new ArrayList<>();
+		int elkScoreTotal = 0;
+
+		HabitatLocations horizontalList = habitatWithTokens.get("elk");
+		createConnectElkList(elkTileCons_all, horizontalList);
+
+		HabitatLocations hexList_dir_120 = transformToHexRowColDir(horizontalList, 120);
+		createConnectElkList(elkTileCons_all, hexList_dir_120);
+
+		HabitatLocations hexList_dir_60 = transformToHexRowColDir(horizontalList, 60);
+		createConnectElkList(elkTileCons_all, hexList_dir_60);
+
+		System.out.println(elkTileCons_all);
+
+		ArrayList<ArrayList<Integer>> uniqueElkLines =  generateUniqueLines(elkTileCons_all);
+		System.out.println("~~~~~~~~~~~~~Elk lines~~~");
+		System.out.println(uniqueElkLines);
+		for (ArrayList<Integer> lineList : uniqueElkLines)
+		{
+			elkScoreTotal += elkScoring.get(lineList.size());
+		}
+		System.out.println("******* Elk total Score*** "+ elkScoreTotal);
+		return elkScoreTotal;
+	}
+
+	public ArrayList<ArrayList<Integer>> generateUniqueLines(ArrayList<ArrayList<Integer>> tileCons_all)
+	{
+		ArrayList<ArrayList<Integer>> uniqueLines = new ArrayList<>();
+		while (tileCons_all.size() != 0)
+		{
+			ArrayList<Integer> occupiedLine = findLongestLine(tileCons_all);
+			uniqueLines.add(occupiedLine);
+			tileCons_all.remove(occupiedLine);
+			ArrayList<ArrayList<Integer>> tempLines = new ArrayList<>();
+			for (ArrayList<Integer> t: tileCons_all)
+				tempLines.add(t);
+			for (int tileNum : occupiedLine)
+			{
+				for (ArrayList<Integer> lineList : tempLines)
+				{
+					if (lineList.contains(tileNum))
+						tileCons_all.remove(lineList);
+				}
+			}
+		}
+		return uniqueLines;
+	}
+
+	public ArrayList<Integer> findLongestLine (ArrayList<ArrayList<Integer>> lines) 
+	{
+		int lengthCnt = 0;
+		ArrayList<Integer> tempList = null;
+		for (ArrayList<Integer> line : lines)
+		{
+			if (line.size() > lengthCnt)
+			{
+				lengthCnt = line.size();
+				tempList = line;
+			}
+		}
+		return tempList;
+	}
+
+
+	public HabitatLocations transformToHexRowColDir(HabitatLocations hList, int dirAngle)
+	{
+		HabitatLocations hexRowColList = new HabitatLocations();
+		ArrayList<Location> tokenList = hexRowColList.getHabitLocList();
+		int ref_j = 0;
+		for (Location loc : hList.getHabitLocList()) 
+		{
+			int row = loc.getRow();
+			int col = loc.getCol();
+			int t_num = loc.getTileNum();
+			if (dirAngle == 120)
+				ref_j = center_j - ((center_i - row) + (row%2))/2;
+			else if (dirAngle == 60)
+				ref_j = center_j + ((center_i - row) - (row%2))/2;
+			int row_hex = row - center_i;
+			int col_hex = col - ref_j;
+			Location hexLoc = new Location(col_hex, row_hex, t_num);
+			tokenList.add(hexLoc);
+		}
+		return hexRowColList;
+	}
+
+	
+	public void createConnectElkList(ArrayList<ArrayList<Integer>> elkTileCons, HabitatLocations hList)
+	{
+		Collections.sort(hList.getHabitLocList(), new HabitatLocations());
+		TreeMap<Integer, Integer> singleTileNextMap = new TreeMap<>();
+
+		System.out.println(hList);
+		for (Location loc : hList.getHabitLocList()) {
+			int row = loc.getRow();
+			int col = loc.getCol();
+			int t_num = loc.getTileNum();
+			int next_col = col + 1;
+			Location nextLoc = nextTileInClaimedTokens(row, next_col, hList);
+			if (nextLoc != null)
+				singleTileNextMap.put(t_num, nextLoc.getTileNum());
+			else
+				singleTileNextMap.put(t_num, -1);
+		}
+
+		int totalCnt = singleTileNextMap.size();
+		int p_idx = 0;
+		while (p_idx < totalCnt)
+		{
+			ArrayList<Integer> tempConList = new ArrayList<>();
+			
+			Location loctemp = hList.getHabitLocList().get(p_idx);
+			int t_num = loctemp.getTileNum();
+			tempConList.add(t_num);
+			p_idx++;
+			int next_t_num = singleTileNextMap.get(t_num);
+			while (next_t_num != -1)
+			{
+				tempConList.add(next_t_num);
+				next_t_num = singleTileNextMap.get(next_t_num);
+				p_idx++;
+			}
+			elkTileCons.add(tempConList);
+		}
+	}
+
+	public Location nextTileInClaimedTokens(int row, int col, HabitatLocations hList)
+	{
+
+		for (Location loc : hList.getHabitLocList())
+		{
+			int r = loc.getRow();
+			int c = loc.getCol();
+			if (row == r && col == c)
+				return loc;
+		}
+		return null;
+	}
 
 	public void addAdjcTokenCnt(TreeMap<String, Object> claimedHabNeb, TreeMap<String, Integer> adjacentTokens) 
 	{

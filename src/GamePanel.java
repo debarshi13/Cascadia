@@ -21,7 +21,8 @@ import java.awt.geom.Ellipse2D;
 
 
 public class GamePanel extends JPanel implements MouseListener, MouseMotionListener{
-
+	boolean draw_hex_120 = false;
+	boolean draw_hex_60 = false;
 	enum PlayerState {
 		TILES_ON_TABLE_UPDATED,
 		TILE_ON_TABLE_IS_SELECTED,
@@ -36,7 +37,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 	PlayerState playerState = PlayerState.TILES_ON_TABLE_UPDATED;
-
 	BufferedImage background;
 	private ArrayList<Player> players;
 
@@ -85,6 +85,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	int radius = 57;
 	double xOff = Math.cos(ang30) * (radius +0.3);
 	double yOff = Math.sin(ang30) * (radius +0.3);
+	int center_i = 10;
+	int center_j = 10;
+	int replaceDuplicateCnt = 0;
 
 	Rectangle rcCancel, rcConfirm, rcUseNatureToken, rcReplaceDuplicate;
 	Rectangle rcPlayerIndicator, rcNextPlay, rcTurnsLeft;
@@ -191,8 +194,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.setColor(Color.white);
 			g.setFont(font);
 			g.drawString("Start Game", getWidth() / 2 - 70, 235);
+
+			draw_hex_120 = false;
+			draw_hex_60 = true;
+			paintBackgroundGrid(g, radius);
 		}
-		else{
+		else if (gameStatus == 1) {
 			rcCancel.setBounds(getWidth() * 2 / 5, getHeight() - 150, 140, 50);
 			rcConfirm.setBounds(rcCancel.x + rcCancel.width + 10, getHeight() - 150, 140, 50);
 			int buttonWidth = (int)(tilePlacementCancelImage.getWidth()*0.6);
@@ -230,121 +237,125 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			}
 		
 
-		for(int i = 0; i < tilesOnTable.size(); i++){
-			Tile habTile = tilesOnTable.get(i);
-			if (habTile != null) {
-				ArrayList<String> habitat = tilesOnTable.get(i).getHabitats();
-				BufferedImage img = getHabiImageFromName (habitat);
+			for(int i = 0; i < tilesOnTable.size(); i++){
+				Tile habTile = tilesOnTable.get(i);
+				if (habTile != null) {
+					ArrayList<String> habitat = tilesOnTable.get(i).getHabitats();
+					BufferedImage img = getHabiImageFromName (habitat);
+					
+					int width = (int)(img.getWidth()*0.8);
+					int height = (int)(img.getHeight()*0.8);
+					int x0 = 250 + i * 120;
+					int y0 = getHeight() - 250;
+
+					g.drawImage(img, x0, y0, width, height, null);
+
+					Hexagon hex = new Hexagon(x0+width/2, y0+height/2, radius);
+					tilesOnTable.get(i).setHexagon(hex);
 				
-				int width = (int)(img.getWidth()*0.8);
-				int height = (int)(img.getHeight()*0.8);
-				int x0 = 250 + i * 120;
-				int y0 = getHeight() - 250;
-
-				g.drawImage(img, x0, y0, width, height, null);
-
-				Hexagon hex = new Hexagon(x0+width/2, y0+height/2, radius);
-				tilesOnTable.get(i).setHexagon(hex);
-			
-				drawTileWildlife(g, tilesOnTable.get(i));				
-				drawHighlightedTileOnTable(g);
-			}
-		}
-		if (useNatureToken) {
-			animalOnTableImgElps.clear();
-		}
-
-		ArrayList<Integer> dupTokens = checkDuplicatedTokensOnTable();
-		if (dupTokens.size() == 4 && playerState != PlayerState.TURN_IS_DONE)
-		{
-			// try {
-			// 	Thread.sleep(4000);
-			// } catch (InterruptedException e1) {
-			// 	e1.printStackTrace();
-			// }
-
-			for (int i = 0; i < 4; i++)
-			{
-				String w = animals.getWildlife().remove(i);
-				animalsOnTable.set(i, w);
-			}
-		}
-
-		for(int i = 0; i < animalsOnTable.size(); i++){
-			BufferedImage img = null;
-			
-			if (animalsOnTable.get(i) != "empty")
-			{
-				if (i == selectedTokenOnTableIndex)
-					img = animalImageMap.get(animalsOnTable.get(i) + "Active");
-				else
-					img = animalImageMap.get(animalsOnTable.get(i));
-
-				g.drawImage(img, 255 + i * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
-				if (useNatureToken && playerState == PlayerState.HABITAT_PLACE_COMFIRMED) {
-					Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
-					animalOnTableImgElps.add(elps);
-					//System.out.println("-------->>>>animalOnTableImgElps.add(elps)" + animalsOnTable.get(i) + "total elps---->" + animalOnTableImgElps.size());
+					drawTileWildlife(g, tilesOnTable.get(i));				
+					drawHighlightedTileOnTable(g);
 				}
 			}
-		}
-		
-		
+			if (useNatureToken) {
+				animalOnTableImgElps.clear();
+			}
 
+			ArrayList<Integer> dupTokens = checkDuplicatedTokensOnTable();
+			if (dupTokens.size() == 4 && playerState != PlayerState.TURN_IS_DONE)
+			{
+				// try {
+				// 	Thread.sleep(4000);
+				// } catch (InterruptedException e1) {
+				// 	e1.printStackTrace();
+				// }
 
-		if (dupTokens.size() == 3 && playerState != PlayerState.TURN_IS_DONE)
-		{
-			rcReplaceDuplicate.setBounds(255, getHeight() -70,290, 50);
+				for (int i = 0; i < 4; i++)
+				{
+					String w = animals.getWildlife().remove(i);
+					animalsOnTable.set(i, w);
+				}
+			}
+
+			for(int i = 0; i < animalsOnTable.size(); i++){
+				BufferedImage img = null;
+				
+				if (animalsOnTable.get(i) != "empty")
+				{
+					if (i == selectedTokenOnTableIndex)
+						img = animalImageMap.get(animalsOnTable.get(i) + "Active");
+					else
+						img = animalImageMap.get(animalsOnTable.get(i));
+
+					g.drawImage(img, 255 + i * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
+					if (useNatureToken && playerState == PlayerState.HABITAT_PLACE_COMFIRMED) {
+						Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
+						animalOnTableImgElps.add(elps);
+						//System.out.println("-------->>>>animalOnTableImgElps.add(elps)" + animalsOnTable.get(i) + "total elps---->" + animalOnTableImgElps.size());
+					}
+				}
+			}			
+
+			if (dupTokens.size() == 3 && playerState != PlayerState.TURN_IS_DONE && replaceDuplicateCnt == 0)
+			{
+				rcReplaceDuplicate.setBounds(255, getHeight() -70,290, 50);
+				g.setColor(Color.red);
+				g.fillRect(rcReplaceDuplicate.x, rcReplaceDuplicate.y, rcReplaceDuplicate.width, rcReplaceDuplicate.height);
+				g.setColor(Color.white);
+				g.setFont(smallfont);
+				//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
+				g.drawString("Replace Duplicate Tokens", rcReplaceDuplicate.x + 35, rcReplaceDuplicate.y + 30);
+				
+			}
+
 			g.setColor(Color.red);
-			g.fillRect(rcReplaceDuplicate.x, rcReplaceDuplicate.y, rcReplaceDuplicate.width, rcReplaceDuplicate.height);
+			g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
 			g.setColor(Color.white);
 			g.setFont(smallfont);
-			//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-			g.drawString("Replace Duplicate Tokens", rcReplaceDuplicate.x + 35, rcReplaceDuplicate.y + 30);
+			g.drawString("Cancel", rcCancel.x + 35, rcCancel.y + 30);
+
+			g.setColor(Color.green);
+			g.fillRect(rcConfirm.x, rcConfirm.y, rcConfirm.width, rcConfirm.height);
+			g.setColor(Color.white);
+			g.setFont(smallfont);
+			g.drawString("Confirm", rcConfirm.x + 30, rcConfirm.y + 30);
+
+			g.setColor(Color.blue);
+			g.fillRect(rcPlayerIndicator.x, rcPlayerIndicator.y, rcPlayerIndicator.width, rcPlayerIndicator.height);
+			g.setColor(Color.white);
+			g.setFont(smallfont);
+			g.drawString("Player " + Integer.toString(activePlayerIdx+1), rcPlayerIndicator.x + 30, rcPlayerIndicator.y + 30);
 			
+			g.setColor(Color.green);
+			g.fillRect(rcTurnsLeft.x, rcTurnsLeft.y, rcTurnsLeft.width, rcTurnsLeft.height);
+			g.setColor(Color.white);
+			g.setFont(smallfont);
+			g.drawString("Turns Left: " + Integer.toString(players.get(activePlayerIdx).getTurnsLeft()), rcTurnsLeft.x + 23, rcTurnsLeft.y + 30);
+
+			if (players.get(2).getTurnsLeft() > 0) {
+				g.setColor(Color.red);
+				g.fillRect(rcNextPlay.x, rcNextPlay.y, rcNextPlay.width, rcNextPlay.height);
+				g.setColor(Color.white);
+				g.setFont(smallfont);
+				g.drawString("Next Player", rcNextPlay.x + 23, rcNextPlay.y + 30);
+			}
+
+			g.setColor(Color.blue);
+			g.fillRect(rcUseNatureToken.x, rcUseNatureToken.y, rcUseNatureToken.width, rcUseNatureToken.height);
+			g.setColor(Color.white);
+			g.setFont(smallfont);
+			g.drawString("Use Nature Token", rcUseNatureToken.x + 35, rcUseNatureToken.y + 30);
+
+			for (int i = 0; i < players.get(activePlayerIdx).getNumNatureToken(); i++) {
+				g.drawImage(natureTokenImage, (int)(rcUseNatureToken.x + rcUseNatureToken.getWidth() + 20 + (natureTokenImage.getWidth() +15)* i ), (int)(rcUseNatureToken.y-5), null);
+
+			}
+		}
+		else if (gameStatus == 2)
+		{
+			endGame(g);
 		}
 
-		g.setColor(Color.red);
-		g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
-		g.setColor(Color.white);
-		g.setFont(smallfont);
-		g.drawString("Cancel", rcCancel.x + 35, rcCancel.y + 30);
-
-		g.setColor(Color.green);
-		g.fillRect(rcConfirm.x, rcConfirm.y, rcConfirm.width, rcConfirm.height);
-		g.setColor(Color.white);
-		g.setFont(smallfont);
-		g.drawString("Confirm", rcConfirm.x + 30, rcConfirm.y + 30);
-
-		g.setColor(Color.blue);
-		g.fillRect(rcPlayerIndicator.x, rcPlayerIndicator.y, rcPlayerIndicator.width, rcPlayerIndicator.height);
-		g.setColor(Color.white);
-		g.setFont(smallfont);
-		g.drawString("Player " + Integer.toString(activePlayerIdx+1), rcPlayerIndicator.x + 30, rcPlayerIndicator.y + 30);
-		
-		g.setColor(Color.green);
-		g.fillRect(rcTurnsLeft.x, rcTurnsLeft.y, rcTurnsLeft.width, rcTurnsLeft.height);
-		g.setColor(Color.white);
-		g.setFont(smallfont);
-		g.drawString("Turns Left: " + Integer.toString(players.get(activePlayerIdx).getTurnsLeft()), rcTurnsLeft.x + 23, rcTurnsLeft.y + 30);
-
-		g.setColor(Color.red);
-		g.fillRect(rcNextPlay.x, rcNextPlay.y, rcNextPlay.width, rcNextPlay.height);
-		g.setColor(Color.white);
-		g.setFont(smallfont);
-		g.drawString("Next Player", rcNextPlay.x + 23, rcNextPlay.y + 30);
-
-		g.setColor(Color.blue);
-		g.fillRect(rcUseNatureToken.x, rcUseNatureToken.y, rcUseNatureToken.width, rcUseNatureToken.height);
-		g.setColor(Color.white);
-		g.setFont(smallfont);
-		g.drawString("Use Nature Token", rcUseNatureToken.x + 35, rcUseNatureToken.y + 30);
-
-		for (int i = 0; i < players.get(activePlayerIdx).getNumNatureToken(); i++) {
-			g.drawImage(natureTokenImage, (int)(rcUseNatureToken.x + rcUseNatureToken.getWidth() + 20 + (natureTokenImage.getWidth() +15)* i ), (int)(rcUseNatureToken.y-5), null);
-
-		}
-	}
 	}
 
 	public String constructNameString (ArrayList<String> names)
@@ -570,14 +581,32 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
     	double ang30 = Math.toRadians(30);
         double xOff = Math.cos(ang30) * (radius +0.5);
         double yOff = Math.sin(ang30) * (radius +0.5);
-        
+		int ref_j = 0;
         for (int i = 0; i < 21; i++) {
+			if (draw_hex_120 == true)
+				ref_j = center_j - ((center_i - i) + (i%2))/2;
+			else if (draw_hex_60 == true)
+				ref_j = center_j + ((center_i - i) - (i%2))/2;
+			//System.out.println("############## ref_j= " + ref_j);
+
         	for (int j = 0; j<21; j++) {
-        		int xLbl = i;
-        		int yLbl = j;        		
+				int xLbl = i;
+        		int yLbl = j;  
+				
+				if (draw_hex_120 == true) 
+				{
+					yLbl = i -center_i;
+					xLbl = j-ref_j;
+				}
+				else if (draw_hex_60 == true)
+				{
+					yLbl = i -center_i;
+					xLbl = j- ref_j;
+				}
+
         		int x = (int) (origin.x + (i%2)*xOff + 2*j*xOff);
         		int y = (int) (origin.y + 3*yOff*i);
-        		 drawHex(g, xLbl, yLbl, x, y, radius);
+        		drawHex(g, xLbl, yLbl, x, y, radius);
         	}
         }
     }
@@ -697,19 +726,22 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 						animalsOnTable.set(i, animals.getWildlife().remove(0));
 				}
 
-
 				playerState = PlayerState.TILES_ON_TABLE_UPDATED;
 				selectedTileOnTableIndex = -1;
 				selectedTokenOnTableIndex = -1;
 				previousMouseMovedinHabitatNum = -1;
 				activeAnimalToken = "";
 				candidateHabitat = null;
-				candidateHabitatHexagon.clear();
-				animalOnTableImgElps.clear();
+				if (candidateHabitatHexagon != null)
+					candidateHabitatHexagon.clear();
+				if (animalOnTableImgElps != null)
+					animalOnTableImgElps.clear();
 				useNatureToken = false;
-				repaint();
+				replaceDuplicateCnt = 0;
 
-				//players.get(activePlayerIdx).printClaimedHabInfo();
+				if (players.get(2).getTurnsLeft() == 0)
+					gameStatus  = 2;
+				repaint();
 				return;
 			}
 			
@@ -737,8 +769,10 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							animalsOnTable.set(selectedTokenOnTableIndex, "empty");
 							animalOnTableImgElps.clear();
 							useNatureToken = false;
+							replaceDuplicateCnt = 0;
 
-							players.get(activePlayerIdx).foxScoreCalculate();
+							// players.get(activePlayerIdx).foxScoreCalculate();
+							// players.get(activePlayerIdx).elkScoreCalculate();
 						}
 					}
 				}
@@ -890,7 +924,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 						animalsOnTable.set(tokenIdx, w);
 
 					}
-					for (int i = 0; i < 4; i++) {
+					replaceDuplicateCnt = 1;
+					for (int i = 0; i < 3; i++) {
 						animalsOnTable.set(i,"bear");
 					}
 				}	
@@ -1130,4 +1165,18 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		return tokenTempMap.get(tKey);
 
 	}
+
+	public void endGame(Graphics g)
+	{
+		g.setColor(Color.green);
+		g.fillRect(getWidth() / 2 - 100, 200, 200, 60);
+		g.setColor(Color.white);
+		g.setFont(font);
+		g.drawString("Game Ended", getWidth() / 2 - 70, 235);
+
+		
+		// int foxScore = players.get(activePlayerIdx).foxScoreCalculate();
+		// int elkScore = players.get(activePlayerIdx).elkScoreCalculate();
+	}
+
 }

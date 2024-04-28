@@ -771,8 +771,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							useNatureToken = false;
 							replaceDuplicateCnt = 0;
 
-							// players.get(activePlayerIdx).foxScoreCalculate();
-							// players.get(activePlayerIdx).elkScoreCalculate();
+							// players.get(activePlayerIdx).foxScoreCalculate_A();
+							// players.get(activePlayerIdx).elkScoreCalculate_A();
+							int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
 						}
 					}
 				}
@@ -797,7 +798,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				for (int i = 0; i<4; i++) {
 					Tile tile = tilesOnTable.get(i);
 					Hexagon hex = (Hexagon) tile.getHexagon();
-					if(hex.contains(e.getPoint()))
+					if(hex != null && hex.contains(e.getPoint()))
 					{
 						selectedTileOnTable = new Tile();
 						selectedTileOnTable = tile;
@@ -925,9 +926,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 					}
 					replaceDuplicateCnt = 1;
-					for (int i = 0; i < 3; i++) {
-						animalsOnTable.set(i,"bear");
-					}
+					// for (int i = 0; i < 3; i++) {
+					// 	animalsOnTable.set(i,"bear");
+					// }
 				}	
 
 				dupTokens = checkDuplicatedTokensOnTable();
@@ -1175,8 +1176,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		g.drawString("Game Ended", getWidth() / 2 - 70, 235);
 
 		
-		// int foxScore = players.get(activePlayerIdx).foxScoreCalculate();
-		// int elkScore = players.get(activePlayerIdx).elkScoreCalculate();
+		// int foxScore = players.get(activePlayerIdx).foxScoreCalculate_A();
+		// int elkScore = players.get(activePlayerIdx).elkScoreCalculate_A();
 	}
 
 }

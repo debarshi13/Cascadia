@@ -11,14 +11,35 @@ public class Player {
 	private TreeMap<String, HabitatLocations> habitatWithTokens;
 	int center_i = 10;
 	int center_j = 10;
-	Map<Integer, Integer> elkScoring = Map.of(
+	Map<Integer, Integer> elkScoring_A = Map.of(
+		0, 0,
 		1, 2,
 		2, 5,
 		3, 9,
 		4, 13
 	);
 
-	
+	Map<Integer, Integer> hawkScoring_A = Map.of(
+		0, 0,
+		1, 2,
+		2, 5,
+		3, 8,
+		4, 11,
+		5, 14, 
+		6, 18, 
+		7, 22, 
+		8, 26
+	);
+
+	Map<Integer, Integer> bearScoring_A = Map.of(
+		0, 0,
+		1, 4,
+		2, 11,
+		3, 19,
+		4, 27
+	);
+
+
 
 	public Player(int playerNum, int startingTileIdx, int turns) {
 		turnsLeft = turns;
@@ -89,7 +110,7 @@ public class Player {
 			Hexagon hex = (Hexagon) cTile.get("hexagon");
 			if(hex.contains(pt))
 			{
-				System.out.println("@@@@@@" + cTile.get("habitats"));
+				//System.out.println("@@@@@@" + cTile.get("habitats"));
 				return cTile;
 			}
 			
@@ -141,7 +162,7 @@ public class Player {
 		}
 	}
 
-	public int foxScoreCalculate() 
+	public int foxScoreCalculate_A() 
 	{
 		HabitatLocations hList = habitatWithTokens.get("fox");
 		int totalUniqueCnt = 0;
@@ -209,7 +230,7 @@ public class Player {
 	}
 
 
-	public int elkScoreCalculate() 
+	public int elkScoreCalculate_A() 
 	{
 		ArrayList<ArrayList<Integer>> elkTileCons_all = new ArrayList<>();
 		int elkScoreTotal = 0;
@@ -230,7 +251,7 @@ public class Player {
 		System.out.println(uniqueElkLines);
 		for (ArrayList<Integer> lineList : uniqueElkLines)
 		{
-			elkScoreTotal += elkScoring.get(lineList.size());
+			elkScoreTotal += elkScoring_A.get(lineList.size());
 		}
 		System.out.println("******* Elk total Score*** "+ elkScoreTotal);
 		return elkScoreTotal;
@@ -337,6 +358,77 @@ public class Player {
 		}
 	}
 
+	
+	public int hawkScoreCalculate_A() 
+	{
+		HabitatLocations hList = habitatWithTokens.get("hawk");
+		int totalIsoHawkCnt = 0;
+		int totalHawkScore = 0;
+
+		for (Location loc : hList.getHabitLocList()) {
+			boolean foundAdjHawk = false;
+			int row_i = loc.getRow();
+			int col_j = loc.getCol();
+			TreeMap<String, Object> claimedHab_above_left = null;
+			TreeMap<String, Object> claimedHab_above_right = null;
+			TreeMap<String, Object> claimedHab_down_left = null;
+			TreeMap<String, Object> claimedHab_down_right = null;
+
+			TreeMap<String, Object> claimedHab_left = searchHabitatWithTokenByTileLoc(row_i, col_j-1);
+			TreeMap<String, Object> claimedHab_right = searchHabitatWithTokenByTileLoc(row_i, col_j+1);
+			if (row_i %2 == 0) {
+				claimedHab_above_left = searchHabitatWithTokenByTileLoc(row_i-1, col_j-1);
+				claimedHab_above_right = searchHabitatWithTokenByTileLoc(row_i-1, col_j);
+				claimedHab_down_left = searchHabitatWithTokenByTileLoc(row_i+1, col_j-1);
+				claimedHab_down_right = searchHabitatWithTokenByTileLoc(row_i+1, col_j);
+			}
+			else {
+				claimedHab_above_left = searchHabitatWithTokenByTileLoc(row_i-1, col_j);
+				claimedHab_above_right = searchHabitatWithTokenByTileLoc(row_i-1, col_j+1);
+				claimedHab_down_left = searchHabitatWithTokenByTileLoc(row_i+1, col_j);
+				claimedHab_down_right = searchHabitatWithTokenByTileLoc(row_i+1, col_j+1);
+			}
+
+			if (checkTokenExistInHab(claimedHab_left, "hawk") == true ||
+				checkTokenExistInHab(claimedHab_right, "hawk") == true ||
+				checkTokenExistInHab(claimedHab_above_left, "hawk") == true || 
+				checkTokenExistInHab(claimedHab_above_right, "hawk") == true ||
+				checkTokenExistInHab(claimedHab_down_left, "hawk") == true || 
+				checkTokenExistInHab(claimedHab_down_right, "hawk") == true)
+				{
+					foundAdjHawk = true;
+				}
+
+			if (foundAdjHawk == false)
+			{
+				totalIsoHawkCnt++;
+			}
+		}
+
+		if (totalIsoHawkCnt > 8)
+		{
+			totalIsoHawkCnt = 8;
+		}
+
+		totalHawkScore += hawkScoring_A.get(totalIsoHawkCnt);
+		System.out.println ("@@@@@@@@@@@@@@@@@ hawk score @@@@@@@@@@@@@@@@@@ " + totalHawkScore);
+		return totalHawkScore;
+	}
+
+	public boolean checkTokenExistInHab(TreeMap<String, Object> hab, String token)
+	{
+		if (hab != null && (boolean)(hab.get("tokenPlaced"))) {
+			ArrayList<String> tokens = null;
+			tokens = (ArrayList<String>)hab.get("wildlife");
+			String w = tokens.get(0);
+			if (w == token)
+			{
+				return true;
+			}
+		}
+		return false;
+
+	}
 	public Location nextTileInClaimedTokens(int row, int col, HabitatLocations hList)
 	{
 
@@ -356,7 +448,7 @@ public class Player {
 		if (claimedHabNeb != null && (boolean)(claimedHabNeb.get("tokenPlaced"))) {
 			tokens = (ArrayList<String>)claimedHabNeb.get("wildlife");
 			String w = tokens.get(0);
-			System.out.println(tokens.get(0));
+			//System.out.println(tokens.get(0));
 			adjacentTokens.put(w, adjacentTokens.get((String)tokens.get(0)) +1);
 		}
 	}

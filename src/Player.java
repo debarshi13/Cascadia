@@ -415,6 +415,96 @@ public class Player {
 		return totalHawkScore;
 	}
 
+
+	public int bearScoreCalculate_A() 
+	{
+		HabitatLocations hList = habitatWithTokens.get("bear");
+		TreeMap<Integer, ArrayList<Integer>> neighborsList = new TreeMap<>();
+		int totalBearPairCnt = 0;
+		int totalBearScore = 0;
+		TreeMap<Integer, Integer> bearPairs = new TreeMap<>();
+		ArrayList<Integer> tNumsAdded = new ArrayList<>();
+
+		for (Location loc : hList.getHabitLocList()) {
+			int row = loc.getRow();
+			int col = loc.getCol();
+			int tNum = loc.getTileNum();
+			ArrayList<Integer> nbNums = searchNeighborByToken(row, col, "bear");
+			neighborsList.put(tNum, nbNums);
+			System.out.println("Bear at: " + tNum + "====>" + nbNums);
+		}
+
+		for (Map.Entry<Integer, ArrayList<Integer>> entry : neighborsList.entrySet()) 
+		{
+			int tNum = entry.getKey();
+			ArrayList<Integer> nbNums = entry.getValue();
+			if (nbNums.size() == 0)
+				continue;
+			else if (nbNums.size() >1)
+				continue;
+			else if (nbNums.size() == 1)
+			{
+				int neighborTokenNum = nbNums.get(0);
+				ArrayList<Integer> nbtokenNums = neighborsList.get(neighborTokenNum);
+				if (nbtokenNums.size() == 1 && nbtokenNums.get(0) == tNum) 
+				{
+					if (!tNumsAdded.contains(tNum))
+					{
+						bearPairs.put(tNum, nbNums.get(0));
+						tNumsAdded.add(tNum);
+						tNumsAdded.add(nbNums.get(0));
+					}
+				}
+			}
+		}
+
+		for (Map.Entry<Integer,Integer> entry : bearPairs.entrySet()) 
+		{
+			System.out.println("~~~~~~~~~~Bear: " + entry.getKey() + "====> " + entry.getValue());
+		}
+
+		totalBearPairCnt = bearPairs.size();
+		if (bearPairs.size() > 4)
+			totalBearPairCnt = 4;
+		totalBearScore = bearScoring_A.get(totalBearPairCnt);
+		return totalBearScore;
+	}
+
+	public ArrayList<Integer> searchNeighborByToken(int row_i, int col_j, String token)
+	{
+		ArrayList<Integer> neighborTileNums = new ArrayList<>();
+		ArrayList<Point> neighborLocs = new ArrayList<>();
+		neighborLocs.add(new Point(row_i, col_j-1));
+		neighborLocs.add(new Point(row_i, col_j+1));
+		if (row_i %2 == 0) {
+			neighborLocs.add(new Point(row_i-1, col_j-1));
+			neighborLocs.add(new Point(row_i-1, col_j));
+			neighborLocs.add(new Point(row_i+1, col_j-1));
+			neighborLocs.add(new Point(row_i+1, col_j));
+		}
+		else {
+			neighborLocs.add(new Point(row_i-1, col_j));
+			neighborLocs.add(new Point(row_i-1, col_j+1));
+			neighborLocs.add(new Point(row_i+1, col_j));
+			neighborLocs.add(new Point(row_i+1, col_j+1));
+		}
+
+		for (TreeMap<String, Object> cHabitat : getClaimedHabitats()) 
+		{
+			if (cHabitat != null && (boolean)(cHabitat.get("tokenPlaced")) == true) {
+				ArrayList<String> tokens = (ArrayList<String>)cHabitat.get("wildlife");
+				String w = tokens.get(0);
+				if (w == token) {
+					Point tLoc = new Point((int)(cHabitat.get("row_idx")), (int)(cHabitat.get("col_idx")));
+					if (neighborLocs.contains(tLoc))
+						neighborTileNums.add((int)(cHabitat.get("tileNum")));
+				}
+			}
+		}
+		return neighborTileNums;
+	}
+
+
 	public boolean checkTokenExistInHab(TreeMap<String, Object> hab, String token)
 	{
 		if (hab != null && (boolean)(hab.get("tokenPlaced"))) {
@@ -441,6 +531,7 @@ public class Player {
 		}
 		return null;
 	}
+
 
 	public void addAdjcTokenCnt(TreeMap<String, Object> claimedHabNeb, TreeMap<String, Integer> adjacentTokens) 
 	{

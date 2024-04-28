@@ -773,7 +773,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 							// players.get(activePlayerIdx).foxScoreCalculate_A();
 							// players.get(activePlayerIdx).elkScoreCalculate_A();
-							int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
+							// int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
+							// int bear = players.get(activePlayerIdx).bearScoreCalculate_A();
 						}
 					}
 				}
@@ -1178,6 +1179,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		
 		// int foxScore = players.get(activePlayerIdx).foxScoreCalculate_A();
 		// int elkScore = players.get(activePlayerIdx).elkScoreCalculate_A();
+		//int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
+		for (int i =0; i < 3; i++) {
+			System.out.println("player =====> " +i);
+			int bear = players.get(i).bearScoreCalculate_A();
+			System.out.println(" ########## total bear score: " + bear);
+		}
 	}
 
 }

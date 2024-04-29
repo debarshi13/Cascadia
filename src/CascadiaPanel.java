@@ -17,7 +17,7 @@ public class CascadiaPanel extends JPanel implements MouseListener{
 	private ArrayList<Player> players;
 	//private ArrayList<Tile> unclaimedTiles;
     private ArrayList<String> unclaimedTokens;
-	private ArrayList<Habitat> pile1, pile2, pile3, pile4;
+
 	private Polygon hexagonTest;
     public CascadiaPanel() {
     }

@@ -9,6 +9,7 @@ public class Player {
 	private ArrayList<TreeMap<String, Object>> claimedHabitats;
 	private int turnsLeft;
 	private TreeMap<String, HabitatLocations> habitatWithTokens;
+	private TreeMap<String, HabitatLocations> habitatByHabType;
 	int center_i = 10;
 	int center_j = 10;
 	Map<Integer, Integer> elkScoring_A = Map.of(
@@ -59,7 +60,18 @@ public class Player {
 		habitatWithTokens.put("salmon", salmonLocations);
 		habitatWithTokens.put("fox", foxLocations);
 
-		
+		HabitatLocations lakeLocations = new HabitatLocations();
+		HabitatLocations forestLocations = new HabitatLocations();
+		HabitatLocations mountainLocations = new HabitatLocations();
+		HabitatLocations desertLocations = new HabitatLocations();
+		HabitatLocations swampLocations = new HabitatLocations();
+
+		habitatByHabType.put("lake", lakeLocations);
+		habitatByHabType.put("forest", forestLocations);
+		habitatByHabType.put("mountain", mountainLocations);
+		habitatByHabType.put("desert", desertLocations);
+		habitatByHabType.put("swamp", swampLocations);
+
 		Tile[][] startingTiles = allTiles.getStartingTiles();
 
 		Hexagon hex = null;

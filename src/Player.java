@@ -606,7 +606,7 @@ public class Player {
 					}
 					else {
 						String habname = constructNameString (habsName);
-						System.out.println("!!!!!!!!!! habtat name: " + habsName);
+						//System.out.println("!!!!!!!!!! habtat name: " + habsName);
 						String[] habLookup = habitatSideList.get(habname);
 						
 						for (int side_idx = 0; side_idx < 6; side_idx++)
@@ -635,8 +635,8 @@ public class Player {
 						{
 							if (nb_i == (int)(cHabNb.get("row_idx")) && nb_j == (int)(cHabNb.get("col_idx")))
 							{
-								System.out.println("c_idx: " + c_idx );
-								System.out.println("nbPt: (" + nb_i + ", " + nb_j + ")" );
+								//System.out.println("c_idx: " + c_idx );
+								//System.out.println("nbPt: (" + nb_i + ", " + nb_j + ")" );
 								int nbRotation = (int)cHabNb.get("rotation");
 								ArrayList<String> nbHabsName = (ArrayList<String>)(cHabNb.get("habitats"));
 								if (nbHabsName.contains(habNameToConnect))
@@ -649,23 +649,24 @@ public class Player {
 										{
 											//found matching
 											nbHabFound.add((int)cHabNb.get("tileNum"));
-											System.out.println("toCon: " + habNameToConnect + " nb: " + nbName + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
+											System.out.println("Con: " + habNameToConnect + " tileNum: " + (int)cHabNb.get("tileNum") + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
 
+											
 										}
 									}
 									else{
 										int nbs_idx = (c_idx+3)%6;
 										int nb_ref_idx = ((int)(nbs_idx+(360-nbRotation)/60))%6; 
-										System.out.println("nbs_idx ==> "+ nbs_idx + " nb_ref_idx ==> " + nb_ref_idx + "nbRotation ==>" + nbRotation);
+										//System.out.println("nbs_idx ==> "+ nbs_idx + " nb_ref_idx ==> " + nb_ref_idx + "nbRotation ==>" + nbRotation);
 										String nbHabname = constructNameString (nbHabsName);
-										System.out.println("constructNameString return ===> " + nbHabname);
+										//System.out.println("constructNameString return ===> " + nbHabname);
 										String[] habNbLookup = habitatSideList.get(nbHabname);
-										System.out.println ("lookup nb_ref_idx ==>" + nb_ref_idx);
+										//System.out.println ("lookup nb_ref_idx ==>" + nb_ref_idx);
 										String habitatSideName = habNbLookup[nb_ref_idx];
 										if (habNameToConnect == habitatSideName)
 										{
 											nbHabFound.add((int)cHabNb.get("tileNum"));
-											System.out.println("toCon: " + habNameToConnect + " nb: " + habitatSideName + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
+											System.out.println("Con: " + habNameToConnect + " tileNum: " + (int)cHabNb.get("tileNum") + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
 										}
 
 									}
@@ -674,7 +675,7 @@ public class Player {
 						}
 					}				
 				}
-				System.out.println("for " + habNameToConnect + ":" + "nbHabFound==> " + nbHabFound);
+				System.out.println("for " + habNameToConnect + " tileNum: " + cHabitat.get("tileNum") + ":" + "nbHabFound==> " + nbHabFound);
 			}
 				//ArrayList<String> habNames
 		}

@@ -50,7 +50,7 @@ public class HabitatSides {
 		habitatSidesInfo.put("swamp", sides);
 
 		sides = new String[] {"swamp", "swamp", "swamp", "desert", "desert", "desert"};
-		habitatSidesInfo.put("desrt+swamp", sides);
+		habitatSidesInfo.put("desert+swamp", sides);
 
 		sides = new String[] {"desert", "desert", "desert", "desert", "desert", "desert"};
 		habitatSidesInfo.put("desert", sides);

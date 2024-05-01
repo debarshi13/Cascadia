@@ -42,6 +42,6 @@ public class Location {
     @Override
     public String toString()
     {
-        return "[ " + row_idx + " , " + col_idx + " ]";
+        return "([ " + row_idx + " , " + col_idx + " ]" + " tileNum: " + tileNum +") ";
     }
  }

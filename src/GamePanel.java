@@ -184,9 +184,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	}
 
 	public void paint(Graphics g) {
-	
-	
-		
 		g.drawImage(background, 0, 0, null);
 		if(gameStatus == 0){
 			g.setColor(Color.green);
@@ -196,7 +193,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.drawString("Start Game", getWidth() / 2 - 70, 235);
 
 			draw_hex_120 = false;
-			draw_hex_60 = true;
+			draw_hex_60 = false;
 			paintBackgroundGrid(g, radius);
 		}
 		else if (gameStatus == 1) {
@@ -220,7 +217,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(hawkScoreImage, 10, 560, 160, 110, null);
 			g.drawImage(salmonScoreImage, 10, 680, 160, 110, null);
 
-			//paintBackgroundGrid(g, radius);
+			paintBackgroundGrid(g, radius);
 
 			// starting tiles
 			drawClaimedHabitats(g);
@@ -877,8 +874,14 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 						selectedTokenOnTableIndex = selectedTileOnTableIndex;
 						activeAnimalToken = animalsOnTable.get(selectedTokenOnTableIndex);
 					}
+					players.get(activePlayerIdx).addHabitatForHab(
+								(int)(newHab.get("row_idx")), (int)(newHab.get("col_idx")), newHab);
 					clockwiseClickedCnt = 0;
 					counterCWclickedCnt = 0;
+
+					players.get(activePlayerIdx).printHabitatInfo();
+
+					players.get(activePlayerIdx).habitatScoreCalculate();
 					//System.out.println("Confirm clicked");
 				}
 

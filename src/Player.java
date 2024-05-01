@@ -9,7 +9,10 @@ public class Player {
 	private ArrayList<TreeMap<String, Object>> claimedHabitats;
 	private int turnsLeft;
 	private TreeMap<String, HabitatLocations> habitatWithTokens;
-	private TreeMap<String, HabitatLocations> habitatByHabType;
+	private TreeMap<String, HabitatLocations> habitatsByHabType;
+
+	private TreeMap<String, ArrayList<ArrayList<Integer>>> habitatsConnected;
+
 	int center_i = 10;
 	int center_j = 10;
 	Map<Integer, Integer> elkScoring_A = Map.of(
@@ -47,6 +50,8 @@ public class Player {
 		natureTokenCount = 0;
 		claimedHabitats = new ArrayList<>();
 		habitatWithTokens = new TreeMap<>();
+		habitatsByHabType = new TreeMap<>();
+		habitatsConnected = new TreeMap<>();
 
 		HabitatLocations bearLocations = new HabitatLocations();
 		HabitatLocations elkLocations = new HabitatLocations();
@@ -66,14 +71,28 @@ public class Player {
 		HabitatLocations desertLocations = new HabitatLocations();
 		HabitatLocations swampLocations = new HabitatLocations();
 
-		habitatByHabType.put("lake", lakeLocations);
-		habitatByHabType.put("forest", forestLocations);
-		habitatByHabType.put("mountain", mountainLocations);
-		habitatByHabType.put("desert", desertLocations);
-		habitatByHabType.put("swamp", swampLocations);
+		habitatsByHabType.put("lake", lakeLocations);
+		habitatsByHabType.put("forest", forestLocations);
+		habitatsByHabType.put("mountain", mountainLocations);
+		habitatsByHabType.put("desert", desertLocations);
+		habitatsByHabType.put("swamp", swampLocations);
+
+		ArrayList<ArrayList<Integer>> lakeConnLocations = new ArrayList<>();
+		ArrayList<ArrayList<Integer>> forestConnLocations = new ArrayList<>();
+		ArrayList<ArrayList<Integer>> mountainConnLocations = new ArrayList<>();
+		ArrayList<ArrayList<Integer>> desertConnLocatioans = new ArrayList<>();
+		ArrayList<ArrayList<Integer>> swampConnLocatioans = new ArrayList<>();
+
+		habitatsConnected.put("lake", lakeConnLocations);
+		habitatsConnected.put("forest", forestConnLocations);
+		habitatsConnected.put("mountain", mountainConnLocations);
+		habitatsConnected.put("desert", desertConnLocatioans);
+		habitatsConnected.put("swamp", swampConnLocatioans);
 
 		Tile[][] startingTiles = allTiles.getStartingTiles();
 
+		ArrayList<String> habitatsList = new ArrayList<>();
+		String habNames = "";
 		Hexagon hex = null;
 		TreeMap<String, Object> habitatInfo = new TreeMap<>();
 		habitatInfo.put("tileNum",startingTiles[startingTileIdx][0].getTileNum());
@@ -85,7 +104,7 @@ public class Player {
 		habitatInfo.put("rotation", startingTiles[startingTileIdx][0].getRotation());
 		habitatInfo.put("hexagon", hex);
 		claimedHabitats.add(habitatInfo);
-
+		addHabitatForHab((int)(habitatInfo.get("row_idx")), (int)(habitatInfo.get("col_idx")), habitatInfo);
 		
 		habitatInfo = new TreeMap<>();
 		habitatInfo.put("tileNum",startingTiles[startingTileIdx][1].getTileNum());
@@ -97,7 +116,7 @@ public class Player {
 		habitatInfo.put("rotation", startingTiles[startingTileIdx][1].getRotation());
 		habitatInfo.put("hexagon", hex);
 		claimedHabitats.add(habitatInfo);
-
+		addHabitatForHab((int)(habitatInfo.get("row_idx")), (int)(habitatInfo.get("col_idx")), habitatInfo);
 
 		habitatInfo = new TreeMap<>();
 		habitatInfo.put("tileNum",startingTiles[startingTileIdx][2].getTileNum());
@@ -109,6 +128,8 @@ public class Player {
 		habitatInfo.put("rotation", startingTiles[startingTileIdx][2].getRotation());
 		habitatInfo.put("hexagon", hex);
 		claimedHabitats.add(habitatInfo);
+		addHabitatForHab((int)(habitatInfo.get("row_idx")), (int)(habitatInfo.get("col_idx")), habitatInfo);
+
 	}
 
 	public ArrayList<TreeMap<String, Object>> getClaimedHabitats() {
@@ -163,9 +184,45 @@ public class Player {
 		locList.addLocation(i, j, n);
 	}
 
-	public void printClaimedHabInfo()
+	// public void addHabitatForHabByTileNum(int i, int j, int n)
+	// {
+		
+	// 	for (TreeMap<String, Object> cHabitat : getClaimedHabitats()) 
+	// 	{
+	// 		System.out.println("cHabitat tile num: " + cHabitat.get("tileNum"));
+	// 		System.out.println("passed in tile num: " +n);
+			
+	// 		if ((int)(cHabitat.get("tileNum")) == n) 
+	// 		{
+	// 			ArrayList<String> hList = (ArrayList<String>)(cHabitat.get("habitats"));
+	// 			for (String h : hList)
+	// 			{
+	// 				HabitatLocations locList = habitatsByHabType.get(h);
+	// 				locList.addLocation(i, j, n);
+
+	// 			}
+	// 		}
+	// 		else
+	// 			continue;	
+	// 	}
+	// }
+
+	public void addHabitatForHab(int i, int j, TreeMap<String, Object> cHabitat)
 	{
-		for (Map.Entry<String, HabitatLocations> entry : habitatWithTokens.entrySet()) 
+		System.out.println("cHabitat tile num: " + cHabitat.get("tileNum"));
+		ArrayList<String> hList = (ArrayList<String>)(cHabitat.get("habitats"));
+		for (String h : hList)
+		{
+			HabitatLocations locList = habitatsByHabType.get(h);
+			locList.addLocation(i, j, (int)(cHabitat.get("tileNum")));
+
+		}
+	}
+	
+
+	public void printHabitatInfo()
+	{
+		for (Map.Entry<String, HabitatLocations> entry : habitatsByHabType.entrySet())
 		{
 			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 			System.out.println(entry.getKey());
@@ -173,6 +230,17 @@ public class Player {
 			System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 		}
 	}
+
+	// public void printClaimedHabInfo()
+	// {
+	// 	for (Map.Entry<String, HabitatLocations> entry : habitatWithTokens.entrySet()) 
+	// 	{
+	// 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+	// 		System.out.println(entry.getKey());
+	// 		System.out.println(entry.getValue());
+	// 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+	// 	}
+	// }
 
 	public int foxScoreCalculate_A() 
 	{
@@ -482,6 +550,214 @@ public class Player {
 		return totalBearScore;
 	}
 
+
+	public int habitatScoreCalculate()
+	{
+		NeighborSideMatch sidesMatch = new NeighborSideMatch();
+		TreeMap<Integer, String> sidesMatchPairs = sidesMatch.getNeighborSidesMatching();
+		HabitatSides habitatSides = new HabitatSides();
+
+		TreeMap<String, String[]> habitatSideList = habitatSides.getHabitatSidesInfo();
+		ArrayList<Integer> processedHabs = new ArrayList<>();
+		ArrayList<Integer> unprocessedHabs = new ArrayList<>();
+
+
+		for (Map.Entry<String, HabitatLocations> entry : habitatsByHabType.entrySet())
+		{
+			System.out.println("****************************************************************************************");
+			String habNameToConnect = entry.getKey();
+			System.out.println("habNameToConnect ==> " + habNameToConnect);
+			ArrayList<ArrayList<Integer>> finalConnectedHab = habitatsConnected.get(habNameToConnect);
+			HabitatLocations habList = entry.getValue();
+			//ArrayList<Integer> nbHabFound = new ArrayList<>();
+			TreeMap<Integer, ArrayList<Integer>> tempHabiMaps = new TreeMap<>();
+
+			//copy all the potential hab under same hab name to unprocessed list
+			for (Location h : habList.getHabitLocList()) {
+				unprocessedHabs.add(h.getTileNum());
+			}
+
+			// process each potential hab, 1) find the hab with rotation and hab type, 2) based on rotation, calculate the lookup ref_idx
+			// from habitatSideList, 3) use ref_idx to look up the side hab info (e.g. "lake", "forest", etc.) 4) save all sides matching 
+			// entry.key(). these are the sides need to be searched for neighbors. 
+			// 4) find it's upper neighbor
+			// 5) Calculate the corresponding
+			// neighbor side index (nb_side_idx) which is sharing the same side as of side_idx. (for example, side_idx = 0 shares with side_idx 
+			// of 3 of its upperright neighbor tile). 6) use neighbor's rotation info to calculate the lookup nb_ref_idx to find out the
+			for (Location habLoc: habList.getHabitLocList())
+			{
+				
+				ArrayList<Integer> nbHabFound = new ArrayList<>();
+				int tNum = habLoc.getTileNum();
+				int row = habLoc.getRow();
+				int col = habLoc.getCol();
+				tempHabiMaps.put(tNum, nbHabFound);
+				TreeMap<String, Object> cHabitat = searchHabitatByTileNum(tNum);
+				if (cHabitat != null)
+				{
+					int rotation = (int)(cHabitat.get("rotation"));
+					ArrayList<String> habsName = (ArrayList<String>)(cHabitat.get("habitats"));
+					ArrayList<Integer> idx_to_search = new ArrayList<>();
+
+					if (habsName.size() == 1) // single hab type
+					{
+						for (int i = 0; i <6; i++)
+							idx_to_search.add(i);
+					}
+					else {
+						String habname = constructNameString (habsName);
+						System.out.println("!!!!!!!!!! habtat name: " + habsName);
+						String[] habLookup = habitatSideList.get(habname);
+						
+						for (int side_idx = 0; side_idx < 6; side_idx++)
+						{
+							int ref_idx = ((int)(side_idx+(360-rotation)/60))%6;  //rotated index used for looking up table
+							//System.out.println("!!!!!!!!!!! side_idx: " + side_idx + "  rotation: " + rotation + "  ref_idx: " + ref_idx);
+
+							String habitatSideName = habLookup[ref_idx];
+							if (habNameToConnect == habitatSideName)
+							{
+								idx_to_search.add(side_idx);
+								
+							}
+						}
+					}
+
+					System.out.println("idx_to_search::: " + idx_to_search + "rotation: " + rotation + "row: " + row + " col: " + col);
+					for (int c_idx: idx_to_search)
+					{
+						String nbHabDir = sidesMatchPairs.get(c_idx);
+						Point nbPt = getIJIndexforNeighbor(row, col, nbHabDir);
+						int nb_i = (int) nbPt.getX();
+						int nb_j = (int) nbPt.getY();
+					
+						for (TreeMap<String, Object> cHabNb : getClaimedHabitats()) 
+						{
+							if (nb_i == (int)(cHabNb.get("row_idx")) && nb_j == (int)(cHabNb.get("col_idx")))
+							{
+								System.out.println("c_idx: " + c_idx );
+								System.out.println("nbPt: (" + nb_i + ", " + nb_j + ")" );
+								int nbRotation = (int)cHabNb.get("rotation");
+								ArrayList<String> nbHabsName = (ArrayList<String>)(cHabNb.get("habitats"));
+								if (nbHabsName.contains(habNameToConnect))
+								 {
+									if (nbHabsName.size() == 1) // single hab type
+									{
+										//single hab, only need to compare two names.
+										String nbName = nbHabsName.get(0);
+										if (nbName == habNameToConnect)
+										{
+											//found matching
+											nbHabFound.add((int)cHabNb.get("tileNum"));
+											System.out.println("toCon: " + habNameToConnect + " nb: " + nbName + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
+
+										}
+									}
+									else{
+										int nbs_idx = (c_idx+3)%6;
+										int nb_ref_idx = ((int)(nbs_idx+(360-nbRotation)/60))%6; 
+										System.out.println("nbs_idx ==> "+ nbs_idx + " nb_ref_idx ==> " + nb_ref_idx + "nbRotation ==>" + nbRotation);
+										String nbHabname = constructNameString (nbHabsName);
+										System.out.println("constructNameString return ===> " + nbHabname);
+										String[] habNbLookup = habitatSideList.get(nbHabname);
+										System.out.println ("lookup nb_ref_idx ==>" + nb_ref_idx);
+										String habitatSideName = habNbLookup[nb_ref_idx];
+										if (habNameToConnect == habitatSideName)
+										{
+											nbHabFound.add((int)cHabNb.get("tileNum"));
+											System.out.println("toCon: " + habNameToConnect + " nb: " + habitatSideName + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
+										}
+
+									}
+								}
+							}
+						}
+					}				
+				}
+				System.out.println("for " + habNameToConnect + ":" + "nbHabFound==> " + nbHabFound);
+			}
+				//ArrayList<String> habNames
+		}
+
+		
+		return 0;
+	}
+
+
+	public Point getIJIndexforNeighbor(int row_i, int col_j, String nbDir) 
+	{
+		Point loc = new Point();
+		switch (nbDir) 
+		{
+			case "upleft":
+			{
+				if (row_i %2 == 0) {
+					loc.setLocation(new Point(row_i-1, col_j-1));
+				}
+				else {
+					loc.setLocation(new Point(row_i-1, col_j));
+				}
+				break;
+			}
+			case "upright":
+			{
+				if (row_i %2 == 0) {
+					loc.setLocation(new Point(row_i-1, col_j));
+				}
+				else {
+					loc.setLocation(new Point(row_i-1, col_j+1));
+				}
+				break;
+			}
+			case "left":
+			{
+				loc.setLocation(new Point(row_i, col_j-1));
+				break;
+			}
+			case "right":
+			{
+				loc.setLocation(new Point(row_i, col_j+1));
+				break;
+			}
+			case "downleft":
+			{
+				if (row_i %2 == 0) {
+					loc.setLocation(new Point(row_i+1, col_j-1));
+				}
+				else {
+					loc.setLocation(new Point(row_i+1, col_j));
+				}
+				break;
+			}
+			case "downright":
+			{
+				if (row_i %2 == 0) {
+					loc.setLocation(new Point(row_i+1, col_j));
+				}
+				else {
+					loc.setLocation(new Point(row_i+1, col_j+1));
+				}
+				break;
+			}
+		}
+
+		return loc;
+
+	}
+
+	public TreeMap<String, Object> searchHabitatByTileNum(int tilenumber)
+	{
+		for (TreeMap<String, Object> cHabitat : getClaimedHabitats()) 
+		{
+			if (tilenumber == (int)(cHabitat.get("tileNum")))
+			{
+				return cHabitat;
+			}
+		}
+		return null;
+	}
+
+
 	public ArrayList<Integer> searchNeighborByToken(int row_i, int col_j, String token)
 	{
 		ArrayList<Integer> neighborTileNums = new ArrayList<>();
@@ -570,5 +846,19 @@ public class Player {
 		}
 		return null;
 	}
+
+
+	public String constructNameString (ArrayList<String> names)
+	{
+		String imgName = "";
+		for(int j = 0; j < names.size(); j++){
+			if(j == 0)
+				imgName += names.get(j);
+			else
+				imgName += ("+" + names.get(j));
+		}
+		return imgName;
+	}
+
 
 }

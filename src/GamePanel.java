@@ -879,9 +879,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					clockwiseClickedCnt = 0;
 					counterCWclickedCnt = 0;
 
-					players.get(activePlayerIdx).printHabitatInfo();
-
-					players.get(activePlayerIdx).habitatScoreCalculate();
+					//players.get(activePlayerIdx).printHabitatInfo();
+					players.get(activePlayerIdx).habitatCorridorCalculate();
 					//System.out.println("Confirm clicked");
 				}
 
@@ -1187,6 +1186,10 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			System.out.println("player =====> " +i);
 			int bear = players.get(i).bearScoreCalculate_A();
 			System.out.println(" ########## total bear score: " + bear);
+
+			players.get(i).habitatCorridorCalculate();
+
+
 		}
 	}
 

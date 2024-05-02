@@ -1,6 +1,7 @@
 
 import java.awt.Point;
 import java.util.*;
+import java.util.Map.Entry;
 
 
 public class Player {
@@ -551,14 +552,13 @@ public class Player {
 	}
 
 
-	public int habitatScoreCalculate()
+	public void habitatCorridorCalculate()
 	{
 		NeighborSideMatch sidesMatch = new NeighborSideMatch();
 		TreeMap<Integer, String> sidesMatchPairs = sidesMatch.getNeighborSidesMatching();
 		HabitatSides habitatSides = new HabitatSides();
 
 		TreeMap<String, String[]> habitatSideList = habitatSides.getHabitatSidesInfo();
-		ArrayList<Integer> processedHabs = new ArrayList<>();
 		ArrayList<Integer> unprocessedHabs = new ArrayList<>();
 
 
@@ -568,6 +568,7 @@ public class Player {
 			String habNameToConnect = entry.getKey();
 			System.out.println("habNameToConnect ==> " + habNameToConnect);
 			ArrayList<ArrayList<Integer>> finalConnectedHab = habitatsConnected.get(habNameToConnect);
+			finalConnectedHab.clear();
 			HabitatLocations habList = entry.getValue();
 			//ArrayList<Integer> nbHabFound = new ArrayList<>();
 			TreeMap<Integer, ArrayList<Integer>> tempHabiMaps = new TreeMap<>();
@@ -576,11 +577,12 @@ public class Player {
 			for (Location h : habList.getHabitLocList()) {
 				unprocessedHabs.add(h.getTileNum());
 			}
+			ArrayList<Integer> processedHabs = new ArrayList<>();
 
 			// process each potential hab, 1) find the hab with rotation and hab type, 2) based on rotation, calculate the lookup ref_idx
 			// from habitatSideList, 3) use ref_idx to look up the side hab info (e.g. "lake", "forest", etc.) 4) save all sides matching 
 			// entry.key(). these are the sides need to be searched for neighbors. 
-			// 4) find it's upper neighbor
+			// 4) find it's upper neighbor  hahaha
 			// 5) Calculate the corresponding
 			// neighbor side index (nb_side_idx) which is sharing the same side as of side_idx. (for example, side_idx = 0 shares with side_idx 
 			// of 3 of its upperright neighbor tile). 6) use neighbor's rotation info to calculate the lookup nb_ref_idx to find out the
@@ -623,7 +625,7 @@ public class Player {
 						}
 					}
 
-					System.out.println("idx_to_search::: " + idx_to_search + "rotation: " + rotation + "row: " + row + " col: " + col);
+					////System.out.println("idx_to_search::: " + idx_to_search + "rotation: " + rotation + "row: " + row + " col: " + col);
 					for (int c_idx: idx_to_search)
 					{
 						String nbHabDir = sidesMatchPairs.get(c_idx);
@@ -649,9 +651,7 @@ public class Player {
 										{
 											//found matching
 											nbHabFound.add((int)cHabNb.get("tileNum"));
-											System.out.println("Con: " + habNameToConnect + " tileNum: " + (int)cHabNb.get("tileNum") + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
-
-											
+											////System.out.println("Con: " + habNameToConnect + " tileNum: " + (int)cHabNb.get("tileNum") + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
 										}
 									}
 									else{
@@ -666,7 +666,7 @@ public class Player {
 										if (habNameToConnect == habitatSideName)
 										{
 											nbHabFound.add((int)cHabNb.get("tileNum"));
-											System.out.println("Con: " + habNameToConnect + " tileNum: " + (int)cHabNb.get("tileNum") + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
+											////System.out.println("Con: " + habNameToConnect + " tileNum: " + (int)cHabNb.get("tileNum") + "loc: " + (int)cHabNb.get("row_idx") + ", " + (int)cHabNb.get("col_idx"));
 										}
 
 									}
@@ -675,13 +675,50 @@ public class Player {
 						}
 					}				
 				}
-				System.out.println("for " + habNameToConnect + " tileNum: " + cHabitat.get("tileNum") + ":" + "nbHabFound==> " + nbHabFound);
+				////System.out.println("for " + habNameToConnect + " tileNum: " + cHabitat.get("tileNum") + ":" + "nbHabFound==> " + nbHabFound);
 			}
-				//ArrayList<String> habNames
-		}
+			
+			Set<Integer> allHabitatForOneType = tempHabiMaps.keySet();
+			for (Map.Entry<Integer, ArrayList<Integer>> a : tempHabiMaps.entrySet())
+			{
+				System.out.println("habNum: " + a.getKey() + "  connected habNums: " + a.getValue());
+			}
 
-		
-		return 0;
+			//System.out.println("allHabitatForOneType nums ===> " + allHabitatForOneType);
+			for( int habNum : allHabitatForOneType) {
+				ArrayList<Integer> habsInGroup = new ArrayList<>();
+				addToConnectedHabsGroup(habNum, habsInGroup, processedHabs, tempHabiMaps);
+				if (habsInGroup.size()>0)
+					finalConnectedHab.add(habsInGroup);
+			}
+
+			for (ArrayList<Integer> groups: finalConnectedHab)
+			{
+				System.out.println(groups);
+			}
+			
+		}
+	}
+
+
+	public void addToConnectedHabsGroup(int hNum, ArrayList<Integer> habsGp, ArrayList<Integer> processedHabs, TreeMap<Integer, ArrayList<Integer>> tempHabiMaps)
+	{	
+		if (!processedHabs.contains(hNum))
+		{
+			habsGp.add(hNum);
+			processedHabs.add(hNum);
+			ArrayList<Integer> conns = tempHabiMaps.get(hNum);
+			if (conns.size() == 0)
+				return;
+			else{
+				for (int subHabNum: conns)
+				{
+					addToConnectedHabsGroup(subHabNum, habsGp, processedHabs, tempHabiMaps);
+				}
+			}
+		}
+		else
+			return;
 	}
 
 

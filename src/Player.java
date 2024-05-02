@@ -11,6 +11,7 @@ public class Player {
 	private int turnsLeft;
 	private TreeMap<String, HabitatLocations> habitatWithTokens;
 	private TreeMap<String, HabitatLocations> habitatsByHabType;
+	private TreeMap<String, Integer> finalHabCounts;
 
 	private TreeMap<String, ArrayList<ArrayList<Integer>>> habitatsConnected;
 
@@ -89,6 +90,8 @@ public class Player {
 		habitatsConnected.put("mountain", mountainConnLocations);
 		habitatsConnected.put("desert", desertConnLocatioans);
 		habitatsConnected.put("swamp", swampConnLocatioans);
+
+		finalHabCounts = new TreeMap<>();
 
 		Tile[][] startingTiles = allTiles.getStartingTiles();
 
@@ -567,8 +570,8 @@ public class Player {
 			System.out.println("****************************************************************************************");
 			String habNameToConnect = entry.getKey();
 			System.out.println("habNameToConnect ==> " + habNameToConnect);
-			ArrayList<ArrayList<Integer>> finalConnectedHab = habitatsConnected.get(habNameToConnect);
-			finalConnectedHab.clear();
+			ArrayList<ArrayList<Integer>> connectedHabsForEachHabType = habitatsConnected.get(habNameToConnect);
+			connectedHabsForEachHabType.clear();
 			HabitatLocations habList = entry.getValue();
 			//ArrayList<Integer> nbHabFound = new ArrayList<>();
 			TreeMap<Integer, ArrayList<Integer>> tempHabiMaps = new TreeMap<>();
@@ -689,14 +692,19 @@ public class Player {
 				ArrayList<Integer> habsInGroup = new ArrayList<>();
 				addToConnectedHabsGroup(habNum, habsInGroup, processedHabs, tempHabiMaps);
 				if (habsInGroup.size()>0)
-					finalConnectedHab.add(habsInGroup);
+					connectedHabsForEachHabType.add(habsInGroup);
 			}
 
-			for (ArrayList<Integer> groups: finalConnectedHab)
+			int largestHabConnectedCnt = 0;
+			for (ArrayList<Integer> groups: connectedHabsForEachHabType)
 			{
-				System.out.println(groups);
+				System.out.println("habitat: " + habNameToConnect + " ==> groups: " + groups);
+				if (groups.size() > largestHabConnectedCnt)
+					largestHabConnectedCnt = groups.size();
 			}
 			
+			finalHabCounts.put(habNameToConnect, largestHabConnectedCnt);
+			System.out.println("habitat: " + habNameToConnect + " ==> largest conn hab count: " + largestHabConnectedCnt);
 		}
 	}
 

@@ -907,4 +907,8 @@ public class Player {
 	}
 
 
+	public TreeMap<String, Integer> getFinalHabConnGroupCnt()
+	{
+		return finalHabCounts;
+	}
 }

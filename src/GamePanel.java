@@ -1182,6 +1182,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		// int foxScore = players.get(activePlayerIdx).foxScoreCalculate_A();
 		// int elkScore = players.get(activePlayerIdx).elkScoreCalculate_A();
 		//int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
+		TreeMap<Integer, TreeMap<String, Integer>> playersFinalHabs = new TreeMap<>();
+		TreeMap<Integer, TreeMap<String, Integer>> playersHabsBonus = new TreeMap<>();
+		String[] habs = {"lake", "mountain", "desert", "forest", "swamp"};
 		for (int i =0; i < 3; i++) {
 			System.out.println("player =====> " +i);
 			int bear = players.get(i).bearScoreCalculate_A();
@@ -1189,8 +1192,20 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 			players.get(i).habitatCorridorCalculate();
 
+			TreeMap<String, Integer> finalCnt = players.get(i).getFinalHabConnGroupCnt();
+			playersFinalHabs.put(i, finalCnt);
+
+			TreeMap<String, Integer> bonusScores = new TreeMap<>();
+			for (String habType: habs) 
+			{
+				bonusScores.put(habType, 0);
+			}
+			playersHabsBonus.put(i, bonusScores);
 
 		}
+
+		
+
 	}
 
 }

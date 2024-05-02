@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.security.KeyStore.Entry;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
@@ -1204,7 +1206,71 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 		}
 
-		
+
+		for (String habT: habs) 
+		{
+			// find the scores of this habitat type for all three players.
+			int player_0 = playersFinalHabs.get(0).get(habT);
+			int player_1 = playersFinalHabs.get(1).get(habT);
+			int player_2 = playersFinalHabs.get(2).get(habT);
+
+			if (player_0 == player_1 && player_1 == player_2)
+			{
+				playersHabsBonus.get(0).put(habT, 1);
+				playersHabsBonus.get(1).put(habT, 1);
+				playersHabsBonus.get(2).put(habT, 1);
+			}
+			else 
+			{
+				PlayerScore[] playerScoreList = {new PlayerScore(0, player_0), 
+												 new PlayerScore(1, player_1),
+												 new PlayerScore(2, player_2)};
+				
+				PlayerScore[] sortedPScores = Arrays.stream(playerScoreList).sorted(Comparator.comparing(PlayerScore::getPlayerScore)).toArray(PlayerScore[]::new);
+
+
+				System.out.println(" ~~~~" + habT + " ~~~~~~~~ PlayersScore: ");
+				for (int i = 0; i < 3; i++)
+				{
+					System.out.println("score and player idx==> : " + sortedPScores[i]);
+				}
+
+				if (sortedPScores[1].getPlayerScore() == sortedPScores[2].getPlayerScore())
+				{
+					//2 players tie for the largest, 2 points each
+					int p1 = sortedPScores[1].getPlayerIdx();
+					int p2 = sortedPScores[2].getPlayerIdx();
+					playersHabsBonus.get(p1).put(habT, 2);
+					playersHabsBonus.get(p2).put(habT, 2);
+				}
+				else if (sortedPScores[0].getPlayerScore() == sortedPScores[1].getPlayerScore())
+				{
+					// one largest and two ties for the second largest, 3 points for the largest
+					int p2 = sortedPScores[2].getPlayerIdx();
+					playersHabsBonus.get(p2).put(habT, 3);
+				}
+				else {
+					int p2 = sortedPScores[2].getPlayerIdx();
+					playersHabsBonus.get(p2).put(habT, 3);
+					int p1 = sortedPScores[1].getPlayerIdx();
+					playersHabsBonus.get(p1).put(habT, 1);
+				}
+			}
+
+		}
+
+		for (Map.Entry<Integer, TreeMap<String, Integer>> en : playersHabsBonus.entrySet())
+		{
+			int playerIdx = en.getKey();
+			System.out.println("~~~~~~~~~~~~~~~~~~~~~~bonus scores for player idx: " + playerIdx + " ~~~~~~~~~~~~~~~~~~~~");
+			TreeMap<String, Integer> enm = en.getValue();
+			for (Map.Entry<String, Integer> sen: enm.entrySet()) 
+			{
+				String hab = sen.getKey();
+				int bs = sen.getValue();
+				System.out.println("bonus for ~~~" + hab + " ~~~ bonus score: "+ bs);
+			}
+		}
 
 	}
 

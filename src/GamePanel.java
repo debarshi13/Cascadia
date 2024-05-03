@@ -120,6 +120,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			swampTileImage = ImageIO.read(new File("src/images/swamp.png"));
 			starterTile1 = ImageIO.read(new File("src/images/starterTile1.png"));
 			swampLakeTileImage = ImageIO.read(new File("src/images/swamp+lake.png"));
+			
 			background = ImageIO.read(new File("src/images/background.png"));
 			tilePlacementCancelImage = ImageIO.read(new File("src/images/tilePlacementCancel.png"));
 			tilePlacementConfirmImage = ImageIO.read(new File("src/images/tilePlacementConfirm.png")); 
@@ -202,6 +203,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			//paintBackgroundGrid(g, radius);
 		}
 		else if (gameStatus == 1) {
+			g.clearRect(0, 0,  getWidth(), getHeight());
+			
+			g.drawImage(background, 0, 0, null);
 			rcCancel.setBounds(getWidth() * 2 / 5, getHeight() - 150, 140, 50);
 			rcConfirm.setBounds(rcCancel.x + rcCancel.width + 10, getHeight() - 150, 140, 50);
 			int buttonWidth = (int)(tilePlacementCancelImage.getWidth()*0.6);
@@ -1388,7 +1392,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		{
 			System.out.println("final draw tiles");
 			int totalWidth = getWidth();
-			Point pt = new Point ((int)(totalWidth*i/3), 136);
+			Point pt = new Point ((int)(totalWidth*i/3)-220, 136);
 
 			drawFinalClaimedHabitats(g, pt, i);
 		}

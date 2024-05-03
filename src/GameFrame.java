@@ -25,6 +25,17 @@ public class GameFrame extends JFrame{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(WIDTH, HEIGHT);
 		add(new GamePanel());
+		// GamePanel gPanel = new GamePanel();
+		// gPanel.setPreferredSize(new Dimension(2160, 1200));
+		// gPanel.setLayout(new BorderLayout());
+
+		// JScrollPane scrollerPane = new JScrollPane( gPanel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+		// JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		// scrollerPane.setPreferredSize(new Dimension(1920, 1080));
+
+		// add(scrollerPane);
+		// pack();
+		// setLocationRelativeTo(null);
 		setVisible(true);
 		
 	}

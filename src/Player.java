@@ -323,7 +323,7 @@ public class Player {
 		return NeighboringTiles;	
 	}
 
-	
+
 	private boolean SalmonNotFound(ArrayList<Location> lst, Location loc){
 		for(int i = 0; i < lst.size(); i++)
 		{
@@ -485,7 +485,7 @@ public class Player {
 								nextLoc.setUsed(true);
 								salmonOneSchool += ("&" + nextLoc.toString());		
 								prevLoc = nextLoc;
-								nextLoc = neighbors.get(0);	
+//								nextLoc = neighbors.get(0);	
 								System.out.println("middle of the salmon hunt: " + salmonOneSchool);
 							}
 								

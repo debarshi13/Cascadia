@@ -648,8 +648,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		Player activePlayer = players.get(playerIdx);
 		ArrayList<TreeMap<String, Object>> startingTiles = activePlayer.getClaimedHabitats();
 		for (TreeMap<String, Object> cTile : startingTiles) {
-			drawOtherPlayerHabitatTile(g, cTile, originPt, 0.6);
-			drawOtherPlayerHabitatWildlife(g, cTile, originPt, 0.6);
+			drawOtherPlayerHabitatTile(g, cTile, originPt, 0.5);
+			drawOtherPlayerHabitatWildlife(g, cTile, originPt, 0.5);
 		}
 	}
 
@@ -1004,8 +1004,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							// players.get(activePlayerIdx).elkScoreCalculate_A();
 							// int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
 							// int bear = players.get(activePlayerIdx).bearScoreCalculate_A();
-							//int salmon = players.get(activePlayerIdx).salmonScoreCalculate();
-							//System.out.println("~~~~~~~~~~~Scalmon Score: " + salmon);
+							int salmon = players.get(activePlayerIdx).salmonScoreCalculate();
+							System.out.println("~~~~~~~~~~~Scalmon Score: " + salmon);
 						}
 					}
 				}

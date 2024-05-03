@@ -49,7 +49,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	String [] tilesAnimalsOnTable = {"", "", "", ""};
 	
 	private int gameStatus = 0;
-	private Font font = new Font("Arial", Font.BOLD, 24);
+	private Font font = new Font("Arial", Font.BOLD, 18);
 
 	private Tile selectedTileOnTable = null;
 	private int selectedTileOnTableIndex = -1;
@@ -58,7 +58,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	int counterCWclickedCnt = 0;
 	int clockwiseClickedCnt = 0;
 
-	private Font smallfont = new Font("Arial", Font.BOLD, 18);
+	private Font smallfont = new Font("Arial", Font.BOLD, 14);
 
 	int activePlayerIdx = 0;
 	String activeAnimalToken = "";
@@ -196,7 +196,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.fillRect(getWidth() / 2 - 100, 200, 200, 60);
 			g.setColor(Color.white);
 			g.setFont(font);
-			g.drawString("Start Game", getWidth() / 2 - 70, 235);
+			g.drawString("Start Game", getWidth() / 2 - 50, 235);
 
 			draw_hex_120 = false;
 			draw_hex_60 = false;
@@ -206,25 +206,25 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.clearRect(0, 0,  getWidth(), getHeight());
 			
 			g.drawImage(background, 0, 0, null);
-			rcCancel.setBounds(getWidth() * 2 / 5, getHeight() - 150, 140, 50);
-			rcConfirm.setBounds(rcCancel.x + rcCancel.width + 10, getHeight() - 150, 140, 50);
-			int buttonWidth = (int)(tilePlacementCancelImage.getWidth()*0.6);
-			int buttonHeight = (int)(tilePlacementCancelImage.getHeight()*0.6);
-			hexCounterClockwise = new Hexagon((int )((rcConfirm.x + rcConfirm.width + 10 + buttonWidth/2)), (int)(getHeight()-40 - buttonWidth), (int)(radius*0.8));
-			hexClockwiise = new Hexagon((int )((rcConfirm.x + rcConfirm.width + 15 + buttonWidth*1.5)), (int)(getHeight()-40 - buttonWidth), (int)(radius*0.8));
+			rcCancel.setBounds(getWidth() * 2 / 5 - 40, getHeight() - 60, 70, 40);
+			rcConfirm.setBounds(rcCancel.x + rcCancel.width + 10, rcCancel.y, 70, 40);
+			int buttonWidth = (int)(tilePlacementCancelImage.getWidth()*0.45);
+			int buttonHeight = (int)(tilePlacementCancelImage.getHeight()*0.45);
+			hexCounterClockwise = new Hexagon((int )((rcConfirm.x + rcConfirm.width + 10 + buttonWidth/2)), (int)(getHeight() - buttonWidth/2-10), (int)(radius*0.8));
+			hexClockwiise = new Hexagon((int )((rcConfirm.x + rcConfirm.width + 15 + buttonWidth*1.5)), (int)(getHeight() - buttonWidth/2-10), (int)(radius*0.8));
 			g.drawImage(tilePlacementRotateCounterCWImage, (int)(hexCounterClockwise.getCenter().x-buttonWidth/2), (int)(hexCounterClockwise.getCenter().y- buttonHeight/2), buttonWidth, buttonHeight, null);
 			g.drawImage(tilePlacementRotateCWImage, (int)(hexClockwiise.getCenter().x-buttonWidth/2), (int)(hexClockwiise.getCenter().y- buttonHeight/2), buttonWidth, buttonHeight, null);
 			
-			rcPlayerIndicator.setBounds((int)(hexClockwiise.getCenter().x+buttonWidth/2) + 15,getHeight() - 150,140,50); 
-			rcTurnsLeft.setBounds(rcPlayerIndicator.x + rcPlayerIndicator.width + 15, getHeight() - 150, 180,50);
-			rcNextPlay.setBounds(rcTurnsLeft.x + rcTurnsLeft.width + 15, getHeight() - 150, 160,50);
+			rcPlayerIndicator.setBounds((int)(hexClockwiise.getCenter().x+buttonWidth/2) + 15,rcCancel.y,90,40); 
+			rcTurnsLeft.setBounds(rcPlayerIndicator.x + rcPlayerIndicator.width + 15, rcCancel.y, 110,40);
+			rcNextPlay.setBounds(rcTurnsLeft.x + rcTurnsLeft.width + 15, rcCancel.y, 115,40);
 
-			rcUseNatureToken.setBounds(getWidth() * 2 / 5, getHeight() - 220, 240, 50);
-			g.drawImage(bearScoreImage, 10, 200, 160, 110, null);
-			g.drawImage(elkScoreImage, 10, 320, 160, 110, null);
-			g.drawImage(foxScoreImage, 10, 440, 160, 110, null);
-			g.drawImage(hawkScoreImage, 10, 560, 160, 110, null);
-			g.drawImage(salmonScoreImage, 10, 680, 160, 110, null);
+			rcUseNatureToken.setBounds(rcCancel.x, getHeight() - 120, 180, 40);
+			g.drawImage(bearScoreImage, 10, 200, 140, 100, null);
+			g.drawImage(elkScoreImage, 10, 310, 140, 100, null);
+			g.drawImage(foxScoreImage, 10, 420, 140, 100, null);
+			g.drawImage(hawkScoreImage, 10, 530, 140, 100, null);
+			g.drawImage(salmonScoreImage, 10, 640, 140, 100, null);
 
 			//paintBackgroundGrid(g, radius);
 
@@ -265,7 +265,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					int width = (int)(img.getWidth()*0.8);
 					int height = (int)(img.getHeight()*0.8);
 					int x0 = 250 + i * 120;
-					int y0 = getHeight() - 250;
+					int y0 = getHeight() - 180;
 
 					g.drawImage(img, x0, y0, width, height, null);
 
@@ -306,7 +306,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					else
 						img = animalImageMap.get(animalsOnTable.get(i));
 
-					g.drawImage(img, 255 + i * 120, getHeight() - 150, img.getWidth(), img.getHeight(), null);
+					g.drawImage(img, 255 + i * 120, getHeight() - 80, img.getWidth(), img.getHeight(), null);
 					if (useNatureToken && playerState == PlayerState.HABITAT_PLACE_COMFIRMED) {
 						Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
 						animalOnTableImgElps.add(elps);
@@ -317,13 +317,13 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 			if (dupTokens.size() == 3 && playerState != PlayerState.TURN_IS_DONE && replaceDuplicateCnt == 0)
 			{
-				rcReplaceDuplicate.setBounds(255, getHeight() -70,290, 50);
+				rcReplaceDuplicate.setBounds(25, getHeight() -75,200, 40);
 				g.setColor(Color.red);
 				g.fillRect(rcReplaceDuplicate.x, rcReplaceDuplicate.y, rcReplaceDuplicate.width, rcReplaceDuplicate.height);
 				g.setColor(Color.white);
 				g.setFont(smallfont);
 				//System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$");
-				g.drawString("Replace Duplicate Tokens", rcReplaceDuplicate.x + 35, rcReplaceDuplicate.y + 30);
+				g.drawString("Replace Duplicate Tokens", rcReplaceDuplicate.x + 10, rcReplaceDuplicate.y + 25);
 				
 			}
 
@@ -331,39 +331,39 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.fillRect(rcCancel.x, rcCancel.y, rcCancel.width, rcCancel.height);
 			g.setColor(Color.white);
 			g.setFont(smallfont);
-			g.drawString("Cancel", rcCancel.x + 35, rcCancel.y + 30);
+			g.drawString("Cancel", rcCancel.x + 9, rcCancel.y + 25);
 
 			g.setColor(Color.green);
 			g.fillRect(rcConfirm.x, rcConfirm.y, rcConfirm.width, rcConfirm.height);
 			g.setColor(Color.white);
 			g.setFont(smallfont);
-			g.drawString("Confirm", rcConfirm.x + 30, rcConfirm.y + 30);
+			g.drawString("Confirm", rcConfirm.x + 5, rcConfirm.y + 25);
 
 			g.setColor(Color.blue);
 			g.fillRect(rcPlayerIndicator.x, rcPlayerIndicator.y, rcPlayerIndicator.width, rcPlayerIndicator.height);
 			g.setColor(Color.white);
 			g.setFont(smallfont);
-			g.drawString("Player " + Integer.toString(activePlayerIdx+1), rcPlayerIndicator.x + 30, rcPlayerIndicator.y + 30);
+			g.drawString("Player " + Integer.toString(activePlayerIdx+1), rcPlayerIndicator.x + 10, rcPlayerIndicator.y + 25);
 			
 			g.setColor(Color.green);
 			g.fillRect(rcTurnsLeft.x, rcTurnsLeft.y, rcTurnsLeft.width, rcTurnsLeft.height);
 			g.setColor(Color.white);
 			g.setFont(smallfont);
-			g.drawString("Turns Left: " + Integer.toString(players.get(activePlayerIdx).getTurnsLeft()), rcTurnsLeft.x + 23, rcTurnsLeft.y + 30);
+			g.drawString("Turns Left: " + Integer.toString(players.get(activePlayerIdx).getTurnsLeft()), rcTurnsLeft.x + 5, rcTurnsLeft.y + 25);
 
 			if (players.get(2).getTurnsLeft() > 0) {
 				g.setColor(Color.red);
 				g.fillRect(rcNextPlay.x, rcNextPlay.y, rcNextPlay.width, rcNextPlay.height);
 				g.setColor(Color.white);
 				g.setFont(smallfont);
-				g.drawString("Next Player", rcNextPlay.x + 23, rcNextPlay.y + 30);
+				g.drawString("Next Player", rcNextPlay.x + 10, rcNextPlay.y + 25);
 			}
 
 			g.setColor(Color.blue);
 			g.fillRect(rcUseNatureToken.x, rcUseNatureToken.y, rcUseNatureToken.width, rcUseNatureToken.height);
 			g.setColor(Color.white);
 			g.setFont(smallfont);
-			g.drawString("Use Nature Token", rcUseNatureToken.x + 35, rcUseNatureToken.y + 30);
+			g.drawString("Use Nature Token", rcUseNatureToken.x + 27, rcUseNatureToken.y + 25);
 
 			for (int i = 0; i < players.get(activePlayerIdx).getNumNatureToken(); i++) {
 				g.drawImage(natureTokenImage, (int)(rcUseNatureToken.x + rcUseNatureToken.getWidth() + 20 + (natureTokenImage.getWidth() +15)* i ), (int)(rcUseNatureToken.y-5), null);

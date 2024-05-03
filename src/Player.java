@@ -528,7 +528,7 @@ public class Player {
 		
 	}
 
-	public int foxScoreCalculate_A() 
+	public int foxScoreCalculate() 
 	{
 		HabitatLocations hList = habitatWithTokens.get("fox");
 		int totalUniqueCnt = 0;
@@ -596,7 +596,7 @@ public class Player {
 	}
 
 
-	public int elkScoreCalculate_A() 
+	public int elkScoreCalculate() 
 	{
 		ArrayList<ArrayList<Integer>> elkTileCons_all = new ArrayList<>();
 		int elkScoreTotal = 0;
@@ -725,7 +725,7 @@ public class Player {
 	}
 
 	
-	public int hawkScoreCalculate_A() 
+	public int hawkScoreCalculate() 
 	{
 		HabitatLocations hList = habitatWithTokens.get("hawk");
 		int totalIsoHawkCnt = 0;
@@ -782,7 +782,7 @@ public class Player {
 	}
 
 
-	public int bearScoreCalculate_A() 
+	public int bearScoreCalculate() 
 	{
 		HabitatLocations hList = habitatWithTokens.get("bear");
 		TreeMap<Integer, ArrayList<Integer>> neighborsList = new TreeMap<>();

@@ -330,7 +330,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 					g.drawImage(img, 255 + i * 120, getHeight() - 80, img.getWidth(), img.getHeight(), null);
 					if (useNatureToken && playerState == PlayerState.HABITAT_PLACE_COMFIRMED) {
-						Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -150, 60, 60);
+						Ellipse2D elps = new Ellipse2D.Double(255 + i * 120, getHeight() -80, 60, 60);
 						animalOnTableImgElps.add(elps);
 						//System.out.println("-------->>>>animalOnTableImgElps.add(elps)" + animalsOnTable.get(i) + "total elps---->" + animalOnTableImgElps.size());
 					}
@@ -1444,7 +1444,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		String[] habs = {"lake", "mountain", "desert", "forest", "swamp"};
 		for (int i =0; i < 3; i++) {
 			System.out.println("player =====> " +i);
-			int bear = players.get(i).bearScoreCalculate_A();
+			int bear = players.get(i).bearScoreCalculate();
 			System.out.println(" ########## total bear score: " + bear);
 
 			players.get(i).habitatCorridorCalculate();
@@ -1533,7 +1533,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			System.out.println("final draw tiles");
 			int totalWidth = getWidth();
 			Point pt = new Point ((int)(totalWidth*i/3)-100, 76);
-
 			drawFinalClaimedHabitats(g, pt, i);
 
 			int yStart = 0;
@@ -1545,10 +1544,27 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			}
 
 			int xStart = (int)scoreBoardLoc.get(i).getX();
-
-			
 			g.drawImage(fullScoreBoardImage, xStart + 10, yStart +150, null);
-			//g.drawImage(fullScoreBoardImage, (int)(totalWidth*i/3)+100, getHeight() -500, null);
+		
+			// display scores to score board
+			int foxScore = players.get(activePlayerIdx).foxScoreCalculate();
+			int elkScore = players.get(activePlayerIdx).elkScoreCalculate();
+			int hawk = players.get(activePlayerIdx).hawkScoreCalculate();
+			int bear = players.get(i).bearScoreCalculate();
+			int salmon = players.get(i).salmonScoreCalculate();
+
+			g.setColor(Color.white);
+			//g.fillRect(getWidth() / 2 - 100, 200, 200, 60);
+			g.setColor(Color.blue);
+			g.setFont(font);
+			g.drawString(Integer.toString(bear), fullScoreBoardImage.getWidth()*2/5, yStart +10);
+			g.drawString(Integer.toString(elkScore), fullScoreBoardImage.getWidth()*2/5, yStart +51);
+
+			g.drawString(Integer.toString(foxScore), fullScoreBoardImage.getWidth()*2/5, yStart +92);
+
+			g.drawString(Integer.toString(hawk), fullScoreBoardImage.getWidth()*2/5, yStart +133);
+
+			g.drawString(Integer.toString(salmon), fullScoreBoardImage.getWidth()*2/5, yStart +174);
 
 		}
 

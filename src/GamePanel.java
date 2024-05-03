@@ -853,7 +853,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				useNatureToken = false;
 				replaceDuplicateCnt = 0;
 
-				if (players.get(2).getTurnsLeft() == 17)
+				if (players.get(2).getTurnsLeft() == 0)
 					gameStatus  = 2;
 				repaint();
 				return;
@@ -889,6 +889,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							// players.get(activePlayerIdx).elkScoreCalculate_A();
 							// int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
 							// int bear = players.get(activePlayerIdx).bearScoreCalculate_A();
+							int salmon = players.get(activePlayerIdx).salmonScoreCalculate();
+							System.out.println("~~~~~~~~~~~Scalmon Score: " + salmon);
 						}
 					}
 				}

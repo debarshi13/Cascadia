@@ -101,7 +101,7 @@ public class Player {
 		TreeMap<String, Object> habitatInfo = new TreeMap<>();
 		habitatInfo.put("tileNum",startingTiles[startingTileIdx][0].getTileNum());
 		habitatInfo.put("row_idx", 4);
-		habitatInfo.put("col_idx", 10);
+		habitatInfo.put("col_idx", 6);
 		habitatInfo.put("habitats", startingTiles[startingTileIdx][0].getHabitats());
 		habitatInfo.put("wildlife", startingTiles[startingTileIdx][0].getWildlife());
 		habitatInfo.put("tokenPlaced", false);
@@ -113,7 +113,7 @@ public class Player {
 		habitatInfo = new TreeMap<>();
 		habitatInfo.put("tileNum",startingTiles[startingTileIdx][1].getTileNum());
 		habitatInfo.put("row_idx", 5);
-		habitatInfo.put("col_idx", 9);
+		habitatInfo.put("col_idx", 5);
 		habitatInfo.put("habitats", startingTiles[startingTileIdx][1].getHabitats());
 		habitatInfo.put("wildlife", startingTiles[startingTileIdx][1].getWildlife());
 		habitatInfo.put("tokenPlaced", false);
@@ -125,7 +125,7 @@ public class Player {
 		habitatInfo = new TreeMap<>();
 		habitatInfo.put("tileNum",startingTiles[startingTileIdx][2].getTileNum());
 		habitatInfo.put("row_idx", 5);
-		habitatInfo.put("col_idx", 10);
+		habitatInfo.put("col_idx", 6);
 		habitatInfo.put("habitats", startingTiles[startingTileIdx][2].getHabitats());
 		habitatInfo.put("wildlife", startingTiles[startingTileIdx][2].getWildlife());
 		habitatInfo.put("tokenPlaced", false);
@@ -245,6 +245,288 @@ public class Player {
 	// 		System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 	// 	}
 	// }
+
+	public ArrayList<Location> getNeighbourTilesForWildlife(Location loc, String wildlife)
+	{
+		ArrayList<Location> NeighboringTiles = new ArrayList<Location>();
+		ArrayList<String> tokens = null;
+		int row_i = loc.getRow();
+		int col_j = loc.getCol();
+		TreeMap<String, Object> claimedHab_above_left = null;
+		TreeMap<String, Object> claimedHab_above_right = null;
+		TreeMap<String, Object> claimedHab_down_left = null;
+		TreeMap<String, Object> claimedHab_down_right = null;
+		TreeMap<String, Object> claimedHab_left = searchHabitatWithTokenByTileLoc(row_i, col_j-1);
+		TreeMap<String, Object> claimedHab_right = searchHabitatWithTokenByTileLoc(row_i, col_j+1);
+		if (row_i %2 == 0) {
+			claimedHab_above_left = searchHabitatWithTokenByTileLoc(row_i-1, col_j-1);
+			claimedHab_above_right = searchHabitatWithTokenByTileLoc(row_i-1, col_j);
+			claimedHab_down_left = searchHabitatWithTokenByTileLoc(row_i+1, col_j-1);
+			claimedHab_down_right = searchHabitatWithTokenByTileLoc(row_i+1, col_j);
+		}
+		else {
+			claimedHab_above_left = searchHabitatWithTokenByTileLoc(row_i-1, col_j);
+			claimedHab_above_right = searchHabitatWithTokenByTileLoc(row_i-1, col_j+1);
+			claimedHab_down_left = searchHabitatWithTokenByTileLoc(row_i+1, col_j);
+			claimedHab_down_right = searchHabitatWithTokenByTileLoc(row_i+1, col_j+1);
+		}
+		if (claimedHab_left != null && (boolean)(claimedHab_left.get("tokenPlaced"))) {
+			tokens = (ArrayList<String>)claimedHab_left.get("wildlife");
+			if(tokens.get(0) == wildlife)
+				NeighboringTiles.add(new Location(row_i, col_j-1));
+		}
+		if (claimedHab_right != null && (boolean)(claimedHab_right.get("tokenPlaced"))) {
+			tokens = (ArrayList<String>)claimedHab_right.get("wildlife");
+			if(tokens.get(0) == wildlife)
+				NeighboringTiles.add(new Location(row_i, col_j+1));
+		}
+		if (claimedHab_above_left != null && (boolean)(claimedHab_above_left.get("tokenPlaced"))) {
+			tokens = (ArrayList<String>)claimedHab_above_left.get("wildlife");
+			if(tokens.get(0) == wildlife){
+				if (row_i %2 == 0) {
+					NeighboringTiles.add(new Location(row_i-1, col_j-1));
+				}else{
+					NeighboringTiles.add(new Location(row_i-1, col_j));
+				}
+			}
+		}
+		if (claimedHab_above_right != null && (boolean)(claimedHab_above_right.get("tokenPlaced"))) {
+			tokens = (ArrayList<String>)claimedHab_above_right.get("wildlife");
+			if(tokens.get(0) == wildlife){
+				if (row_i %2 == 0) {
+					NeighboringTiles.add(new Location(row_i-1, col_j));
+				}else{
+					NeighboringTiles.add(new Location(row_i-1, col_j+1));
+				}
+			}
+		}
+		if (claimedHab_down_left != null && (boolean)(claimedHab_down_left.get("tokenPlaced"))) {
+			tokens = (ArrayList<String>)claimedHab_down_left.get("wildlife");
+			if(tokens.get(0) == wildlife){
+				if (row_i %2 == 0) {
+					NeighboringTiles.add(new Location(row_i+1, col_j-1));
+				}else{
+					NeighboringTiles.add(new Location(row_i+1, col_j));
+				}
+			}
+		}
+		if (claimedHab_down_right != null && (boolean)(claimedHab_down_right.get("tokenPlaced"))) {
+			tokens = (ArrayList<String>)claimedHab_down_right.get("wildlife");
+			if(tokens.get(0) == wildlife){
+				if (row_i %2 == 0) {
+					NeighboringTiles.add(new Location(row_i+1, col_j));
+				}else{
+					NeighboringTiles.add(new Location(row_i+1, col_j+1));
+				}
+			}
+		}	
+		return NeighboringTiles;	
+	}
+
+	
+	private boolean SalmonNotFound(ArrayList<Location> lst, Location loc){
+		for(int i = 0; i < lst.size(); i++)
+		{
+			if(lst.get(i).getCol() == loc.getCol() && lst.get(i).getRow() == loc.getRow())
+				return false;
+		}
+		return true;
+	}
+	public boolean SalmonAlreadyUsed(Location loc, ArrayList<String> lst){
+		for(int i = 0; i < lst.size(); i++)
+		{
+			if(lst.get(i).contains(loc.toString()))
+				return true;
+		}
+		return false;
+	}
+	public Location getNotCrowdedNeighbor(ArrayList<Location> l1, ArrayList<Location> l2){
+		for(int i = 0; i < l1.size(); i++){
+			boolean crowded = false;
+			for(int j = 0; j < l2.size(); j++){
+				if(l1.get(i).getRow() == l2.get(j).getRow() && l1.get(i).getCol() == l2.get(j).getCol())
+					crowded = true;
+			}
+			if(crowded == false)
+				return l1.get(i);
+		}
+		return l1.get(0);//to eliminate compile warning
+	}
+	public int salmonScoreCalculate(){
+		int salmonScore = 0;
+		HabitatLocations hList = habitatWithTokens.get("salmon");
+		int neighboringSalmons = 0;
+		ArrayList<Location> salmonLoc = new ArrayList<Location>();
+		ArrayList<Location> salmonOnSchoolSide = new ArrayList<Location>();
+		ArrayList<Location> salmonOnSchoolSideTemp = new ArrayList<Location>();
+		ArrayList<Location> salmonOvercrowded = new ArrayList<Location>();
+		ArrayList<String> salmonSchools = new ArrayList<String>();
+		Location prevLoc, nextLoc;
+		for (Location loc : hList.getHabitLocList()) {
+			neighboringSalmons = getNeighbourTilesForWildlife(loc, "salmon").size();
+			if(neighboringSalmons > 2){
+				salmonOvercrowded.add(loc);
+			}	
+		}
+		for (Location loc : hList.getHabitLocList()) {
+			boolean locOverCrowded = false;
+			for(int i = 0; i < salmonOvercrowded.size(); i++)
+			{
+				if(salmonOvercrowded.get(i).getRow() == loc.getRow() && salmonOvercrowded.get(i).getCol() == loc.getCol())
+				{
+					locOverCrowded = true;
+					break;
+				}
+			}
+			if(locOverCrowded)
+				continue;
+			ArrayList<Location> neighbors = getNeighbourTilesForWildlife(loc, "salmon");
+			int disqualifiedNeighbors = 0;
+			for(int n = neighbors.size() - 1; n >= 0; n--){
+				for(int k = 0; k < salmonOvercrowded.size(); k++)
+				{
+					if(neighbors.size() > n){
+						if(neighbors.get(n).getCol() == salmonOvercrowded.get(k).getCol() && neighbors.get(n).getRow() == salmonOvercrowded.get(k).getRow()){
+							// System.out.println("removing " + neighbors.get(n).getRow() + " - " + neighbors.get(n).getCol() + " since it connects to an overcrowded salmon");
+							// if(n < neighbors.size() - 1)
+							// 	neighbors.remove(n);		
+							disqualifiedNeighbors++;				
+						}
+					}
+				}
+			}
+			neighboringSalmons = neighbors.size() - disqualifiedNeighbors;
+			if(neighboringSalmons == 0){
+				salmonScore += 2; //isolated salmon worth 2 points
+			}else if(neighboringSalmons == 2){
+				salmonLoc.add(loc);
+			}
+			else if(neighboringSalmons == 1){
+				salmonLoc.add(loc);
+				salmonOnSchoolSide.add(loc);
+			}	
+		}
+		for(int i = 0; i < salmonLoc.size(); i++){
+			salmonLoc.get(i).setUsed(false);
+		}
+		for(Location loc : salmonOnSchoolSide){
+			//if a location has been used by traversing, mark it as used for the side of school list
+			for(int k = 0; k < salmonOnSchoolSideTemp.size(); k++)
+			{
+				if(loc.getRow() == salmonOnSchoolSideTemp.get(k).getRow() && loc.getCol() == salmonOnSchoolSideTemp.get(k).getCol())
+					loc.setUsed(true);
+			}
+			if(SalmonAlreadyUsed(loc, salmonSchools)){
+				loc.setUsed(true);
+			}
+			if(loc.getUsed() == false){
+				loc.setUsed(true);
+
+				String salmonOneSchool = loc.toString();
+				ArrayList<Location> neighbors = getNeighbourTilesForWildlife(loc, "salmon");
+				neighboringSalmons = neighbors.size();
+				int disqualifiedNeighbors = 0;
+				for(int i = neighbors.size() - 1; i >= 0; i--){
+					for(int k = 0; k < salmonOvercrowded.size(); k++)
+					{
+						if(neighbors.get(i).getRow() == salmonOvercrowded.get(k).getRow() && neighbors.get(i).getCol() == salmonOvercrowded.get(k).getCol()){
+							// System.out.println("removing " + neighbors.get(i).getRow() + " - " + neighbors.get(i).getCol() + " since it connects to an overcrowded salmon");
+							// if(i < neighbors.size() - 1)
+							// 	neighbors.remove(i);
+							disqualifiedNeighbors++;
+						}
+					}
+				}
+				neighboringSalmons = neighboringSalmons - disqualifiedNeighbors;
+				if(neighboringSalmons == 0){
+					salmonScore += 2;
+				}
+				else
+				{
+					prevLoc = loc;
+					nextLoc = getNotCrowdedNeighbor(neighbors, salmonOvercrowded);
+					salmonOneSchool += ("&" + nextLoc.toString());	
+					System.out.println("starting of the salmon hunt: " + prevLoc.toString() + " to " + nextLoc.toString());
+					
+					int neighborNum = 1; //it has to be 1 neighbour
+					while(neighborNum > 0){
+						
+						neighbors = getNeighbourTilesForWildlife(nextLoc, "salmon");
+						neighborNum = neighbors.size();
+						int validNeihborNum = 0;
+						for(int i = neighborNum - 1; i >= 0; i--){
+							//don't count the salmon that starts the search
+							if(SalmonNotFound(salmonLoc, neighbors.get(i))){
+								continue;
+							}
+							if(salmonOneSchool.contains(neighbors.get(i).toString()))
+								continue;
+							if(neighbors.get(i).getRow() == prevLoc.getRow() && neighbors.get(i).getCol() == prevLoc.getCol())
+							{
+								continue;
+							}
+							
+							for(int k = 0; k < salmonOvercrowded.size(); k++)
+							{
+								if(neighbors.get(i).getRow() == salmonOvercrowded.get(k).getRow() && neighbors.get(i).getCol() == salmonOvercrowded.get(k).getCol()){
+									continue;
+								}								
+							}	
+							nextLoc = neighbors.get(i);
+							validNeihborNum++;					
+						}
+						neighborNum = validNeihborNum;
+						if(salmonOneSchool.contains(nextLoc.toString()))
+							neighborNum = 0;
+						if(neighborNum == 1)
+						{
+							if(!salmonOneSchool.contains(nextLoc.toString()))
+							{
+								nextLoc.setUsed(true);
+								salmonOneSchool += ("&" + nextLoc.toString());		
+								prevLoc = nextLoc;
+								nextLoc = neighbors.get(0);	
+								System.out.println("middle of the salmon hunt: " + salmonOneSchool);
+							}
+								
+						}
+						else{ //end of the school
+							if(!salmonOneSchool.contains(nextLoc.toString()))
+							{
+								salmonOneSchool += ("&" + nextLoc.toString());
+								salmonSchools.add(salmonOneSchool);
+														
+							}
+							salmonSchools.add(salmonOneSchool);
+							System.out.println("end of the salmon hunt: " + salmonOneSchool);
+							salmonOnSchoolSideTemp.add(nextLoc);
+						}
+					}
+				}
+				
+			}
+		}
+		for(int i = 0; i < salmonSchools.size(); i++){
+			System.out.println(salmonSchools.get(i));
+			String[] sTmps = salmonSchools.get(i).split("&");
+			if(sTmps.length == 2)
+				salmonScore += 4;
+			else if(sTmps.length == 3)
+				salmonScore += 7;
+			else if(sTmps.length == 4)
+				salmonScore += 11;
+			else if(sTmps.length == 5)
+				salmonScore += 15;
+			else if(sTmps.length == 6)
+				salmonScore += 20;
+			else if(sTmps.length >= 7)
+				salmonScore += 28;
+		}
+
+		System.out.println("*************************SALMON SCORE: "+ salmonScore);
+		return salmonScore;
+		
+	}
 
 	public int foxScoreCalculate_A() 
 	{

@@ -87,6 +87,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	int radius = 57;
 	double xOff = Math.cos(ang30) * (radius +0.3);
 	double yOff = Math.sin(ang30) * (radius +0.3);
+	int endgameRadius = 38;
+	double endgamexOff =  Math.cos(ang30) * (endgameRadius +0.3);
+	double endgameyOff =  Math.sin(ang30) * (endgameRadius +0.3);
 	int center_i = 10;
 	int center_j = 10;
 	int replaceDuplicateCnt = 0;
@@ -196,7 +199,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 			draw_hex_120 = false;
 			draw_hex_60 = false;
-			paintBackgroundGrid(g, radius);
+			//paintBackgroundGrid(g, radius);
 		}
 		else if (gameStatus == 1) {
 			rcCancel.setBounds(getWidth() * 2 / 5, getHeight() - 150, 140, 50);
@@ -219,7 +222,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(hawkScoreImage, 10, 560, 160, 110, null);
 			g.drawImage(salmonScoreImage, 10, 680, 160, 110, null);
 
-			paintBackgroundGrid(g, radius);
+			//paintBackgroundGrid(g, radius);
 
 			// starting tiles
 			drawClaimedHabitats(g);
@@ -623,6 +626,114 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		g.drawString(text, x - w/2, y + h/2);
     }
 
+	public void drawFinalClaimedHabitats(Graphics g, Point originPt, int playerIdx)
+	{
+		Player activePlayer = players.get(playerIdx);
+		ArrayList<TreeMap<String, Object>> startingTiles = activePlayer.getClaimedHabitats();
+		for (TreeMap<String, Object> cTile : startingTiles) {
+			drawFinalHabitatTile(g, cTile, originPt);
+			drawFinalHabitatWildlife(g, cTile, originPt);
+		}
+	}
+
+	public static BufferedImage imageResize(BufferedImage img, int newW, int newH) { 
+		Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
+		BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2d = dimg.createGraphics();
+		g2d.drawImage(tmp, 0, 0, null);
+		g2d.dispose();
+		return dimg;
+	} 
+
+
+
+	public void drawFinalHabitatTile(Graphics g, TreeMap<String, Object> cTile, Point originPt) 
+	{		
+		int row_i = (int) cTile.get("row_idx");
+		int col_j = (int) cTile.get("col_idx");
+		ArrayList<String> habitatsList = (ArrayList<String>) cTile.get("habitats");			
+		BufferedImage bImageorig = getHabiImageFromName(habitatsList);
+		BufferedImage bImage = imageResize(bImageorig, bImageorig.getWidth()*2/3, bImageorig.getHeight()*2/3);
+		int rot = (int) cTile.get("rotation");
+		int x = (int) (originPt.x + (row_i%2)*endgamexOff + 2*col_j*endgamexOff -endgamexOff);
+		int y = (int) (originPt.y + 3*endgameyOff*row_i) -endgameRadius;
+		double locationX = bImage.getWidth() / 2;
+		double locationY = bImage.getHeight() / 2;
+		Graphics2D g2d = (Graphics2D) g;
+		if (rot > 0) {
+			
+			AffineTransform identity = AffineTransform.getRotateInstance(Math.toRadians(rot), locationX, locationY);				
+			AffineTransformOp op = new AffineTransformOp(identity, AffineTransformOp.TYPE_BILINEAR);
+			g2d.drawImage(op.filter(bImage, null), x, y, null);
+		}
+		else {
+			g.drawImage(bImage, x, y, bImage.getWidth(), bImage.getHeight(), null);
+			
+		}
+	}
+
+	public void drawFinalHabitatWildlife(Graphics g, TreeMap<String, Object> cTile, Point originPt) 
+	{		
+		int row_i = (int) cTile.get("row_idx");
+		int col_j = (int) cTile.get("col_idx");
+		//double xOff = Math.cos(ang30) * (endgameRadius +0.3);
+		//double yOff = Math.sin(ang30) * (endgameRadius +0.3);
+		int x = (int) (originPt.x + (row_i%2)*endgamexOff + 2*col_j*endgamexOff -endgamexOff);
+		int y = (int) (originPt.y + 3*endgameyOff*row_i) -endgameRadius;
+		ArrayList<String> wildlifeList = (ArrayList<String>) cTile.get("wildlife");
+		int num = wildlifeList.size();
+		if(num == 1){
+
+			//y+=(int)(endgameyOff + 6);
+			BufferedImage bImage = null;
+			if ((boolean)cTile.get("tokenPlaced") == false) 
+				bImage = animalImageMap.get(wildlifeList.get(0));
+			else
+				bImage = animalImageMap.get(wildlifeList.get(0)+"Active");
+			
+			BufferedImage scaledImage = imageResize(bImage, bImage.getWidth()/2, bImage.getHeight()/2);
+			x+=(int)endgamexOff - scaledImage.getWidth()/2;
+			y+=(int)endgameRadius - scaledImage.getHeight()/2;
+			g.drawImage(scaledImage, x, y, null);
+
+			//g.drawImage(bImage, x, y, (int)endgamexOff, (int)endgameyOff*2,null);
+		}
+		else if(num == 2){
+			y+=(int)(endgameyOff + 6);
+			for(int i = 0; i < wildlifeList.size(); i++){		
+				if(i == 0)	
+					x += (int)(endgamexOff * 0.2);	
+				else
+					x += (int)(endgamexOff * 0.8);
+				BufferedImage bImage = animalImageMap.get(wildlifeList.get(i));
+				g.drawImage(bImage, x, y, (int)(endgamexOff * 1.5 / 2), (int)endgameyOff*3/2,null);
+			
+			}
+		}
+		else if(num == 3){
+			int x1, y1;
+			for(int i = 0; i < wildlifeList.size(); i++){		
+				if(i == 0)	{
+					x1 = x + (int)(endgamexOff * 0.75);
+					y1 = y+(int)(endgameyOff*0.85);
+				}
+				else if(i == 1){
+					x1 = x + (int)(endgamexOff * 0.5);	
+					y1 = y+(int)(endgameyOff * 1.7);
+				}
+				else{
+					x1 = x + (int)(endgamexOff * 1.1);
+					y1 = y+(int)(endgameyOff * 1.6);
+				}
+				BufferedImage bImage = animalImageMap.get(wildlifeList.get(i));
+				g.drawImage(bImage, x1, y1, (int)(endgamexOff * 1.2 / 2), (int)(endgameyOff*1.2),null);
+			
+			}
+		}
+
+	}
+
+
 	private void StartGame(){
 		gameStatus = 1;
 
@@ -738,7 +849,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				useNatureToken = false;
 				replaceDuplicateCnt = 0;
 
-				if (players.get(2).getTurnsLeft() == 0)
+				if (players.get(2).getTurnsLeft() == 17)
 					gameStatus  = 2;
 				repaint();
 				return;
@@ -1174,11 +1285,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 	public void endGame(Graphics g)
 	{
-		g.setColor(Color.green);
-		g.fillRect(getWidth() / 2 - 100, 200, 200, 60);
-		g.setColor(Color.white);
-		g.setFont(font);
-		g.drawString("Game Ended", getWidth() / 2 - 70, 235);
+		// g.setColor(Color.green);
+		// g.fillRect(getWidth() / 2 - 100, 200, 200, 60);
+		// g.setColor(Color.white);
+		// g.setFont(font);
+		//g.drawString("Game Ended", getWidth() / 2 - 70, 235);
+
 
 		
 		// int foxScore = players.get(activePlayerIdx).foxScoreCalculate_A();
@@ -1270,6 +1382,15 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				int bs = sen.getValue();
 				System.out.println("bonus for ~~~" + hab + " ~~~ bonus score: "+ bs);
 			}
+		}
+
+		for (int i =0; i < 3; i++) 
+		{
+			System.out.println("final draw tiles");
+			int totalWidth = getWidth();
+			Point pt = new Point ((int)(totalWidth*i/3), 136);
+
+			drawFinalClaimedHabitats(g, pt, i);
 		}
 
 	}

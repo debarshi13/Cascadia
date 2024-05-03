@@ -79,8 +79,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	BufferedImage selectedTileImage = null, tilePlacementCancelImage = null, tilePlacementConfirmImage = null;
 	BufferedImage tilePlacementRotateCWImage = null, tilePlacementRotateCounterCWImage = null;
 	BufferedImage natureTokenImage = null;
+	BufferedImage fullScoreBoardImage = null;
 
-
+	TreeMap<Integer, Point> scoreBoardLoc;
 	TreeMap<String, BufferedImage> animalImageMap = new TreeMap<>();
 	Point origin = new Point (133, 136);
 	double ang30 = Math.toRadians(30);
@@ -98,7 +99,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 	Rectangle rcPlayerIndicator, rcNextPlay, rcTurnsLeft;
 
 	Hexagon  hexClockwiise, hexCounterClockwise;
-
 	int replacetimes = 0;
 	public GamePanel() {
 		
@@ -121,7 +121,29 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			starterTile1 = ImageIO.read(new File("src/images/starterTile1.png"));
 			swampLakeTileImage = ImageIO.read(new File("src/images/swamp+lake.png"));
 			
-			background = ImageIO.read(new File("src/images/background.png"));
+			background = ImageIO.read(new File("src/images/savedbackground_a.jpg"));
+			fullScoreBoardImage = ImageIO.read(new File("src/images/fullsizeScore.jpg"));
+			// BufferedImage fullScoreBoardImagem = imageResize(fullScoreBoardImage, fullScoreBoardImage.getWidth()*2/3, fullScoreBoardImage.getHeight()*2/3);
+
+			// try {
+				
+			// 	File outputfile = new File("fullsizeScore.jpg");
+			// 	ImageIO.write(fullScoreBoardImagem, "png", outputfile);
+			// } catch (IOException e) {
+			// 	// handle exception
+			// }
+
+			// BufferedImage backgroundorig = ImageIO.read(new File("src/images/texture-wooden-boards.jpg"));
+			// background = imageResize(backgroundorig, backgroundorig.getWidth()*3/5, backgroundorig.getHeight()/2);
+
+			// try {
+				
+			// 	File outputfile = new File("savedbackground_a.jpg");
+			// 	ImageIO.write(background, "png", outputfile);
+			// } catch (IOException e) {
+			// 	// handle exception
+			// }
+			
 			tilePlacementCancelImage = ImageIO.read(new File("src/images/tilePlacementCancel.png"));
 			tilePlacementConfirmImage = ImageIO.read(new File("src/images/tilePlacementConfirm.png")); 
 			tilePlacementRotateCWImage = ImageIO.read(new File("src/images/tilePlacementRotateClockwise.png")); 
@@ -186,7 +208,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		rcReplaceDuplicate = new Rectangle();
 		addMouseListener(this);
 		addMouseMotionListener(this);
-
+		scoreBoardLoc = new TreeMap<>();
 	}
 
 	public void paint(Graphics g) {
@@ -1505,15 +1527,60 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			}
 		}
 
+		calculateScorBoardLocations();
 		for (int i =0; i < 3; i++) 
 		{
 			System.out.println("final draw tiles");
 			int totalWidth = getWidth();
-			Point pt = new Point ((int)(totalWidth*i/3)-220, 136);
+			Point pt = new Point ((int)(totalWidth*i/3)-100, 76);
 
 			drawFinalClaimedHabitats(g, pt, i);
+
+			int yStart = 0;
+			for (Map.Entry<Integer, Point> entry : scoreBoardLoc.entrySet()) 
+			{
+				int y = (int)entry.getValue().getY();
+				if (y > yStart) 
+					yStart = y;
+			}
+
+			int xStart = (int)scoreBoardLoc.get(i).getX();
+
+			
+			g.drawImage(fullScoreBoardImage, xStart + 10, yStart +150, null);
+			//g.drawImage(fullScoreBoardImage, (int)(totalWidth*i/3)+100, getHeight() -500, null);
+
 		}
 
+			 
 	}
+
+	public void calculateScorBoardLocations()
+	{
+		for (int i =0; i < 3; i++) 
+		{
+			Point minXMaxY = new Point();
+			Player activePlayer = players.get(i);
+			ArrayList<TreeMap<String, Object>> startingTiles = activePlayer.getClaimedHabitats();
+			Point pt = new Point ((int)(getWidth()*i/3)-100, 76);
+			int min_j = 20, max_i = 0;
+			for (TreeMap<String, Object> cTile : startingTiles) {
+				int row = (int)cTile.get("row_idx");
+				int col = (int)cTile.get("col_idx");
+				if (col < min_j) 
+					min_j = col;
+				if (row > max_i) 
+					max_i = row;
+			}
+
+			int x = (int) (pt.x + (max_i%2)*endgamexOff + 2*min_j*endgamexOff -endgamexOff);
+			int y = (int) (pt.y + 3*endgameyOff*max_i) -endgameRadius;
+
+			minXMaxY.setLocation(x, y);
+			scoreBoardLoc.put(i, minXMaxY);
+		}
+	}
+
+	
 
 }

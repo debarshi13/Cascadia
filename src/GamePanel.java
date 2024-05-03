@@ -232,6 +232,19 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			drawClaimedHabitats(g);
 			highlightNewHabitat(g);
 
+			int cnt = 0;
+			for (int i = 0; i < 3; i++)
+			{
+				if (i != activePlayerIdx)
+				{
+					int totalWidth = getWidth();
+					Point ptOther = new Point ((int)(totalWidth)*2/3-120, 136 + cnt* 300);
+					drawOtherPlayerClaimedHabitats(g, ptOther, i);
+					cnt++;
+				}
+			}
+
+
 			if (playerState == PlayerState.TILE_ON_TABLE_IS_SELECTED || playerState == PlayerState.CANDIDATE_TILE_CLICKED)
 			{
 				drawCandidateHexTiles(g);
@@ -630,6 +643,108 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		g.drawString(text, x - w/2, y + h/2);
     }
 
+	public void drawOtherPlayerClaimedHabitats(Graphics g, Point originPt, int playerIdx)
+	{
+		Player activePlayer = players.get(playerIdx);
+		ArrayList<TreeMap<String, Object>> startingTiles = activePlayer.getClaimedHabitats();
+		for (TreeMap<String, Object> cTile : startingTiles) {
+			drawOtherPlayerHabitatTile(g, cTile, originPt, 0.6);
+			drawOtherPlayerHabitatWildlife(g, cTile, originPt, 0.6);
+		}
+	}
+
+
+	public void drawOtherPlayerHabitatTile(Graphics g, TreeMap<String, Object> cTile, Point originPt, double scaleValue) 
+	{		
+		int row_i = (int) cTile.get("row_idx");
+		int col_j = (int) cTile.get("col_idx");
+		int pRadius = (int)(radius*scaleValue);
+		double pxOff =  Math.cos(ang30) * (pRadius +0.3);
+		double pyOff =  Math.sin(ang30) * (pRadius +0.3);
+		ArrayList<String> habitatsList = (ArrayList<String>) cTile.get("habitats");			
+		BufferedImage bImageorig = getHabiImageFromName(habitatsList);
+		BufferedImage bImage = imageResize(bImageorig, (int)(bImageorig.getWidth()*scaleValue), (int)(bImageorig.getHeight()*scaleValue));
+		int rot = (int) cTile.get("rotation");
+		int x = (int) (originPt.x + (row_i%2)*pxOff + 2*col_j*pxOff -pxOff);
+		int y = (int) (originPt.y + 3*pyOff*row_i) -pRadius;
+		double locationX = bImage.getWidth() / 2;
+		double locationY = bImage.getHeight() / 2;
+		Graphics2D g2d = (Graphics2D) g;
+		if (rot > 0) {
+			
+			AffineTransform identity = AffineTransform.getRotateInstance(Math.toRadians(rot), locationX, locationY);				
+			AffineTransformOp op = new AffineTransformOp(identity, AffineTransformOp.TYPE_BILINEAR);
+			g2d.drawImage(op.filter(bImage, null), x, y, null);
+		}
+		else {
+			g.drawImage(bImage, x, y, bImage.getWidth(), bImage.getHeight(), null);
+			
+		}
+	}
+
+	public void drawOtherPlayerHabitatWildlife(Graphics g, TreeMap<String, Object> cTile, Point originPt, double scaleValue) 
+	{		
+		int row_i = (int) cTile.get("row_idx");
+		int col_j = (int) cTile.get("col_idx");
+		int pRadius = (int)(radius*scaleValue);
+		double pxOff =  Math.cos(ang30) * (pRadius +0.3);
+		double pyOff =  Math.sin(ang30) * (pRadius +0.3);
+		int x = (int) (originPt.x + (row_i%2)*pxOff + 2*col_j*pxOff -pxOff);
+		int y = (int) (originPt.y + 3*pyOff*row_i) -pRadius;
+		ArrayList<String> wildlifeList = (ArrayList<String>) cTile.get("wildlife");
+		int num = wildlifeList.size();
+		if(num == 1){
+
+			//y+=(int)(endgameyOff + 6);
+			BufferedImage bImage = null;
+			if ((boolean)cTile.get("tokenPlaced") == false) 
+				bImage = animalImageMap.get(wildlifeList.get(0));
+			else
+				bImage = animalImageMap.get(wildlifeList.get(0)+"Active");
+			
+			BufferedImage scaledImage = imageResize(bImage, bImage.getWidth()/2, bImage.getHeight()/2);
+			x+=(int)pxOff - scaledImage.getWidth()/2;
+			y+=(int)pRadius - scaledImage.getHeight()/2;
+			g.drawImage(scaledImage, x, y, null);
+
+			//g.drawImage(bImage, x, y, (int)endgamexOff, (int)endgameyOff*2,null);
+		}
+		else if(num == 2){
+			y+=(int)(pyOff + 6);
+			for(int i = 0; i < wildlifeList.size(); i++){		
+				if(i == 0)	
+					x += (int)(pxOff * 0.2);	
+				else
+					x += (int)(pxOff * 0.8);
+				BufferedImage bImage = animalImageMap.get(wildlifeList.get(i));
+				g.drawImage(bImage, x, y, (int)(pxOff * 1.5 / 2), (int)pyOff*3/2,null);
+			
+			}
+		}
+		else if(num == 3){
+			int x1, y1;
+			for(int i = 0; i < wildlifeList.size(); i++){		
+				if(i == 0)	{
+					x1 = x + (int)(pxOff * 0.75);
+					y1 = y+(int)(pyOff*0.85);
+				}
+				else if(i == 1){
+					x1 = x + (int)(pxOff * 0.5);	
+					y1 = y+(int)(pyOff * 1.7);
+				}
+				else{
+					x1 = x + (int)(pxOff * 1.1);
+					y1 = y+(int)(pyOff * 1.6);
+				}
+				BufferedImage bImage = animalImageMap.get(wildlifeList.get(i));
+				g.drawImage(bImage, x1, y1, (int)(pxOff * 1.2 / 2), (int)(pyOff*1.2),null);
+			
+			}
+		}
+
+	}
+
+
 	public void drawFinalClaimedHabitats(Graphics g, Point originPt, int playerIdx)
 	{
 		Player activePlayer = players.get(playerIdx);
@@ -889,8 +1004,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							// players.get(activePlayerIdx).elkScoreCalculate_A();
 							// int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
 							// int bear = players.get(activePlayerIdx).bearScoreCalculate_A();
-							int salmon = players.get(activePlayerIdx).salmonScoreCalculate();
-							System.out.println("~~~~~~~~~~~Scalmon Score: " + salmon);
+							//int salmon = players.get(activePlayerIdx).salmonScoreCalculate();
+							//System.out.println("~~~~~~~~~~~Scalmon Score: " + salmon);
 						}
 					}
 				}

@@ -238,7 +238,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				if (i != activePlayerIdx)
 				{
 					int totalWidth = getWidth();
-					Point ptOther = new Point ((int)(totalWidth)*2/3-120, 136 + cnt* 300);
+					Point ptOther = new Point ((int)(totalWidth)*2/3-120, 100+ cnt* 400);
 					drawOtherPlayerClaimedHabitats(g, ptOther, i);
 					cnt++;
 				}

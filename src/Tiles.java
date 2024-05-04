@@ -776,15 +776,15 @@ public class Tiles {
         wildlife.add("fox");       
         
         
-        t = new Tile();
-        habitats = new ArrayList<String>();
-        wildlife = new ArrayList<String>();
-        habitats.add("desert");
-        habitats.add("swamp");
-        wildlife.add("salmon");
-        wildlife.add("hawk");
-        t.setTile(70, habitats, wildlife, 0 );
-        tiles.add(t);  
+        // t = new Tile();
+        // habitats = new ArrayList<String>();
+        // wildlife = new ArrayList<String>();
+        // habitats.add("desert");
+        // habitats.add("swamp");
+        // wildlife.add("salmon");
+        // wildlife.add("hawk");
+        // t.setTile(70, habitats, wildlife, 0 );
+        // tiles.add(t);  
         t.setTile(80, habitats, wildlife, 0 );
         tiles.add(t);  
 

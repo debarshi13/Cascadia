@@ -1441,7 +1441,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		//int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
 		TreeMap<Integer, TreeMap<String, Integer>> playersFinalHabs = new TreeMap<>();
 		TreeMap<Integer, TreeMap<String, Integer>> playersHabsBonus = new TreeMap<>();
-		String[] habs = {"lake", "mountain", "desert", "forest", "swamp"};
+		String[] habs = {"mountain","forest", "desert",  "swamp", "lake"};
 		for (int i =0; i < 3; i++) {
 			System.out.println("player =====> " +i);
 			int bear = players.get(i).bearScoreCalculate();
@@ -1534,6 +1534,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			int totalWidth = getWidth();
 			Point pt = new Point ((int)(totalWidth*i/3)-100, 76);
 			drawFinalClaimedHabitats(g, pt, i);
+			Player pl = players.get(i);
 
 			int yStart = 0;
 			for (Map.Entry<Integer, Point> entry : scoreBoardLoc.entrySet()) 
@@ -1547,24 +1548,58 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.drawImage(fullScoreBoardImage, xStart + 10, yStart +150, null);
 		
 			// display scores to score board
-			int foxScore = players.get(activePlayerIdx).foxScoreCalculate();
-			int elkScore = players.get(activePlayerIdx).elkScoreCalculate();
-			int hawk = players.get(activePlayerIdx).hawkScoreCalculate();
-			int bear = players.get(i).bearScoreCalculate();
-			int salmon = players.get(i).salmonScoreCalculate();
+			int foxScore = pl.foxScoreCalculate();
+			int elkScore = pl.elkScoreCalculate();
+			int hawkScore = pl.hawkScoreCalculate();
+			int bearScore = pl.bearScoreCalculate();
+			int salmonScore = pl.salmonScoreCalculate();
 
 			g.setColor(Color.white);
 			//g.fillRect(getWidth() / 2 - 100, 200, 200, 60);
 			g.setColor(Color.blue);
 			g.setFont(font);
-			g.drawString(Integer.toString(bear), fullScoreBoardImage.getWidth()*2/5, yStart +10);
-			g.drawString(Integer.toString(elkScore), fullScoreBoardImage.getWidth()*2/5, yStart +51);
 
-			g.drawString(Integer.toString(foxScore), fullScoreBoardImage.getWidth()*2/5, yStart +92);
+			int scoreYStart = yStart + 177;
+			//nature token score
+			int nt = pl.getNumNatureToken();
+			g.drawString(Integer.toString(nt), xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart);
 
-			g.drawString(Integer.toString(hawk), fullScoreBoardImage.getWidth()*2/5, yStart +133);
+			// token scores
+			g.drawString(Integer.toString(bearScore), xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart+41);
+			g.drawString(Integer.toString(elkScore),xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart+41*2);
+			g.drawString(Integer.toString(foxScore),xStart + fullScoreBoardImage.getWidth()*2/5-18,scoreYStart+41*3);
+			g.drawString(Integer.toString(hawkScore), xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart+41*4);
+			g.drawString(Integer.toString(salmonScore), xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart+41*5);
 
-			g.drawString(Integer.toString(salmon), fullScoreBoardImage.getWidth()*2/5, yStart +174);
+
+			// habitat score
+			TreeMap<String, Integer> habScores = playersFinalHabs.get(i);
+			int mountainScore = habScores.get("mountain");
+			int forestScore = habScores.get("forest");
+			int desertScore = habScores.get("desert");
+			int swampScore = habScores.get("swamp");
+			int lakeScore = habScores.get("lake");
+
+			//g.drawString(Integer.toString(1), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart);
+			g.drawString(Integer.toString(mountainScore), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart+41);
+			g.drawString(Integer.toString(forestScore), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart+41*2);
+			g.drawString(Integer.toString(desertScore), xStart + fullScoreBoardImage.getWidth()*4/5-18,scoreYStart+41*3);
+			g.drawString(Integer.toString(swampScore), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart+41*4);
+			g.drawString(Integer.toString(lakeScore), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart+41*5);
+
+			// habitat bonus 			
+			TreeMap<String, Integer> habBnScores = playersHabsBonus.get(i);
+			int mountainBnScore = habBnScores.get("mountain");
+			int forestBnScore = habBnScores.get("forest");
+			int desertBnScore = habBnScores.get("desert");
+			int swampBnScore = habBnScores.get("swamp");
+			int lakeBnScore = habBnScores.get("lake");
+
+			g.drawString(Integer.toString(mountainBnScore), xStart + fullScoreBoardImage.getWidth()-18, scoreYStart+41);
+			g.drawString(Integer.toString(forestBnScore), xStart + fullScoreBoardImage.getWidth()-18, scoreYStart+41*2);
+			g.drawString(Integer.toString(desertBnScore), xStart + fullScoreBoardImage.getWidth()-18,scoreYStart+41*3);
+			g.drawString(Integer.toString(swampBnScore), xStart + fullScoreBoardImage.getWidth()-18, scoreYStart+41*4);
+			g.drawString(Integer.toString(lakeBnScore), xStart + fullScoreBoardImage.getWidth()-18, scoreYStart+41*5);
 
 		}
 

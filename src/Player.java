@@ -95,8 +95,6 @@ public class Player {
 
 		Tile[][] startingTiles = allTiles.getStartingTiles();
 
-		ArrayList<String> habitatsList = new ArrayList<>();
-		String habNames = "";
 		Hexagon hex = null;
 		TreeMap<String, Object> habitatInfo = new TreeMap<>();
 		habitatInfo.put("tileNum",startingTiles[startingTileIdx][0].getTileNum());
@@ -188,32 +186,9 @@ public class Player {
 		locList.addLocation(i, j, n);
 	}
 
-	// public void addHabitatForHabByTileNum(int i, int j, int n)
-	// {
-		
-	// 	for (TreeMap<String, Object> cHabitat : getClaimedHabitats()) 
-	// 	{
-	// 		System.out.println("cHabitat tile num: " + cHabitat.get("tileNum"));
-	// 		System.out.println("passed in tile num: " +n);
-			
-	// 		if ((int)(cHabitat.get("tileNum")) == n) 
-	// 		{
-	// 			ArrayList<String> hList = (ArrayList<String>)(cHabitat.get("habitats"));
-	// 			for (String h : hList)
-	// 			{
-	// 				HabitatLocations locList = habitatsByHabType.get(h);
-	// 				locList.addLocation(i, j, n);
-
-	// 			}
-	// 		}
-	// 		else
-	// 			continue;	
-	// 	}
-	// }
-
 	public void addHabitatForHab(int i, int j, TreeMap<String, Object> cHabitat)
 	{
-		System.out.println("cHabitat tile num: " + cHabitat.get("tileNum"));
+		//System.out.println("cHabitat tile num: " + cHabitat.get("tileNum"));
 		ArrayList<String> hList = (ArrayList<String>)(cHabitat.get("habitats"));
 		for (String h : hList)
 		{
@@ -446,7 +421,7 @@ public class Player {
 					prevLoc = loc;
 					nextLoc = getNotCrowdedNeighbor(neighbors, salmonOvercrowded);
 					salmonOneSchool += ("&" + nextLoc.toString());	
-					System.out.println("starting of the salmon hunt: " + prevLoc.toString() + " to " + nextLoc.toString());
+					//System.out.println("starting of the salmon hunt: " + prevLoc.toString() + " to " + nextLoc.toString());
 					
 					int neighborNum = 1; //it has to be 1 neighbour
 					while(neighborNum > 0){
@@ -498,7 +473,7 @@ public class Player {
 														
 							}
 							salmonSchools.add(salmonOneSchool);
-							System.out.println("end of the salmon hunt: " + salmonOneSchool);
+							//System.out.println("end of the salmon hunt: " + salmonOneSchool);
 							salmonOnSchoolSideTemp.add(nextLoc);
 						}
 					}
@@ -507,7 +482,7 @@ public class Player {
 			}
 		}
 		for(int i = 0; i < salmonSchools.size(); i++){
-			System.out.println(salmonSchools.get(i));
+			//System.out.println(salmonSchools.get(i));
 			String[] sTmps = salmonSchools.get(i).split("&");
 			if(sTmps.length == 2)
 				salmonScore += 4;
@@ -523,7 +498,7 @@ public class Player {
 				salmonScore += 28;
 		}
 
-		System.out.println("*************************SALMON SCORE: "+ salmonScore);
+		//System.out.println("*************************SALMON SCORE: "+ salmonScore);
 		return salmonScore;
 		
 	}
@@ -591,7 +566,7 @@ public class Player {
 
 		}
 		
-		System.out.println("*******************fox**************  " + totalUniqueCnt + "************");
+		//System.out.println("*******************fox**************  " + totalUniqueCnt + "************");
 		return totalUniqueCnt;
 	}
 
@@ -777,7 +752,7 @@ public class Player {
 		}
 
 		totalHawkScore += hawkScoring_A.get(totalIsoHawkCnt);
-		System.out.println ("@@@@@@@@@@@@@@@@@ hawk score @@@@@@@@@@@@@@@@@@ " + totalHawkScore);
+		//System.out.println ("@@@@@@@@@@@@@@@@@ hawk score @@@@@@@@@@@@@@@@@@ " + totalHawkScore);
 		return totalHawkScore;
 	}
 
@@ -797,7 +772,7 @@ public class Player {
 			int tNum = loc.getTileNum();
 			ArrayList<Integer> nbNums = searchNeighborByToken(row, col, "bear");
 			neighborsList.put(tNum, nbNums);
-			System.out.println("Bear at: " + tNum + "====>" + nbNums);
+			//System.out.println("Bear at: " + tNum + "====>" + nbNums);
 		}
 
 		for (Map.Entry<Integer, ArrayList<Integer>> entry : neighborsList.entrySet()) 
@@ -824,10 +799,10 @@ public class Player {
 			}
 		}
 
-		for (Map.Entry<Integer,Integer> entry : bearPairs.entrySet()) 
-		{
-			System.out.println("~~~~~~~~~~Bear: " + entry.getKey() + "====> " + entry.getValue());
-		}
+		// for (Map.Entry<Integer,Integer> entry : bearPairs.entrySet()) 
+		// {
+		// 	System.out.println("~~~~~~~~~~Bear: " + entry.getKey() + "====> " + entry.getValue());
+		// }
 
 		totalBearPairCnt = bearPairs.size();
 		if (bearPairs.size() > 4)

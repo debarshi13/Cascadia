@@ -186,7 +186,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		players = new ArrayList<>();
 		for (int i = 0 ; i < 3 ; i++) {
 			
-			players.add(new Player(i, 0, 20));
+			players.add(new Player(i, i, 20));
 			
 		}
 		tiles = new Tiles();
@@ -956,13 +956,13 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		int y = e.getY();
 		if(gameStatus == 0){
 			if(x >= getWidth() / 2 - 100 && x <= getWidth() / 2 + 100 && y >= 200 && y <= 260){
-				System.out.println("Start Game");
+				//System.out.println("Start Game");
 				StartGame();
 				playerState = PlayerState.TILES_ON_TABLE_UPDATED;
 			}
 		}
 		else{
-			System.out.println( "" + e.getX() + "  " + e.getY());
+			//System.out.println( "" + e.getX() + "  " + e.getY());
 			if(rcNextPlay.contains(e.getPoint())){
 				players.get(activePlayerIdx).turnUsed();
 				activePlayerIdx = (activePlayerIdx + 1) % 3;
@@ -1026,8 +1026,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 							// players.get(activePlayerIdx).elkScoreCalculate_A();
 							// int hawk = players.get(activePlayerIdx).hawkScoreCalculate_A();
 							// int bear = players.get(activePlayerIdx).bearScoreCalculate_A();
-							int salmon = players.get(activePlayerIdx).salmonScoreCalculate();
-							System.out.println("~~~~~~~~~~~Scalmon Score: " + salmon);
+							// int salmon = players.get(activePlayerIdx).salmonScoreCalculate();
+							// System.out.println("~~~~~~~~~~~Scalmon Score: " + salmon);
 						}
 					}
 				}
@@ -1443,9 +1443,9 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		TreeMap<Integer, TreeMap<String, Integer>> playersHabsBonus = new TreeMap<>();
 		String[] habs = {"mountain","forest", "desert",  "swamp", "lake"};
 		for (int i =0; i < 3; i++) {
-			System.out.println("player =====> " +i);
-			int bear = players.get(i).bearScoreCalculate();
-			System.out.println(" ########## total bear score: " + bear);
+			// System.out.println("player =====> " +i);
+			// int bear = players.get(i).bearScoreCalculate();
+			// System.out.println(" ########## total bear score: " + bear);
 
 			players.get(i).habitatCorridorCalculate();
 
@@ -1484,11 +1484,11 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				PlayerScore[] sortedPScores = Arrays.stream(playerScoreList).sorted(Comparator.comparing(PlayerScore::getPlayerScore)).toArray(PlayerScore[]::new);
 
 
-				System.out.println(" ~~~~" + habT + " ~~~~~~~~ PlayersScore: ");
-				for (int i = 0; i < 3; i++)
-				{
-					System.out.println("score and player idx==> : " + sortedPScores[i]);
-				}
+				//System.out.println(" ~~~~" + habT + " ~~~~~~~~ PlayersScore: ");
+				// for (int i = 0; i < 3; i++)
+				// {
+				// 	System.out.println("score and player idx==> : " + sortedPScores[i]);
+				// }
 
 				if (sortedPScores[1].getPlayerScore() == sortedPScores[2].getPlayerScore())
 				{
@@ -1517,20 +1517,20 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		for (Map.Entry<Integer, TreeMap<String, Integer>> en : playersHabsBonus.entrySet())
 		{
 			int playerIdx = en.getKey();
-			System.out.println("~~~~~~~~~~~~~~~~~~~~~~bonus scores for player idx: " + playerIdx + " ~~~~~~~~~~~~~~~~~~~~");
+			//System.out.println("~~~~~~~~~~~~~~~~~~~~~~bonus scores for player idx: " + playerIdx + " ~~~~~~~~~~~~~~~~~~~~");
 			TreeMap<String, Integer> enm = en.getValue();
 			for (Map.Entry<String, Integer> sen: enm.entrySet()) 
 			{
 				String hab = sen.getKey();
 				int bs = sen.getValue();
-				System.out.println("bonus for ~~~" + hab + " ~~~ bonus score: "+ bs);
+				//System.out.println("bonus for ~~~" + hab + " ~~~ bonus score: "+ bs);
 			}
 		}
 
 		calculateScorBoardLocations();
 		for (int i =0; i < 3; i++) 
 		{
-			System.out.println("final draw tiles");
+			
 			int totalWidth = getWidth();
 			Point pt = new Point ((int)(totalWidth*i/3)-100, 76);
 			drawFinalClaimedHabitats(g, pt, i);

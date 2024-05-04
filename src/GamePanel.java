@@ -1568,6 +1568,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			int scoreYStart = yStart + 177;
 			//nature token score
 			int nt = pl.getNumNatureToken();
+			int totalTokenScore = foxScore + elkScore + hawkScore + bearScore + salmonScore + nt;
+
 			g.drawString(Integer.toString(nt), xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart);
 
 			// token scores
@@ -1576,6 +1578,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.drawString(Integer.toString(foxScore),xStart + fullScoreBoardImage.getWidth()*2/5-18,scoreYStart+41*3);
 			g.drawString(Integer.toString(hawkScore), xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart+41*4);
 			g.drawString(Integer.toString(salmonScore), xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart+41*5);
+			g.drawString(Integer.toString(totalTokenScore), xStart + fullScoreBoardImage.getWidth()*2/5-24, scoreYStart+41*6);
+			
 
 
 			// habitat score
@@ -1586,12 +1590,16 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			int swampScore = habScores.get("swamp");
 			int lakeScore = habScores.get("lake");
 
+			int totalhabScore = mountainScore + forestScore + desertScore + salmonScore + lakeScore;
+
 			//g.drawString(Integer.toString(1), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart);
 			g.drawString(Integer.toString(mountainScore), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart+41);
 			g.drawString(Integer.toString(forestScore), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart+41*2);
 			g.drawString(Integer.toString(desertScore), xStart + fullScoreBoardImage.getWidth()*4/5-18,scoreYStart+41*3);
 			g.drawString(Integer.toString(swampScore), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart+41*4);
 			g.drawString(Integer.toString(lakeScore), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart+41*5);
+			g.drawString(Integer.toString(totalhabScore), xStart + fullScoreBoardImage.getWidth()*4/5-24, scoreYStart+41*6);
+			
 
 			// habitat bonus 			
 			TreeMap<String, Integer> habBnScores = playersHabsBonus.get(i);
@@ -1600,12 +1608,17 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			int desertBnScore = habBnScores.get("desert");
 			int swampBnScore = habBnScores.get("swamp");
 			int lakeBnScore = habBnScores.get("lake");
+			int totalBonus = mountainBnScore + forestBnScore + desertBnScore + swampBnScore + lakeBnScore;
 
 			g.drawString(Integer.toString(mountainBnScore), xStart + fullScoreBoardImage.getWidth()-18, scoreYStart+41);
 			g.drawString(Integer.toString(forestBnScore), xStart + fullScoreBoardImage.getWidth()-18, scoreYStart+41*2);
 			g.drawString(Integer.toString(desertBnScore), xStart + fullScoreBoardImage.getWidth()-18,scoreYStart+41*3);
 			g.drawString(Integer.toString(swampBnScore), xStart + fullScoreBoardImage.getWidth()-18, scoreYStart+41*4);
 			g.drawString(Integer.toString(lakeBnScore), xStart + fullScoreBoardImage.getWidth()-18, scoreYStart+41*5);
+			g.drawString(Integer.toString(totalBonus), xStart + fullScoreBoardImage.getWidth()-24, scoreYStart+41*6);
+
+			int finalTotalScore = totalTokenScore + totalhabScore + totalBonus;
+			g.drawString(Integer.toString(finalTotalScore), xStart + fullScoreBoardImage.getWidth()*2/5-24, scoreYStart+41*7);
 
 		}
 

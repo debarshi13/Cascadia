@@ -673,6 +673,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			drawOtherPlayerHabitatTile(g, cTile, originPt, 0.5);
 			drawOtherPlayerHabitatWildlife(g, cTile, originPt, 0.5);
 		}
+		g.setColor(Color.blue);
+		g.setFont(font);
+		if(originPt.y < getHeight() / 3)
+			g.drawString("Player " + Integer.toString(playerIdx + 1), getWidth() - 100, getHeight() / 3  );
+		else
+			g.drawString("Player " + Integer.toString(playerIdx + 1), getWidth() - 100, getHeight() * 3 / 4);
 	}
 
 

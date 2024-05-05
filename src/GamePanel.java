@@ -996,7 +996,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				useNatureToken = false;
 				replaceDuplicateCnt = 0;
 
-				if (players.get(2).getTurnsLeft() == 0)
+				if (players.get(2).getTurnsLeft() == 15)
 					gameStatus  = 2;
 				repaint();
 				return;
@@ -1448,6 +1448,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		TreeMap<Integer, TreeMap<String, Integer>> playersFinalHabs = new TreeMap<>();
 		TreeMap<Integer, TreeMap<String, Integer>> playersHabsBonus = new TreeMap<>();
 		String[] habs = {"mountain","forest", "desert",  "swamp", "lake"};
+		int highestScore = 0;
+		int winner = -1;
 		for (int i =0; i < 3; i++) {
 			// System.out.println("player =====> " +i);
 			// int bear = players.get(i).bearScoreCalculate();
@@ -1619,9 +1621,16 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 			int finalTotalScore = totalTokenScore + totalhabScore + totalBonus;
 			g.drawString(Integer.toString(finalTotalScore), xStart + fullScoreBoardImage.getWidth()*2/5-24, scoreYStart+41*7);
-
+			if(finalTotalScore > highestScore)
+			{
+				highestScore = finalTotalScore;
+				winner = i;
+			}
 		}
 
+		g.setFont(font);
+		g.drawString("Winner: Player " + Integer.toString(winner + 1) + "   Score: " + Integer.toString(highestScore), 
+		getWidth()/2-50, 100);
 			 
 	}
 
@@ -1648,6 +1657,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 			minXMaxY.setLocation(x, y);
 			scoreBoardLoc.put(i, minXMaxY);
+
 		}
 	}
 

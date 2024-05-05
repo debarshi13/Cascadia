@@ -1596,7 +1596,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			int swampScore = habScores.get("swamp");
 			int lakeScore = habScores.get("lake");
 
-			int totalhabScore = mountainScore + forestScore + desertScore + salmonScore + lakeScore;
+			int totalhabScore = mountainScore + forestScore + desertScore + swampScore + lakeScore;
 
 			//g.drawString(Integer.toString(1), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart);
 			g.drawString(Integer.toString(mountainScore), xStart + fullScoreBoardImage.getWidth()*4/5-18, scoreYStart+41);

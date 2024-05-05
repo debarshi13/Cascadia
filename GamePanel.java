@@ -1125,6 +1125,8 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 					candidateHabitat = null;
 					selectedTileOnTableIndex = -1;
 					selectedTokenOnTableIndex = -1;
+					clockwiseClickedCnt = 0;
+					counterCWclickedCnt = 0;
 				
 				}
 			}
@@ -1157,10 +1159,6 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				//System.out.println("CounterClockwise clicked");
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
 					counterCWclickedCnt ++;
-					int rotatAng = counterCWclickedCnt%6;
-					candidateHabitat.put("rotation", 360 - rotatAng*60);
-					drawHabitatTile(getGraphics(), candidateHabitat);
-					drawHabitatWildlife(getGraphics(), candidateHabitat);
 				}
 
 			}
@@ -1168,13 +1166,21 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				//System.out.println("Clockwise clicked");		
 				if (playerState == PlayerState.CANDIDATE_TILE_CLICKED) {
 					clockwiseClickedCnt ++;
-					int rotatAng = clockwiseClickedCnt%6;
-					candidateHabitat.put("rotation", rotatAng*(60));
-					drawHabitatTile(getGraphics(), candidateHabitat);
-					drawHabitatWildlife(getGraphics(), candidateHabitat);
-
 				}
 			}
+
+			if (hexCounterClockwise.contains(e.getPoint()) || hexClockwiise.contains(e.getPoint()) )
+			{
+				int rotatCounterCW= counterCWclickedCnt%6;
+				int rotatCW = clockwiseClickedCnt%6;
+				int rotationResult = 360 - rotatCounterCW*60 + rotatCW*60;
+				//System.out.println("rotatCCW: " + rotatCounterCW + "~~~~~" + "rotatCW: " + rotatCW);
+				//System.out.println("rotationResult: " + rotationResult%360);
+				candidateHabitat.put("rotation", rotationResult%360);
+				drawHabitatTile(getGraphics(), candidateHabitat);
+				drawHabitatWildlife(getGraphics(), candidateHabitat);
+			}
+
 			if (rcUseNatureToken.contains(e.getPoint()))
 			{
 				if (playerState != PlayerState.TURN_IS_DONE && playerState != PlayerState.HABITAT_PLACE_COMFIRMED) {

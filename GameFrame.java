@@ -17,8 +17,8 @@
 import java.awt.*;
 import javax.swing.*;
 public class GameFrame extends JFrame{
-	private static final int WIDTH = 1920;
-	private static final int HEIGHT = 1080;
+	private static final int WIDTH = 2146;
+	private static final int HEIGHT = 1336;
 	public GameFrame(String framename) {
 		
 		super(framename);

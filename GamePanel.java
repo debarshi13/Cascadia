@@ -1002,7 +1002,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 				useNatureToken = false;
 				replaceDuplicateCnt = 0;
 
-				if (players.get(2).getTurnsLeft() == 15)
+				if (players.get(2).getTurnsLeft() == 0)
 					gameStatus  = 2;
 				repaint();
 				return;
@@ -1548,6 +1548,17 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 		}
 
 		calculateScorBoardLocations();
+		
+		int yStart = 0;
+		for (Map.Entry<Integer, Point> entry : scoreBoardLoc.entrySet()) 
+		{
+			int y = (int)entry.getValue().getY();
+			if (y > yStart) 
+				yStart = y;
+		}
+
+		int scoreYStart = yStart + 177;
+
 		for (int i =0; i < 3; i++) 
 		{
 			
@@ -1556,13 +1567,13 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			drawFinalClaimedHabitats(g, pt, i);
 			Player pl = players.get(i);
 
-			int yStart = 0;
-			for (Map.Entry<Integer, Point> entry : scoreBoardLoc.entrySet()) 
-			{
-				int y = (int)entry.getValue().getY();
-				if (y > yStart) 
-					yStart = y;
-			}
+			// int yStart = 0;
+			// for (Map.Entry<Integer, Point> entry : scoreBoardLoc.entrySet()) 
+			// {
+			// 	int y = (int)entry.getValue().getY();
+			// 	if (y > yStart) 
+			// 		yStart = y;
+			// }
 
 			int xStart = (int)scoreBoardLoc.get(i).getX();
 			g.drawImage(fullScoreBoardImage, xStart + 10, yStart +150, null);
@@ -1579,10 +1590,12 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 			g.setColor(Color.blue);
 			g.setFont(font);
 
-			int scoreYStart = yStart + 177;
+			//int scoreYStart = yStart + 177;
 			//nature token score
 			int nt = pl.getNumNatureToken();
 			int totalTokenScore = foxScore + elkScore + hawkScore + bearScore + salmonScore + nt;
+			g.drawString("Player " + Integer.toString(i + 1), xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart - 50);
+
 
 			g.drawString(Integer.toString(nt), xStart + fullScoreBoardImage.getWidth()*2/5-18, scoreYStart);
 
@@ -1642,7 +1655,7 @@ public class GamePanel extends JPanel implements MouseListener, MouseMotionListe
 
 		g.setFont(font);
 		g.drawString("Winner: Player " + Integer.toString(winner + 1) + "   Score: " + Integer.toString(highestScore), 
-		getWidth()/2-50, 100);
+		getWidth()/2-50, scoreYStart + 370);
 			 
 	}
 
